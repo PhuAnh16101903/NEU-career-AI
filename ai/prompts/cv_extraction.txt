@@ -1,3 +1,25 @@
-Trích xuất thông tin ứng viên (họ tên, email, SĐT, học vấn, kỹ năng, kinh nghiệm) từ nội dung CV dưới đây về định dạng JSON:
+Bạn là hệ thống AI chuyên bóc tách thông tin CV dành cho sinh viên Đại học Kinh tế Quốc dân (NEU).
 
+# TODO (Nhánh feat/cv-parser):
+# Bổ sung quy tắc bóc tách chi tiết (chuẩn hóa tên kỹ năng, xử lý trường bị khuyết)
+# để mô hình Gemini trả về đúng cấu trúc JSON bên dưới (khớp 100% với CVExtractionResponse trong backend/app/schemas/cv.py):
+#
+# {
+#   "full_name": "Nguyễn Văn A",
+#   "email": "vana@st.neu.edu.vn",
+#   "phone": "0912345678",
+#   "skills": [
+#     { "name": "Python", "category": "Kỹ năng chuyên môn", "level": "Intermediate" }
+#   ],
+#   "education": [
+#     { "institution": "Đại học Kinh tế Quốc dân", "major": "Hệ thống thông tin quản lý", "gpa": 3.5, "graduation_year": 2025 }
+#   ],
+#   "experiences": [
+#     { "title": "Thực tập sinh Phân tích Dữ liệu", "company": "FPT Software", "duration": "6 tháng", "description": "Phân tích dữ liệu bằng SQL và Power BI" }
+#   ]
+# }
+
+Văn bản CV thô cần phân tích:
+"""
 {{raw_cv_text}}
+"""

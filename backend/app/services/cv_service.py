@@ -1,11 +1,18 @@
 import re
 from io import BytesIO
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from starlette.concurrency import run_in_threadpool
+from pydantic import ValidationError
 
-from app.core.errors import ServiceError
-from app.data.skill_taxonomy import category_of, extract_skills
+from app.core.errors import LLMError, ServiceError
+from app.core.llm import gemini_service
+from app.core.prompts import render_prompt
+from app.data.skill_taxonomy import (
+    category_of,
+    extract_skills,
+    normalize_skill,
+)
 from app.schemas.cv import CandidateSkill, CVExtractionResponse
 
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
@@ -88,15 +95,110 @@ class CVService:
         )
 
     @staticmethod
+    async def _extract_with_gemini(text: str) -> Dict[str, Any]:
+        """
+        Gửi nội dung CV đến Gemini và nhận dữ liệu JSON.
+
+        Hàm chỉ chịu trách nhiệm gọi AI.
+        Việc kiểm tra, chuẩn hóa và kết hợp dữ liệu sẽ được xử lý ở bước tiếp theo.
+        """
+        prompt = render_prompt(
+            "cv_extraction",
+            raw_cv_text=text,
+        )
+
+        result = await gemini_service.generate_json(prompt)
+
+        if not isinstance(result, dict):
+            raise LLMError("Gemini không trả về một JSON object hợp lệ.")
+
+        return result
+
+    @staticmethod
+    def _validate_gemini_result(data: Dict[str, Any]) -> CVExtractionResponse:
+        """
+        Kiểm tra và chuyển JSON từ Gemini thành CVExtractionResponse.
+        Không cho dữ liệu sai cấu trúc đi vào API.
+        """
+        try:
+            return CVExtractionResponse.model_validate({
+                "full_name": data.get("full_name"),
+                "email": data.get("email"),
+                "phone": data.get("phone"),
+                "education": data.get("education", []),
+                "skills": data.get("skills", []),
+                "experiences": data.get("experiences", []),
+                "raw_summary": "Đã trích xuất thông tin CV bằng Gemini.",
+                "is_mock": False,
+                "warnings": [],
+            })
+        except ValidationError as exc:
+            raise LLMError(
+                f"Dữ liệu CV Gemini trả về không đúng cấu trúc: {exc}"
+            ) from exc
+
+
+    @staticmethod
     async def parse_cv(file_bytes: bytes, filename: str) -> CVExtractionResponse:
         """
-        Đọc file (PDF/DOCX) và bóc tách thông tin.
-        Hiện: email, số điện thoại, họ tên (heuristic) và kỹ năng (theo Skill Taxonomy) là kết quả thật.
-        TODO (nhóm AI): dùng prompt `cv_extraction` + gemini_service.generate_json để bóc tách học vấn,
-        kinh nghiệm, rồi bỏ cờ is_mock.
+        Đọc CV và trích xuất thông tin bằng Gemini.
+        Nếu Gemini không khả dụng, sử dụng bộ trích xuất dự phòng.
         """
         text = await run_in_threadpool(CVService.extract_text, file_bytes, filename)
-        return CVService.parse_text(text, filename)
+
+        try:
+            # Bước 1: Gọi Gemini để phân tích CV
+            ai_data = await CVService._extract_with_gemini(text)
+
+            # Bước 2: Kiểm tra dữ liệu AI trả về
+            ai_result = CVService._validate_gemini_result(ai_data)
+
+            # Bước 3: Trích xuất bổ sung bằng phương pháp hiện tại
+            fallback = CVService.parse_text(text, filename)
+
+            # Ưu tiên thông tin liên hệ được nhận diện bằng regex
+            # Kỹ năng từ Taxonomy được giữ lại; kỹ năng AI bổ sung nếu chưa có
+            skills_by_name = {
+                skill.name.casefold(): skill
+                for skill in fallback.skills
+            }
+
+            for skill in ai_result.skills:
+                canonical = normalize_skill(skill.name)
+
+                if canonical is None:
+                    continue
+
+                skills_by_name.setdefault(
+                    canonical.casefold(),
+                    CandidateSkill(
+                        name=canonical,
+                        category=category_of(canonical),
+                        level=skill.level,
+                    ),
+                )
+
+            return ai_result.model_copy(update={
+                "full_name": fallback.full_name or ai_result.full_name,
+                "email": fallback.email or ai_result.email,
+                "phone": fallback.phone or ai_result.phone,
+                "skills": list(skills_by_name.values()),
+                "raw_summary": (
+                    f"Đã đọc {len(text)} ký tự từ file {filename} "
+                    "và trích xuất bằng Gemini."
+                ),
+                "is_mock": False,
+                "warnings": ai_result.warnings,
+            })
+
+        except LLMError as exc:
+            # Gemini không khả dụng: giữ nguyên chức năng trích xuất cũ
+            fallback = CVService.parse_text(text, filename)
+            fallback.warnings.append(
+                f"Không thể sử dụng Gemini; hệ thống chuyển sang trích xuất dự phòng. Chi tiết: {exc}"
+            )
+            return fallback
+
 
 
 cv_service = CVService()

@@ -32,5 +32,5 @@ def get_interview_session(session_id: str, db: Session = Depends(get_db)):
     response_model=ChatMessageResponse,
     summary="Gửi câu trả lời và nhận câu hỏi tiếp theo + điểm STAR",
 )
-def chat_interview(request: ChatMessageRequest, db: Session = Depends(get_db)):
-    return interview_service.handle_chat(db, request)
+async def chat_interview(request: ChatMessageRequest, db: Session = Depends(get_db)):
+    return await interview_service.handle_chat(db, request)

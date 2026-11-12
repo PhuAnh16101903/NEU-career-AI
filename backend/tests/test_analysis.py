@@ -1,3 +1,9 @@
+from unittest.mock import AsyncMock
+
+from app.core.errors import LLMError
+from app.services.matching_service import gemini_service
+
+
 def post_match(client, **overrides):
     payload = {
         "job_title": "Junior Data Analyst",
@@ -47,3 +53,105 @@ def test_match_unknown_role_without_jd_returns_422(client):
 def test_curriculum_lists_courses(client):
     body = client.get("/api/curriculum").json()
     assert body["total"] == len(body["courses"]) > 0
+
+
+def test_match_uses_gemini_advice(client, monkeypatch):
+    fake_ai_result = {
+        "skill_gap_analysis": "Bạn đã có nền tảng Python và Excel, nhưng cần cải thiện SQL.",
+        "learning_roadmap": [
+            "Bước 1: Ôn tập SQL cơ bản.",
+            "Bước 2: Thực hành truy vấn dữ liệu.",
+        ],
+        "course_explanations": [
+            {
+                "course_code": "CNTT1105",
+                "explanation": "Môn học giúp củng cố SQL và thiết kế cơ sở dữ liệu.",
+            },
+            {
+                "course_code": "INVALID999",
+                "explanation": "Môn học không tồn tại.",
+            },
+        ],
+        "general_advice": "Hãy thực hành SQL qua các dự án phân tích dữ liệu.",
+    }
+
+    mock_generate_json = AsyncMock(return_value=fake_ai_result)
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    res = post_match(client)
+
+    assert res.status_code == 200
+    body = res.json()
+
+    # Gemini bổ sung phần tư vấn.
+    assert body["skill_gap_analysis"] == fake_ai_result["skill_gap_analysis"]
+    assert body["learning_roadmap"] == fake_ai_result["learning_roadmap"]
+    assert body["general_advice"] == fake_ai_result["general_advice"]
+
+    # Chỉ giữ giải thích môn học backend đã đề xuất.
+    course_codes = {
+        item["course_code"]
+        for item in body["course_explanations"]
+    }
+    assert "CNTT1105" in course_codes
+    assert "INVALID999" not in course_codes
+
+    # Gemini không được thay đổi kết quả Matching.
+    assert body["overall_match_percentage"] == 42.9
+    assert "SQL" in body["missing_skills"]
+
+    mock_generate_json.assert_awaited_once()
+
+
+def test_match_falls_back_when_gemini_fails(client, monkeypatch):
+    mock_generate_json = AsyncMock(
+        side_effect=LLMError("Gemini không khả dụng")
+    )
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    res = post_match(client)
+
+    assert res.status_code == 200
+    body = res.json()
+
+    # Kết quả Matching vẫn được trả về.
+    assert body["requirements_source"] == "role_preset"
+    assert body["overall_match_percentage"] > 0
+    assert body["missing_skills"]
+
+    # Sử dụng lời khuyên dự phòng khi Gemini lỗi.
+    assert body["general_advice"]
+    assert body["skill_gap_analysis"] == ""
+    assert body["learning_roadmap"] == []
+    assert body["course_explanations"] == []
+
+    mock_generate_json.assert_awaited_once()
+
+def test_match_falls_back_when_gemini_returns_invalid_structure(client, monkeypatch):
+    mock_generate_json = AsyncMock(return_value="invalid response")
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    res = post_match(client)
+
+    assert res.status_code == 200
+    body = res.json()
+
+    assert body["overall_match_percentage"] == 42.9
+    assert body["general_advice"]
+    assert body["skill_gap_analysis"] == ""
+    assert body["learning_roadmap"] == []
+    assert body["course_explanations"] == []
+
+    mock_generate_json.assert_awaited_once()

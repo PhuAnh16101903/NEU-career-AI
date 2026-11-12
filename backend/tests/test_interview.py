@@ -60,10 +60,19 @@ def test_render_prompt_fills_placeholders():
 
     gap_prompt = render_prompt(
         "skill_gap_analysis",
-        candidate_skills="Python, SQL",
+        job_title="Junior Data Analyst",
+        requirements_source="job_description",
+        required_skills="Python, SQL, Power BI",
+        matched_skills="Python, SQL",
+        missing_skills="Power BI",
+        unrecognized_skills="",
+        match_percentage=66.7,
+        recommended_courses="CNTT1105 - Cơ sở dữ liệu và SQL nâng cao",
         job_description="Yêu cầu Python, SQL, Power BI",
     )
-    assert "Python, SQL" in gap_prompt and "{{" not in gap_prompt
+    assert "Python, SQL, Power BI" in gap_prompt
+    assert "Junior Data Analyst" in gap_prompt
+    assert "{{" not in gap_prompt
 
     interview_prompt = render_prompt(
         "star_interview_agent",

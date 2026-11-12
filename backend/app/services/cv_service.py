@@ -11,7 +11,6 @@ from app.core.prompts import render_prompt
 from app.data.skill_taxonomy import (
     category_of,
     extract_skills,
-    normalize_skill,
 )
 from app.schemas.cv import CandidateSkill, CVExtractionResponse
 
@@ -157,38 +156,28 @@ class CVService:
             fallback = CVService.parse_text(text, filename)
 
             # Ưu tiên thông tin liên hệ được nhận diện bằng regex
-            # Kỹ năng từ Taxonomy được giữ lại; kỹ năng AI bổ sung nếu chưa có
-            skills_by_name = {
-                skill.name.casefold(): skill
-                for skill in fallback.skills
-            }
+            # Chỉ giữ kỹ năng được nhận diện trực tiếp từ nội dung CV
 
-            for skill in ai_result.skills:
-                canonical = normalize_skill(skill.name)
-
-                if canonical is None:
-                    continue
-
-                skills_by_name.setdefault(
-                    canonical.casefold(),
-                    CandidateSkill(
-                        name=canonical,
-                        category=category_of(canonical),
-                        level=skill.level,
-                    ),
-                )
+            skills = fallback.skills
 
             return ai_result.model_copy(update={
                 "full_name": fallback.full_name or ai_result.full_name,
                 "email": fallback.email or ai_result.email,
                 "phone": fallback.phone or ai_result.phone,
-                "skills": list(skills_by_name.values()),
+                "skills": skills,
                 "raw_summary": (
                     f"Đã đọc {len(text)} ký tự từ file {filename} "
                     "và trích xuất bằng Gemini."
                 ),
                 "is_mock": False,
-                "warnings": ai_result.warnings,
+                "warnings": [
+                    *ai_result.warnings,
+                    *[
+                        warning
+                        for warning in fallback.warnings
+                        if "Skill Taxonomy" in warning
+                    ],
+                ],
             })
 
         except LLMError as exc:

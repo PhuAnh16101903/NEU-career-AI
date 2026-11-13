@@ -1,10 +1,17 @@
+import json
+import logging
 import re
 import uuid
+logger = logging.getLogger(__name__)
 from typing import List
 
 from sqlalchemy.orm import Session
 
-from app.core.errors import ServiceError
+from pydantic import ValidationError
+
+from app.core.errors import LLMError, ServiceError
+from app.core.llm import gemini_service
+from app.core.prompts import render_prompt
 from app.models import InterviewSession
 from app.schemas.interview import (
     ChatMessageRequest,
@@ -60,6 +67,55 @@ def evaluate_star(answer: str) -> STAREvaluation:
     )
 
 
+def _parse_ai_evaluation(result: dict) -> tuple[STAREvaluation, str, bool]:
+    """Kiểm tra và chuyển JSON Gemini thành dữ liệu đánh giá hợp lệ."""
+    if not isinstance(result, dict):
+        raise LLMError("Gemini không trả về JSON object.")
+
+    raw_evaluation = result.get("current_evaluation")
+    reply = result.get("interviewer_reply")
+    is_finished = result.get("is_finished")
+
+    if not isinstance(raw_evaluation, dict):
+        raise LLMError("Thiếu current_evaluation hoặc dữ liệu không hợp lệ.")
+
+    if not isinstance(reply, str) or not reply.strip():
+        raise LLMError("interviewer_reply phải là chuỗi không rỗng.")
+
+    if not isinstance(is_finished, bool):
+        raise LLMError("is_finished phải là boolean.")
+
+    try:
+        evaluation = STAREvaluation.model_validate(raw_evaluation)
+    except (ValidationError, ValueError, TypeError) as exc:
+        raise LLMError(f"Điểm STAR từ Gemini không hợp lệ: {exc}") from exc
+
+    return evaluation, reply.strip(), is_finished
+
+
+async def _generate_ai_interview(
+    target_role: str,
+    question: str,
+    user_answer: str,
+    conversation_history: list,
+    turn_index: int,
+    max_turns: int,
+) -> tuple[STAREvaluation, str, bool]:
+    """Gọi Gemini để chấm STAR và sinh câu hỏi phỏng vấn tiếp theo."""
+
+    prompt = render_prompt(
+        "star_interview_agent",
+        target_role=target_role,
+        question=question,
+        user_answer=user_answer,
+        conversation_history=conversation_history,
+        turn_index=turn_index,
+        max_turns=max_turns,
+    )
+
+    result = await gemini_service.generate_json(prompt)
+    return _parse_ai_evaluation(result)
+
 class InterviewService:
     @staticmethod
     def start_session(db: Session, req: StartInterviewRequest) -> ChatMessageResponse:
@@ -100,41 +156,103 @@ class InterviewService:
             created_at=session.created_at,
         )
 
+
     @staticmethod
-    def handle_chat(db: Session, req: ChatMessageRequest) -> ChatMessageResponse:
-        """
-        TODO (nhóm AI): thay phần chọn câu hỏi bằng agent LLM (prompt `star_interview_agent`)
-        có sinh câu hỏi đào sâu dựa trên câu trả lời. Khung lưu phiên và API giữ nguyên.
-        """
+    async def handle_chat(db: Session, req: ChatMessageRequest) -> ChatMessageResponse:
         session = db.get(InterviewSession, req.session_id)
         if session is None:
             raise ServiceError(404, f"Không tìm thấy phiên phỏng vấn '{req.session_id}'")
         if session.is_finished:
             raise ServiceError(409, "Phiên phỏng vấn đã kết thúc, hãy bắt đầu phiên mới.")
 
-        evaluation = evaluate_star(req.user_answer)
-        history = [*session.history, {"role": "user", "content": req.user_answer}]
-        evaluations = [*session.evaluations, evaluation.model_dump()]
-
         turn = session.turn_index
-        summary = None
-        if turn <= len(FOLLOW_UP_QUESTIONS):
-            reply = f"Cảm ơn câu trả lời của bạn. Câu hỏi tiếp theo:\n{FOLLOW_UP_QUESTIONS[turn - 1]}"
-            session.turn_index = turn + 1
-            finished = False
-        else:
+        max_turns = len(FOLLOW_UP_QUESTIONS) + 1
+
+        history = list(session.history or [])
+        evaluations = list(session.evaluations or [])
+
+        # Lấy câu hỏi gần nhất của người phỏng vấn.
+        question = next(
+            (
+                item.get("content", "")
+                for item in reversed(history)
+                if item.get("role") == "assistant"
+            ),
+            "",
+        )
+
+        # Chuẩn bị lịch sử hội thoại để Gemini hiểu ngữ cảnh.
+        history_with_answer = [
+            *history,
+            {"role": "user", "content": req.user_answer},
+        ]
+        conversation_history = json.dumps(
+            history_with_answer,
+            ensure_ascii=False,
+            indent=2,
+        )
+
+        is_mock = False
+
+        try:
+            evaluation, ai_reply, _ai_finished = await _generate_ai_interview(
+                target_role=session.target_role,
+                question=question,
+                user_answer=req.user_answer,
+                conversation_history=conversation_history,
+                turn_index=turn,
+                max_turns=max_turns,
+            )
+        except LLMError as exc:
+            logger.warning(
+                "Interview Gemini thất bại, sử dụng đánh giá dự phòng: %s",
+                exc,
+            )
+            evaluation = evaluate_star(req.user_answer)
+            ai_reply = ""
+            is_mock = True
+
+        evaluations.append(evaluation.model_dump())
+
+        # Backend tự quyết định thời điểm kết thúc, không phụ thuộc Gemini.
+        finished = turn >= max_turns
+
+        if finished:
             reply = "Buổi phỏng vấn mô phỏng đã hoàn thành! Cảm ơn bạn đã tham gia."
-            finished = True
             session.is_finished = True
+
             all_scores = [
                 e[key]
                 for e in evaluations
-                for key in ("situation_score", "task_score", "action_score", "result_score")
+                for key in (
+                    "situation_score",
+                    "task_score",
+                    "action_score",
+                    "result_score",
+                )
             ]
-            summary = f"Điểm STAR trung bình qua {len(evaluations)} câu trả lời: {sum(all_scores) / len(all_scores):.1f}/10."
+            summary = (
+                f"Điểm STAR trung bình qua {len(evaluations)} câu trả lời: "
+                f"{sum(all_scores) / len(all_scores):.1f}/10."
+            )
+        else:
+            summary = None
 
-        history.append({"role": "assistant", "content": reply})
-        session.history = history
+            if is_mock:
+                reply = (
+                    "Cảm ơn câu trả lời của bạn. Câu hỏi tiếp theo:\n"
+                    f"{FOLLOW_UP_QUESTIONS[turn - 1]}"
+                )
+            else:
+                reply = ai_reply
+
+            session.turn_index = turn + 1
+
+        history_with_answer.append(
+            {"role": "assistant", "content": reply}
+        )
+
+        session.history = history_with_answer
         session.evaluations = evaluations
         db.commit()
 
@@ -145,6 +263,7 @@ class InterviewService:
             is_finished=finished,
             current_evaluation=evaluation,
             overall_summary=summary,
+            is_mock=is_mock,
         )
 
 

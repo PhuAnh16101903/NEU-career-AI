@@ -23,11 +23,19 @@ class ExperienceItem(BaseModel):
     description: Optional[str] = Field(None, examples=["Phân tích dữ liệu bằng SQL và Power BI"])
 
 
+class ProjectItem(BaseModel):
+    title: str = Field(..., examples=["NEU Career AI"])
+    role: Optional[str] = Field(None, examples=["Thành viên phát triển dự án"])
+    technologies: List[str] = Field(default_factory=list)
+    description: Optional[str] = None
+
+
 class CVExtractionResponse(BaseModel):
     full_name: Optional[str] = Field(None, examples=["Lê Thiên Phú"])
     email: Optional[str] = Field(None, examples=["phu@st.neu.edu.vn"])
     phone: Optional[str] = Field(None, examples=["0912345678"])
     education: List[EducationItem] = []
+    projects: List[ProjectItem] = Field(default_factory=list)
     skills: List[CandidateSkill] = []
     experiences: List[ExperienceItem] = []
     raw_summary: Optional[str] = Field(None, description="Tóm tắt ngắn về quá trình đọc file")

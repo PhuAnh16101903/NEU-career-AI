@@ -5,6 +5,7 @@ import CVTab from './components/CVTab'
 import InterviewTab from './components/InterviewTab'
 import MatchingTab from './components/MatchingTab'
 import { setAuthToken } from './services/api'
+import CareerAdvisorTab from './components/CareerAdvisorTab'
 
 const TABS = [
   { id: 'auth', label: 'Đăng nhập / Đăng ký' },
@@ -12,6 +13,7 @@ const TABS = [
   { id: 'matching', label: 'So khớp & Môn NEU' },
   { id: 'interview', label: 'Phỏng vấn STAR' },
   { id: 'courses', label: 'Học phần NEU' },
+  { id: 'career', label: 'Định hướng nghề nghiệp' },
 ]
 
 export default function App() {
@@ -57,6 +59,7 @@ export default function App() {
         {activeTab === 'matching' && <MatchingTab cvData={cvData} />}
         {activeTab === 'interview' && <InterviewTab />}
         {activeTab === 'courses' && <CoursesTab />}
+        {activeTab === 'career' && <CareerAdvisorTab cvData={cvData} />}
       </main>
     </div>
   )

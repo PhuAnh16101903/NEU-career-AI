@@ -31,8 +31,19 @@ class GeminiService:
             raise LLMNotConfiguredError("Chưa cấu hình GEMINI_API_KEY trong file .env")
         if self._client is None:
             from google import genai
+            from google.genai import types
 
-            self._client = genai.Client(api_key=self._api_key)
+            http_options = types.HttpOptions(
+                timeout=30_000,
+                retry_options=types.HttpRetryOptions(
+                    attempts=1,
+                ),
+            )
+
+            self._client = genai.Client(
+                api_key=self._api_key,
+                http_options=http_options,
+            )
         return self._client
 
     async def _generate(self, prompt: str, json_mode: bool) -> str:

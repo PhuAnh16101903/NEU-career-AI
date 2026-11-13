@@ -1,0 +1,278 @@
+/* ===== Global Design System ===== */
+
+:root {
+  font-family: Inter, Arial, sans-serif;
+  color: #1e293b;
+  background: #f5f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+  --primary: #123b72;
+  --primary-hover: #0d2e5b;
+  --accent: #2563eb;
+  --background: #f5f7fb;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #dc2626;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 10%);
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+h1,
+h2,
+h3 {
+  color: var(--primary);
+}
+
+p {
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ===== Career Advisor ===== */
+
+.career-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.career-hero {
+  padding: 30px;
+  margin-bottom: 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #123b72, #2563eb);
+  color: white;
+}
+
+.career-hero h2 {
+  margin-top: 0;
+  color: white;
+  font-size: 28px;
+}
+
+.career-hero p {
+  max-width: 650px;
+  margin-bottom: 0;
+  color: #e0eaff;
+}
+
+.career-card {
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 3px 12px rgb(15 23 42 / 4%);
+}
+
+.career-card h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+.career-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.career-field {
+  min-width: 0;
+}
+
+.career-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.career-field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.career-submit {
+  margin-top: 20px;
+  padding: 13px 24px;
+  border: none;
+  border-radius: 9px;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.career-submit:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.career-result {
+  margin-top: 28px;
+}
+
+.career-result-title {
+  margin-bottom: 18px;
+}
+
+.career-role {
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+}
+
+.career-role h4 {
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+.career-role p {
+  color: var(--muted);
+}
+
+.career-progress {
+  height: 9px;
+  margin: 12px 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e2e8f0;
+}
+
+.career-progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.career-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.career-tag {
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 13px;
+}
+
+.career-tag.missing {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.career-roadmap {
+  padding-left: 22px;
+}
+
+.career-roadmap li {
+  margin-bottom: 12px;
+  padding-left: 5px;
+  line-height: 1.6;
+}
+
+.career-notice {
+  padding: 13px 16px;
+  border-radius: 9px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 13px;
+}
+
+.career-error {
+  margin-top: 15px;
+  color: var(--danger);
+}
+
+@media (max-width: 640px) {
+  .career-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .career-field.full-width {
+    grid-column: auto;
+  }
+
+  .career-hero {
+    padding: 22px;
+  }
+
+  .career-hero h2 {
+    font-size: 23px;
+  }
+
+  .career-card {
+    padding: 18px;
+  }
+
+  .career-submit {
+    width: 100%;
+  }
+}

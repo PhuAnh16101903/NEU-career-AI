@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from docx import Document
+from unittest.mock import AsyncMock
 
 
 def make_docx(lines):
@@ -96,3 +97,282 @@ def test_upload_rejects_oversized_file(client, monkeypatch):
     monkeypatch.setattr(settings, "MAX_UPLOAD_MB", 0)
     res = client.post("/api/cv/upload", files={"file": ("cv.pdf", b"x", "application/pdf")})
     assert res.status_code == 413
+
+
+def test_upload_uses_gemini_when_available(client, monkeypatch):
+    from app.services.cv_service import gemini_service
+
+    fake_ai_result = {
+        "full_name": "Nguyen Van A",
+        "email": "ai@example.com",
+        "phone": None,
+        "education": [
+            {
+                "institution": "Dai hoc Kinh te Quoc dan",
+                "major": "Cong nghe thong tin",
+                "gpa": 3.5,
+                "graduation_year": 2027,
+            }
+        ],
+        "skills": [
+            {
+                "name": "Python",
+                "category": "Kỹ năng chuyên môn",
+                "level": "Intermediate",
+            }
+        ],
+        "experiences": [
+            {
+                "title": "Thực tập sinh",
+                "company": "ABC Company",
+                "duration": "6 tháng",
+                "description": "Phát triển ứng dụng Python",
+            }
+        ],
+    }
+
+    mock_generate_json = AsyncMock(return_value=fake_ai_result)
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    content = make_docx([
+        "Nguyen Van A",
+        "Email: a@example.com",
+        "Skills: Python",
+    ])
+
+    res = client.post(
+        "/api/cv/upload",
+        files={"file": ("cv.docx", content, DOCX_MIME)},
+    )
+
+    assert res.status_code == 200, res.text
+
+    body = res.json()
+
+    assert body["is_mock"] is False
+    assert body["education"][0]["institution"] == "Dai hoc Kinh te Quoc dan"
+    assert body["experiences"][0]["company"] == "ABC Company"
+
+    # Email regex được ưu tiên hơn email do Gemini trả về
+    assert body["email"] == "a@example.com"
+
+    mock_generate_json.assert_awaited_once()
+
+
+def test_upload_falls_back_when_gemini_fails(client, monkeypatch):
+    from app.core.errors import LLMError
+    from app.services.cv_service import gemini_service
+
+    mock_generate_json = AsyncMock(
+        side_effect=LLMError("Gemini API unavailable")
+    )
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    content = make_docx([
+        "Tran Van Binh",
+        "Email: binh@example.com",
+        "Skills: Python, Tableau",
+    ])
+
+    res = client.post(
+        "/api/cv/upload",
+        files={"file": ("cv.docx", content, DOCX_MIME)},
+    )
+
+    assert res.status_code == 200, res.text
+
+    body = res.json()
+
+    assert body["full_name"] == "Tran Van Binh"
+    assert body["email"] == "binh@example.com"
+    assert {skill["name"] for skill in body["skills"]} == {
+        "Python",
+        "Tableau",
+    }
+    assert body["is_mock"] is True
+    assert any("Gemini" in warning for warning in body["warnings"])
+
+    mock_generate_json.assert_awaited_once()
+
+def test_upload_prefers_name_from_cv_over_gemini(client, monkeypatch):
+    from app.services.cv_service import gemini_service
+
+    fake_ai_result = {
+        "full_name": "Nguyen Van Sai",
+        "email": None,
+        "phone": None,
+        "education": [],
+        "skills": [],
+        "experiences": [],
+    }
+
+    mock_generate_json = AsyncMock(return_value=fake_ai_result)
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    content = make_docx([
+        "Tran Van Binh",
+        "Email: binh@example.com",
+        "Skills: Python",
+    ])
+
+    res = client.post(
+        "/api/cv/upload",
+        files={"file": ("cv.docx", content, DOCX_MIME)},
+    )
+
+    assert res.status_code == 200, res.text
+
+    body = res.json()
+
+    assert body["full_name"] == "Tran Van Binh"
+    assert body["is_mock"] is False
+
+    mock_generate_json.assert_awaited_once()
+
+def test_upload_does_not_add_skills_not_found_in_cv(client, monkeypatch):
+    from app.services.cv_service import gemini_service
+
+    fake_ai_result = {
+        "full_name": "Tran Van Binh",
+        "email": None,
+        "phone": None,
+        "education": [],
+        "skills": [
+            {"name": "Python", "category": "programming"},
+            {"name": "Java", "category": "programming"},
+        ],
+        "experiences": [],
+    }
+
+    mock_generate_json = AsyncMock(return_value=fake_ai_result)
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    content = make_docx([
+        "Tran Van Binh",
+        "Email: binh@example.com",
+        "Skills: Python",
+    ])
+
+    res = client.post(
+        "/api/cv/upload",
+        files={"file": ("cv.docx", content, DOCX_MIME)},
+    )
+
+    assert res.status_code == 200, res.text
+
+    body = res.json()
+
+    skill_names = {skill["name"] for skill in body["skills"]}
+
+    assert "Python" in skill_names
+    assert "Java" not in skill_names
+    assert body["is_mock"] is False
+
+    mock_generate_json.assert_awaited_once()
+
+def test_upload_falls_back_when_gemini_returns_invalid_structure(
+    client, monkeypatch
+):
+    from app.services.cv_service import gemini_service
+
+    fake_ai_result = {
+        "full_name": "Wrong AI Name",
+        "email": None,
+        "phone": None,
+        "education": [],
+        "skills": "Python, Java",  # Sai: phải là danh sách
+        "experiences": [],
+    }
+
+    mock_generate_json = AsyncMock(return_value=fake_ai_result)
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    content = make_docx([
+        "Tran Van Binh",
+        "Email: binh@example.com",
+        "Skills: Python, Tableau",
+    ])
+
+    res = client.post(
+        "/api/cv/upload",
+        files={"file": ("cv.docx", content, DOCX_MIME)},
+    )
+
+    assert res.status_code == 200, res.text
+
+    body = res.json()
+
+    assert body["full_name"] == "Tran Van Binh"
+    assert body["email"] == "binh@example.com"
+    assert {skill["name"] for skill in body["skills"]} == {
+        "Python",
+        "Tableau",
+    }
+    assert body["is_mock"] is True
+    assert any("Gemini" in warning for warning in body["warnings"])
+
+    mock_generate_json.assert_awaited_once()
+
+def test_upload_preserves_skill_taxonomy_warning_when_no_skills_found(
+    client, monkeypatch
+):
+    from app.services.cv_service import gemini_service
+
+    fake_ai_result = {
+        "full_name": "Nguyen Van C",
+        "email": None,
+        "phone": None,
+        "education": [],
+        "skills": [],
+        "experiences": [],
+    }
+
+    mock_generate_json = AsyncMock(return_value=fake_ai_result)
+    monkeypatch.setattr(
+        gemini_service,
+        "generate_json",
+        mock_generate_json,
+    )
+
+    content = make_docx([
+        "Nguyen Van C",
+        "Sinh vien nam hai",
+        "Dai hoc Kinh te Quoc dan",
+    ])
+
+    res = client.post(
+        "/api/cv/upload",
+        files={"file": ("cv.docx", content, DOCX_MIME)},
+    )
+
+    assert res.status_code == 200, res.text
+
+    body = res.json()
+
+    assert body["is_mock"] is False
+    assert any(
+        "Skill Taxonomy" in warning
+        for warning in body["warnings"]
+    )
+
+    mock_generate_json.assert_awaited_once()

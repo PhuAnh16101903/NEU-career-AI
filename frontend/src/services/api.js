@@ -86,6 +86,12 @@ export const careerApi = {
     return data
   },
 
+    // 6. Tư vấn định hướng nghề nghiệp
+  adviseCareer: async (payload) => {
+    const { data } = await apiClient.post('/career/advisor', payload)
+    return data
+  },
+
   // --- C. Chức năng Doanh nghiệp & Tuyển dụng (enterprise / student) ---
   getEnterpriseJobs: async () => {
     const { data } = await apiClient.get('/enterprise/jobs')

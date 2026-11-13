@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.api import admin, analysis, auth, curriculum, cv, enterprise, interview
+from app.api import admin, analysis, auth, career, curriculum, cv, enterprise, interview
 from app.core.config import settings
 from app.core.database import get_db, init_db
 from app.core.errors import LLMError, ServiceError
@@ -55,6 +55,7 @@ app.include_router(interview.router, prefix=settings.API_V1_STR)
 app.include_router(curriculum.router, prefix=settings.API_V1_STR)
 app.include_router(enterprise.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
+app.include_router(career.router, prefix=settings.API_V1_STR)
 
 
 @app.get("/", tags=["Hệ thống"])

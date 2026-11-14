@@ -1,0 +1,589 @@
+/* Draw the underline outside the clipped language-swap labels. */
+.u219.neu-prompt-only .public-header nav a:not(.mobile-menu-cta) {
+  text-decoration: none;
+}
+.u219.neu-prompt-only .public-header nav a:not(.mobile-menu-cta)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--neu-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  pointer-events: none;
+}
+.u219.neu-prompt-only
+  .public-header
+  nav
+  a:is([aria-current="page"], :hover, :focus-visible)::after {
+  transform: scaleX(1);
+}
+.u219 .app-shell .topbar {
+  display: flex;
+  gap: 16px;
+}
+.u219 .app-shell .topbar > span:first-child {
+  min-width: 0;
+}
+.u219 .app-shell .workspace-preferences {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.u219 .app-shell .workspace-preferences > .language-switch {
+  order: 0;
+}
+.u219 .app-shell .workspace-preferences :is(.language-toggle, .u219-tg) {
+  margin: 0;
+  min-height: 44px;
+}
+.u219 .app-shell .topbar-label {
+  display: none;
+}
+
+/* Translucent authentication surfaces with a solid, legible fallback. */
+.u219 .standalone-auth.auth-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  --cursor-x: 0px;
+  --cursor-y: 0px;
+  background: #edf5fb;
+}
+.u219 .auth-glass > :not(.auth-glass-scene) {
+  position: relative;
+  z-index: 1;
+}
+.u219 .auth-glass .auth-glass-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.u219 .auth-glass-scene i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+.u219 .auth-glass-scene i:nth-child(1) {
+  width: 520px;
+  height: 520px;
+  right: -90px;
+  top: 10%;
+  background: #b3d7ec;
+  box-shadow:
+    inset -30px -30px 80px #82b3d0,
+    inset 25px 20px 60px #e6f7ff;
+}
+.u219 .auth-glass-scene i:nth-child(2) {
+  width: 240px;
+  height: 240px;
+  left: 34%;
+  bottom: -75px;
+  background: #c41212;
+  opacity: 0.16;
+}
+.u219 .auth-glass-scene i:nth-child(3) {
+  width: 170px;
+  height: 170px;
+  left: -80px;
+  top: 25%;
+  border: 26px solid #a6c9e2;
+}
+.u219.neu-prompt-only .auth-glass-scene {
+  transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+.u219 .standalone-auth.auth-glass .auth-form {
+  border-radius: 24px;
+  border: 1px solid #fff;
+  background: #f5f9fd;
+  box-shadow:
+    0 24px 60px -30px #072d5950,
+    inset 0 1px 0 #fff;
+}
+.u219 .standalone-auth.auth-glass .auth-header {
+  background: transparent;
+  border-bottom: 0;
+}
+.u219 .auth-glass .auth-header .language-switch {
+  margin-left: auto;
+}
+.u219 .auth-glass .auth-header {
+  justify-content: flex-start;
+  gap: 16px;
+}
+.u219 .auth-glass .auth-header .language-toggle {
+  margin-left: 0;
+}
+.u219 .auth-glass .auth-header .back-home {
+  margin-left: 12px;
+}
+.u219[data-theme="dark"] .standalone-auth.auth-glass {
+  background: #091320;
+}
+.u219[data-theme="dark"] .auth-glass-scene i:nth-child(1) {
+  background: #234b70;
+  box-shadow:
+    inset -30px -30px 80px #10263f,
+    inset 25px 20px 60px #346589;
+}
+.u219[data-theme="dark"] .auth-glass-scene i:nth-child(2) {
+  opacity: 0.25;
+}
+.u219[data-theme="dark"] .auth-glass-scene i:nth-child(3) {
+  border-color: #23435e;
+}
+.u219[data-theme="dark"] .standalone-auth.auth-glass .auth-form {
+  background: #14263a;
+  border-color: #516b8166;
+  box-shadow:
+    0 24px 60px -25px #0009,
+    inset 0 1px 0 #ffffff16;
+}
+@supports (backdrop-filter: blur(20px)) {
+  .u219 .standalone-auth.auth-glass .auth-form {
+    background: rgba(255, 255, 255, 0.67);
+    backdrop-filter: blur(24px) saturate(125%);
+    -webkit-backdrop-filter: blur(24px) saturate(125%);
+  }
+  .u219[data-theme="dark"] .standalone-auth.auth-glass .auth-form {
+    background: rgba(18, 32, 50, 0.8);
+  }
+}
+/* Shared geometry and depth echo the navigation rail across every actor. */
+.u219 .app-shell .workspace {
+  background: var(--ux-page);
+}
+.u219 .app-shell :is(.panel, .course-card, .candidate) {
+  border-radius: 22px;
+  border-color: var(--ux-line);
+  box-shadow:
+    0 10px 28px -22px var(--ux-shadow-strong),
+    inset 0 1px 0 var(--ux-line);
+}
+.u219 .app-shell :is(input, textarea, select) {
+  border-radius: 12px;
+  background: var(--ux-surface-2);
+  color: var(--ux-ink);
+}
+.u219 .app-shell .button {
+  border-radius: 14px;
+  min-height: 44px;
+}
+.u219 .app-shell .panel-heading {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ux-line);
+}
+.u219 .app-shell .stat {
+  position: relative;
+  overflow: hidden;
+}
+.u219 .app-shell .stat strong {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+.u219 .app-shell .table-wrap {
+  border-radius: 14px;
+  border: 1px solid var(--ux-line);
+}
+.u219 .app-shell thead {
+  background: var(--ux-surface-2);
+}
+.u219 .app-shell tbody tr:hover {
+  background: var(--ux-surface-2);
+}
+@media (hover: hover) and (pointer: fine) {
+  .u219.neu-prompt-only .app-shell :is(.course-card, .stat) {
+    transition:
+      transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.4s !important;
+    transform-origin: 50% 100%;
+  }
+  .u219.neu-prompt-only .app-shell :is(.course-card, .stat):hover {
+    transform: perspective(900px) translateY(-4px) rotateX(2deg);
+    box-shadow: 0 18px 32px -22px var(--ux-shadow-strong);
+  }
+  .u219.neu-prompt-only .app-shell :is(.course-card, .stat):focus-within {
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .u219 .auth-glass .auth-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .u219 .auth-glass .auth-header .back-home {
+    margin-left: 0;
+  }
+  .u219 .app-shell .topbar {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .u219 .app-shell .workspace-preferences {
+    gap: 6px;
+  }
+  .u219 .auth-glass-scene i:nth-child(1) {
+    right: -300px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .u219.neu-prompt-only .auth-glass-scene,
+  .u219.neu-prompt-only .app-shell :is(.course-card, .stat),
+  .u219.neu-prompt-only .public-header nav a::after {
+    transition: none !important;
+  }
+  .u219.neu-prompt-only .auth-glass-scene,
+  .u219.neu-prompt-only .app-shell :is(.course-card, .stat):hover {
+    transform: none;
+  }
+}
+/* Main work surfaces share the navigation rail's rhythm and geometry. */
+.u219 .app-shell .workspace > main {
+  max-width: 1440px;
+  padding-top: 24px;
+}
+.u219 .app-shell .page-head.has-art {
+  min-height: 132px;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  gap: 24px;
+  border-bottom: 0;
+  margin-bottom: 20px;
+  padding-bottom: 0;
+}
+.u219 .app-shell .page-head h1 {
+  font-size: clamp(26px, 2.3vw, 34px);
+  letter-spacing: -0.035em;
+}
+.u219 .app-shell .workspace-art {
+  transform: scale(0.82);
+  transform-origin: right center;
+}
+.u219 .app-shell :is(.panel, .course-card) {
+  padding: 28px;
+  border-radius: 24px;
+  background: var(--ux-surface);
+  box-shadow: 0 12px 36px -28px var(--ux-shadow-strong);
+}
+.u219 .app-shell .panel > .panel-heading {
+  padding: 18px 20px;
+  margin: -8px -8px 24px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--ux-surface-2);
+}
+.u219 .app-shell .panel-heading h2,
+.u219 .app-shell .panel > h2 {
+  font-size: 20px;
+  line-height: 1.4;
+}
+.u219 .app-shell .panel > h2 {
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--ux-line);
+}
+.u219 .app-shell .panel label {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+.u219 .app-shell .panel :is(input:not([type="file"]), select, textarea) {
+  padding: 13px 15px;
+  margin-top: 8px;
+  border: 1px solid var(--ux-line-2);
+  background: var(--ux-page);
+  font-size: 14px;
+  font-weight: 400;
+  box-shadow: inset 0 1px 2px var(--ux-line);
+}
+.u219 .app-shell .panel :is(input, select, textarea):focus {
+  outline: 2px solid var(--ux-accent);
+  outline-offset: 2px;
+}
+.u219 .app-shell .cv-workbench {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 24px;
+}
+.u219 .app-shell .dropzone {
+  min-height: 245px;
+  border-radius: 20px;
+  border: 1px dashed var(--ux-accent);
+  background: var(--ux-surface-2);
+  gap: 12px;
+}
+.u219 .app-shell .dropzone .upload-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--ux-surface);
+  color: var(--ux-accent);
+  box-shadow: 0 8px 18px -12px var(--ux-shadow-strong);
+}
+.u219 .app-shell .dropzone strong {
+  font-size: 18px;
+}
+.u219 .app-shell .results-panel .empty {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 24px;
+}
+.u219 .app-shell .empty h3 {
+  max-width: 30ch;
+  line-height: 1.5;
+}
+.u219 .app-shell .steps {
+  padding: 8px;
+  border-radius: 20px;
+  background: var(--ux-surface);
+  border: 1px solid var(--ux-line);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.u219 .app-shell .steps li {
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 14px;
+}
+.u219 .app-shell .steps li.current {
+  background: var(--ux-accent-soft);
+}
+.u219 .app-shell .steps li.current > span {
+  background: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+.u219 .app-shell .steps li small {
+  display: block;
+  margin-top: 5px;
+  color: var(--ux-ink-2);
+}
+.u219 .app-shell .guide-panel {
+  background: var(--ux-surface);
+}
+.u219 .app-shell .candidate {
+  padding: 20px;
+  margin-top: 16px;
+  background: var(--ux-surface-2);
+}
+.u219 .app-shell .stat {
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+.u219 .app-shell .stat strong {
+  font-size: 36px;
+  line-height: 1;
+  color: var(--ux-accent);
+}
+.u219 .app-shell .table-wrap th,
+.u219 .app-shell .table-wrap td {
+  padding: 16px;
+}
+.u219 .app-shell .course-card h3 {
+  line-height: 1.5;
+  margin: 12px 0;
+}
+.u219 .app-shell .tag {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  .u219 .app-shell .cv-workbench {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .u219 .app-shell .page-head.has-art {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+  .u219 .app-shell :is(.panel, .course-card) {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .u219 .app-shell .steps li {
+    padding: 12px;
+  }
+  .u219 .app-shell .panel > .panel-heading {
+    margin: 0 0 20px;
+    padding: 14px;
+  }
+  .u219 .app-shell .results-panel .empty {
+    min-height: 200px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+}
+/* Reference-inspired frosted glass: stationary backdrop, thin rim, quiet depth. */
+.u219.neu-prompt-only .auth-frosted .auth-glass-scene {
+  transform: none;
+  transition: none !important;
+  animation: none !important;
+}
+.u219 .auth-frosted .auth-glass-scene i:nth-child(1) {
+  width: 390px;
+  height: 390px;
+  right: 8%;
+  top: 32%;
+  border: 45px solid #88adc7;
+  background: transparent;
+  box-shadow:
+    inset 8px 10px 20px #fff9,
+    10px 15px 30px #072d5926;
+  transform: rotate(-25deg) scaleY(0.65);
+}
+.u219 .auth-frosted .auth-glass-scene i:nth-child(2) {
+  width: 110px;
+  height: 110px;
+  right: 30%;
+  left: auto;
+  top: 16%;
+  bottom: auto;
+  background: #bfd6e5;
+  opacity: 0.6;
+  box-shadow: inset 8px 8px 18px #fff8;
+}
+.u219 .auth-frosted .auth-glass-scene i:nth-child(3) {
+  display: none;
+}
+.u219 .standalone-auth.auth-frosted .frosted-panel {
+  border-radius: 24px;
+  border: 1px solid #ffffffb3;
+  background: #f1f6fa;
+  box-shadow:
+    inset 0 1px 0 #fffc,
+    0 22px 60px -32px #072d5966;
+}
+.u219 .frosted-panel .glass-content > p {
+  margin-bottom: 24px;
+}
+.u219[data-theme="dark"] .standalone-auth.auth-frosted {
+  background: #141a21;
+}
+.u219[data-theme="dark"] .auth-frosted .auth-glass-scene i:nth-child(1) {
+  border-color: #657d8c;
+  box-shadow:
+    inset 8px 10px 20px #d7edf280,
+    10px 15px 30px #0005;
+}
+.u219[data-theme="dark"] .auth-frosted .auth-glass-scene i:nth-child(2) {
+  background: #8faab9;
+  opacity: 0.4;
+}
+.u219[data-theme="dark"] .standalone-auth.auth-frosted .frosted-panel {
+  background: #242c34;
+  border-color: #ffffff38;
+  box-shadow:
+    inset 0 1px 0 #ffffff24,
+    0 22px 60px -28px #0009;
+}
+@supports (backdrop-filter: blur(20px)) {
+  .u219 .standalone-auth.auth-frosted .frosted-panel {
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(22px) saturate(115%);
+    -webkit-backdrop-filter: blur(22px) saturate(115%);
+  }
+  .u219[data-theme="dark"] .standalone-auth.auth-frosted .frosted-panel {
+    background: rgba(48, 53, 59, 0.43);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .u219.neu-prompt-only .auth-frosted .frosted-panel {
+    transition:
+      box-shadow 0.3s ease,
+      border-color 0.3s ease !important;
+  }
+  .u219 .auth-frosted .frosted-panel:hover {
+    border-color: #ffffffa6;
+    box-shadow:
+      inset 0 1px 0 #ffffff70,
+      0 24px 64px -30px #072d5960;
+  }
+}
+.u219 .auth-frosted .auth-header {
+  z-index: 3;
+}
+.u219 .app-shell {
+  --radar-current: var(--neu-red);
+  --radar-required: var(--ux-accent-2);
+}
+.u219 .app-shell .radar .radar-current {
+  stroke: var(--radar-current);
+  fill: color-mix(in srgb, var(--radar-current) 20%, transparent);
+}
+.u219 .app-shell .radar .radar-required {
+  stroke: var(--radar-required);
+  fill: color-mix(in srgb, var(--radar-required) 10%, transparent);
+}
+.u219 .app-shell .chart-legend > span:is(.legend-current, .legend-required) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ux-ink-2);
+}
+.u219 .app-shell .chart-legend i {
+  display: inline-block;
+  width: 24px;
+  height: 0;
+  border-top: 3px solid var(--radar-current);
+}
+.u219 .app-shell .chart-legend .legend-required i {
+  border-top: 2px dashed var(--radar-required);
+}
+.u219 .app-shell .star-row .star-letter {
+  color: #072d59;
+  background: #ffc101;
+  font-weight: 750;
+  box-shadow: inset 0 0 0 1px #ffffff18;
+}
+@media (max-width: 760px) {
+  .u219 .auth-frosted .auth-glass-scene i:nth-child(1) {
+    right: -120px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .u219.neu-prompt-only .auth-frosted .frosted-panel {
+    transition: none !important;
+  }
+}
+
+/* Keep the search icon clear of text despite shared panel input styles. */
+.u219 .app-shell .panel.filter-bar > label { width:100%;max-width:none;min-width:0;margin:0; }
+.u219 .app-shell .panel.filter-bar :is(input,select) { margin:0;min-height:48px;width:100%; }
+.u219 .app-shell .panel.filter-bar .search-field input { padding-left:46px;padding-right:16px; }
+.u219 .app-shell .panel.filter-bar .search-field > svg { top:50%;left:16px;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;color:var(--ux-ink-2); }
+/* A small lift and icon movement communicate the upload target. */
+.u219.neu-prompt-only .app-shell .dropzone,
+.u219.neu-prompt-only .app-shell .dropzone .upload-icon {
+ transition:transform .22s cubic-bezier(.2,.8,.2,1),background-color .22s ease,box-shadow .22s ease,border-color .22s ease!important;
+}
+.u219 .app-shell .dropzone:focus-visible:not(:disabled),
+.u219 .app-shell .dropzone.dragging:not(:disabled) {
+ outline:2px solid var(--ux-accent);outline-offset:3px;background:var(--ux-surface-3);
+}
+@media(hover:hover) and (pointer:fine) {
+ .u219.neu-prompt-only .app-shell .dropzone:hover:not(:disabled) { transform:translateY(-2px);background:var(--ux-surface-3);border-color:var(--ux-accent);box-shadow:0 12px 24px -18px var(--ux-shadow-strong); }
+ .u219.neu-prompt-only .app-shell .dropzone:hover:not(:disabled) .upload-icon { transform:translateY(-3px);box-shadow:0 10px 20px -12px var(--ux-shadow-strong); }
+ .u219.neu-prompt-only .app-shell .dropzone:active:not(:disabled) { transform:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .u219.neu-prompt-only .app-shell .dropzone,
+ .u219.neu-prompt-only .app-shell .dropzone .upload-icon { transition:none!important; }
+ .u219.neu-prompt-only .app-shell .dropzone:hover:not(:disabled),
+ .u219.neu-prompt-only .app-shell .dropzone:hover:not(:disabled) .upload-icon { transform:none; }
+}

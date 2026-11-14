@@ -1,0 +1,144 @@
+/* Melli motion whitelist. Earlier animation styles cannot run inside this app. */
+.u219.neu-prompt-only,
+.u219.neu-prompt-only *,
+.u219.neu-prompt-only *::before,
+.u219.neu-prompt-only *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+.u219.neu-prompt-only .u216 [data-s],
+.u219.neu-prompt-only .u216 .u216-w > span {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.u219.neu-prompt-only .u216 .u216-body {
+  row-gap: 0;
+}
+.u219.neu-prompt-only .u216 .u216-h {
+  grid-row: 1;
+}
+.u219.neu-prompt-only .u216 .u216-p {
+  grid-row: 2;
+}
+.u219.neu-prompt-only .u216 .u216-ct {
+  grid-row: 3;
+}
+.u219.neu-prompt-only .u216 .u216-sc {
+  grid-row: 1/4;
+}
+.u219.neu-prompt-only .u216 .u216-ln {
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+.u219.neu-prompt-only .u216 .neu-rise-line {
+  display: inline-block;
+}
+.u219.neu-prompt-only .motion-loaded .neu-rise-line {
+  animation: neu-melli-rise 1.1s cubic-bezier(0.2, 0.8, 0.15, 1)
+    var(--line-delay, 0s) both !important;
+}
+.u219.neu-prompt-only .motion-loaded .u216-p,
+.u219.neu-prompt-only .motion-loaded .u216-ct {
+  animation: neu-melli-fade 1s 0.7s ease both !important;
+}
+.u219.neu-prompt-only .motion-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 1s ease,
+    transform 1.1s cubic-bezier(0.2, 0.8, 0.15, 1) !important;
+  transition-delay: var(--reveal-delay, 0s) !important;
+}
+.u219.neu-prompt-only .motion-in .motion-reveal {
+  opacity: 1;
+  transform: none;
+}
+.u219.neu-prompt-only .motion-reveal:focus-within {
+  opacity: 1;
+  transform: none;
+  transition: none !important;
+}
+.u219.neu-prompt-only .public-header nav button:after {
+  height: 1.5px;
+  transform-origin: left;
+  transition: transform 0.35s ease !important;
+}
+.u219.neu-prompt-only .landing-button svg {
+  transition: transform 0.35s ease !important;
+}
+.u219.neu-prompt-only .spinner {
+  animation: neu-melli-spin 1.6s linear infinite !important;
+}
+.u219.neu-prompt-only .neu-route li > span {
+  box-shadow: none;
+}
+.u219.neu-prompt-only .u216-sc {
+  overflow: visible;
+}
+@keyframes neu-melli-rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes neu-melli-fade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes neu-melli-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .u219.neu-prompt-only .landing-button:hover svg {
+    transform: translateX(4px);
+  }
+  .u219.neu-prompt-only .button:active,
+  .u219.neu-prompt-only .landing-button:active {
+    transform: none;
+  }
+}
+.u219.neu-prompt-only .motion-paused .neu-rise-line,
+.u219.neu-prompt-only .motion-paused .u216-p,
+.u219.neu-prompt-only .motion-paused .u216-ct {
+  animation: none !important;
+  opacity: 1;
+  transform: none;
+}
+.u219.neu-prompt-only .motion-paused .motion-reveal {
+  opacity: 1;
+  transform: none;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .u219.neu-prompt-only .motion-loaded .neu-rise-line,
+  .u219.neu-prompt-only .motion-loaded .u216-p,
+  .u219.neu-prompt-only .motion-loaded .u216-ct,
+  .u219.neu-prompt-only .spinner {
+    animation: none !important;
+    transform: none;
+    opacity: 1;
+  }
+  .u219.neu-prompt-only .motion-reveal,
+  .u219.neu-prompt-only .public-header nav button:after,
+  .u219.neu-prompt-only .landing-button svg {
+    transition: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .u219.neu-prompt-only [data-motion-speed],
+  .u219.neu-prompt-only .neu-route {
+    transform: none !important;
+  }
+}

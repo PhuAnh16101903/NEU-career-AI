@@ -1,0 +1,1049 @@
+/* Theme and application refinements are scoped to the #219 component. */
+.u219 {
+  --brand-primary: #eaf2f9;
+  --brand-secondary: #15334f;
+  --brand-accent: #1461a4;
+  --neu-blue: #1461a4;
+  --neu-red: #c41212;
+  --neu-gold: #f4b516;
+  --ux-page: #f5f7fa;
+  --ux-surface: #fff;
+  --ux-surface-2: var(--brand-primary, #dbf2fc);
+  --ux-surface-3: #e6edf3;
+  --ux-ink: var(--brand-secondary, #072d59);
+  --ux-ink-2: #344f68;
+  --ux-ink-3: #405b73;
+  --ux-line: #cddde8;
+  --ux-line-2: #93acc0;
+  --ux-accent: var(--brand-accent, #fd6e88);
+  --ux-accent-2: #1461a4;
+  --ux-accent-soft: #eaf2f9;
+  --ux-accent-ink: #ffffff;
+  --ux-mint: #126548;
+  --ux-success-bg: #e5f4ec;
+  --ux-warn: #82531b;
+  --ux-warn-bg: #fff1d9;
+  --ux-danger: #a52c42;
+  --ux-danger-bg: #ffedf0;
+  --ux-glass: var(--ux-surface);
+  --ux-glass-line: var(--ux-line);
+  --ux-shadow: #072d5914;
+  --ux-shadow-strong: #072d5933;
+  --ux-grad: var(--ux-accent);
+  --ux-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ux-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --ink: var(--ux-ink);
+  --muted: var(--ux-ink-2);
+  --line: var(--ux-line);
+  --radius: 12px;
+  --theme-spin: 0deg;
+  --sun-opacity: 1;
+  --moon-opacity: 0;
+  color-scheme: light;
+  color: var(--ux-ink);
+  background: var(--ux-page);
+  min-height: 100dvh;
+}
+.u219[data-theme="dark"] {
+  --neu-red: #c41212;
+  --ux-page: #091725;
+  --ux-surface: #112538;
+  --ux-surface-2: #19354b;
+  --ux-surface-3: #28465c;
+  --ux-ink: #dbf2fc;
+  --ux-ink-2: #bbcedd;
+  --ux-ink-3: #a3bbce;
+  --ux-line: #385469;
+  --ux-line-2: #718fa5;
+  --ux-accent: #8fc8f3;
+  --ux-accent-2: #b4dff3;
+  --ux-accent-soft: #19354b;
+  --ux-accent-ink: #072d59;
+  --ux-mint: #8de0b7;
+  --ux-success-bg: #133b30;
+  --ux-warn: #ffcf8a;
+  --ux-warn-bg: #44341f;
+  --ux-danger: #ff9db0;
+  --ux-danger-bg: #432332;
+  --ux-shadow: #0003;
+  --ux-shadow-strong: #0008;
+  --theme-spin: -90deg;
+  --sun-opacity: 0;
+  --moon-opacity: 1;
+  color-scheme: dark;
+}
+.u219 .u219-tg {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ux-surface);
+  box-shadow: inset 0 0 0 1px var(--ux-line);
+  color: var(--ux-ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.u219 .u219-tg svg {
+  width: 18px;
+  height: 18px;
+  transform: rotate(var(--theme-spin));
+  transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.u219 .u219-sun {
+  opacity: var(--sun-opacity);
+}
+.u219 .u219-moon {
+  opacity: var(--moon-opacity);
+}
+.u219 .u219-tg:focus-visible {
+  outline: 2px solid var(--ux-accent);
+  outline-offset: 2px;
+}
+.u219.u219-reveal {
+  position: fixed;
+  inset: 0;
+  min-height: 0;
+  z-index: 10000;
+  background: transparent;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+.u219 .u219-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.u219.u219-snapshot {
+  position: absolute;
+  margin: 0;
+  pointer-events: none;
+}
+.u219.u219-snapshot *,
+.u219.u219-snapshot *:before,
+.u219.u219-snapshot *:after {
+  animation-play-state: paused !important;
+}
+/* Surfaces: no glass, gradients, colored borders or secondary marketing cards. */
+.u219 :is(.public-page, .standalone-auth) {
+  --seal: var(--ux-surface-2);
+  --navy: var(--ux-ink);
+  --pink: var(--ux-accent);
+  background: var(--ux-page);
+  color: var(--ux-ink);
+}
+.u219
+  :is(
+    .public-header,
+    .auth-header,
+    .sidebar,
+    .topbar,
+    .panel,
+    .auth-form,
+    .landing-footer,
+    .command-dialog,
+    .course-sheet,
+    .command-trigger,
+    .filter-bar
+  ) {
+  background: var(--ux-surface);
+  color: var(--ux-ink);
+  border-color: var(--ux-line);
+}
+.u219 :is(.workspace, .app-shell, .login-main) {
+  background: var(--ux-page);
+}
+.u219 :is(.panel, .auth-grid, .course-card, .practice-preview) {
+  border-radius: 12px;
+  box-shadow: none;
+  border-color: var(--ux-line);
+}
+.u219 :is(h1, h2, h3),
+.u219 :is(.public-page, .standalone-auth) :is(h1, h2, h3),
+.u219 .app-shell .match-score strong {
+  color: var(--ux-ink);
+}
+.u219
+  :is(
+    p,
+    .helper,
+    .optional,
+    .eyebrow,
+    .nav-label,
+    .brand-caption,
+    .breadcrumb-slash,
+    .topbar-label,
+    .result-count,
+    .course-card p,
+    .form-bottom,
+    .command-help,
+    .sheet-body p
+  ),
+.u219 :is(.public-page, .standalone-auth) p {
+  color: var(--ux-ink-2);
+}
+.u219 :is(.public-page, .standalone-auth) .brand-caption {
+  color: var(--ux-ink-2);
+  font-size: 9px;
+  letter-spacing: 0.6px;
+}
+.u219 .brand-mark,
+.u219 .public-brand .brand-mark {
+  background: #072d59;
+  color: #fff;
+  border: 1px solid #4a6984;
+  border-radius: 8px;
+}
+.u219
+  :is(
+    .nav-item,
+    .account-button,
+    .account-button strong,
+    .account-button small,
+    .topbar strong,
+    .steps strong,
+    .benefit-number,
+    .empty,
+    .empty h3,
+    .text-link,
+    .message-label,
+    .message p,
+    .stat strong,
+    .stat span,
+    .password-field button,
+    .dismiss-control,
+    .public-header nav button,
+    .mobile-menu-button,
+    .header-login,
+    .back-home,
+    .motion-toggle,
+    .public-page .motion-toggle
+  ) {
+  color: var(--ux-ink);
+}
+.u219
+  :is(
+    .account-button,
+    .password-field button,
+    .dismiss-control,
+    .mobile-menu-button
+  ) {
+  background: transparent;
+}
+.u219 .nav-item.active {
+  background: var(--ux-surface-2);
+  color: var(--ux-ink);
+}
+.u219
+  :is(
+    .nav-pill,
+    .avatar,
+    .badge,
+    .icon-tile,
+    .upload-icon,
+    .star-letter,
+    .tag,
+    .steps li > span,
+    .segmented,
+    .message,
+    .demo-message,
+    .feature-icon
+  ) {
+  background: var(--ux-surface-3);
+  color: var(--ux-ink);
+}
+.u219 .course-major {
+  color: var(--ux-ink) !important;
+}
+.u219 :is(input, select, textarea) {
+  background: var(--ux-surface);
+  border-color: var(--ux-line-2);
+  color: var(--ux-ink);
+}
+.u219 :is(input, textarea)::placeholder {
+  color: var(--ux-ink-3);
+}
+.u219
+  :is(
+    .standalone-auth label,
+    .standalone-auth input,
+    .standalone-auth select,
+    .standalone-auth .password-field button
+  ) {
+  color: var(--ux-ink);
+}
+.u219 .standalone-auth :is(input, select) {
+  background: var(--ux-surface);
+  border-color: var(--ux-line-2);
+}
+.u219 :is(button, a, input, select, textarea):focus-visible {
+  outline-color: var(--ux-accent-2);
+}
+.u219 :is(.button.primary, .landing-button.pink),
+.u219 .app-shell .button.primary,
+.u219 .standalone-auth .button.primary {
+  background: var(--ux-accent);
+  color: var(--ux-accent-ink);
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+.u219
+  :is(
+    .button.secondary,
+    .landing-button.outline,
+    .landing-button.navy,
+    .header-login
+  ) {
+  background: var(--ux-surface);
+  color: var(--ux-ink);
+  border: 1px solid var(--ux-line-2);
+  box-shadow: none;
+}
+.u219 :is(.button, .landing-button) {
+  border-radius: 8px;
+}
+.u219
+  :is(
+    .dropzone,
+    .auth-story,
+    .advice,
+    .message.you,
+    .demo-answer,
+    .feature-section,
+    .how-section
+  ) {
+  background: var(--ux-surface-2);
+  border-color: var(--ux-line);
+  color: var(--ux-ink);
+}
+.u219 .dropzone :is(strong, b, small, span),
+.u219 .advice > svg {
+  color: var(--ux-ink);
+}
+.u219 .dropzone.dragging {
+  outline: 2px solid var(--ux-accent);
+  background: var(--ux-surface-3);
+}
+.u219 :is(.notice, .loading) {
+  background: var(--ux-surface-2);
+  border-color: var(--ux-line);
+  color: var(--ux-ink);
+}
+.u219 .notice.error {
+  background: var(--ux-danger-bg);
+  color: var(--ux-danger);
+  border-color: var(--ux-danger);
+}
+.u219 :is(.tag.green, .badge.success) {
+  background: var(--ux-success-bg);
+  color: var(--ux-mint);
+}
+.u219 .tag.amber {
+  background: var(--ux-warn-bg);
+  color: var(--ux-warn);
+}
+.u219 .steps li.current > span {
+  background: var(--ux-ink);
+  color: var(--ux-surface);
+}
+.u219 :is(.segmented button, .standalone-auth .segmented button) {
+  color: var(--ux-ink-2);
+  background: transparent;
+}
+.u219
+  :is(
+    .segmented button[aria-pressed="true"],
+    .standalone-auth .segmented button[aria-pressed="true"]
+  ) {
+  background: var(--ux-surface);
+  color: var(--ux-ink);
+  box-shadow: none;
+}
+.u219 :is(th, td, .candidate, .stat) {
+  border-color: var(--ux-line);
+  color: var(--ux-ink);
+}
+.u219 th {
+  background: var(--ux-surface-2);
+  color: var(--ux-ink-2);
+}
+.u219 .radar text {
+  fill: var(--ux-ink-2);
+}
+.u219 .radar line,
+.u219 .radar polygon[fill="none"] {
+  stroke: var(--ux-line);
+}
+.u219 .radar polygon[stroke-dasharray] {
+  stroke: var(--ux-accent-2);
+  fill: color-mix(in srgb, var(--ux-accent-2) 10%, transparent);
+}
+.u219 .radar polygon[stroke-width="2"] {
+  stroke: var(--neu-red);
+  fill: color-mix(in srgb, var(--neu-red) 20%, transparent);
+}
+.u219 .app-shell .chart-legend > span:first-child {
+  color: var(--ux-accent-2);
+}
+.u219 .app-shell .chart-legend > span:last-child {
+  color: var(--ux-danger);
+}
+.u219 progress {
+  accent-color: var(--ux-accent);
+}
+.u219 :is(.skeleton-card i, .star-demo i) {
+  background: var(--ux-surface-3);
+}
+.u219 .command-dialog li[aria-selected="true"] {
+  background: var(--ux-surface-2);
+}
+.u219 :is(kbd, .command-dialog li > span) {
+  color: var(--ux-ink-2);
+  background: var(--ux-page);
+  border-color: var(--ux-line);
+}
+.u219 :is(.page-footer, .landing-footer, .login-footer) {
+  color: var(--ux-ink-2);
+  border-color: var(--ux-line);
+  padding-bottom: calc(86px + env(safe-area-inset-bottom));
+}
+.u219
+  :is(
+    .page-footer > span:first-child,
+    .landing-footer > a,
+    .landing-footer > span
+  ) {
+  color: var(--ux-ink);
+}
+/* Editorial rhythm: tool lists, functional headings and quieter workspaces. */
+.u219 .public-header {
+  gap: 24px;
+  min-height: 88px;
+}
+.u219 .public-header nav {
+  margin-left: auto;
+  gap: 24px;
+}
+.u219 .public-header .u219-tg {
+  margin-left: 0;
+}
+.u219 .auth-header .u219-tg {
+  margin-left: auto;
+}
+.u219 .topbar .u219-tg {
+  margin-left: auto;
+}
+.u219 .topbar-label {
+  display: none;
+}
+.u219 .landing-section {
+  max-width: 1280px;
+  margin: auto;
+  padding: 72px 5.5%;
+}
+.u219 .landing-section h2 {
+  font-size: clamp(28px, 3vw, 42px);
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+.u219 .landing-section h2 > span {
+  color: inherit;
+}
+.u219 .intro-section {
+  gap: 64px;
+  border-bottom: 1px solid var(--ux-line);
+}
+.u219 .section-heading {
+  margin-bottom: 32px;
+}
+.u219 .landing-feature-grid {
+  display: block;
+  border-top: 1px solid var(--ux-line);
+}
+.u219 .landing-feature {
+  display: grid;
+  grid-template-columns: 48px 1fr 1.3fr auto;
+  align-items: center;
+  gap: 24px;
+  border: 0;
+  border-bottom: 1px solid var(--ux-line);
+  border-radius: 0;
+  background: transparent;
+  padding: 24px 0;
+  box-shadow: none;
+  min-height: 0;
+  transform: none;
+}
+.u219 .feature-top {
+  margin: 0;
+}
+.u219 .feature-top > span:last-child {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--ux-ink-2);
+}
+.u219 .feature-icon {
+  display: none;
+}
+.u219 .landing-feature h3 {
+  font-size: 19px;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+.u219 .landing-feature p {
+  font-size: 14px;
+  margin: 0;
+}
+.u219 .feature-cta {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ux-ink);
+}
+.u219 .practice-preview {
+  background: var(--ux-surface);
+  border: 1px solid var(--ux-line);
+  padding: 28px;
+}
+.u219
+  :is(.preview-label, .preview-disclaimer, .star-demo strong, .star-demo span) {
+  color: var(--ux-ink-2);
+}
+.u219 .star-demo span {
+  background: var(--ux-surface-2);
+}
+.u219 .star-demo b {
+  background: var(--ux-accent);
+  animation: none;
+}
+.u219 .demo-answer p,
+.u219 .demo-message p {
+  color: var(--ux-ink);
+}
+.u219 .how-steps {
+  gap: 32px;
+}
+.u219 .how-steps li {
+  border-top: 1px solid var(--ux-line);
+  padding-top: 20px;
+}
+.u219 .how-steps li > span {
+  color: var(--ux-ink-2);
+}
+.u219 .how-steps svg {
+  display: none;
+}
+.u219 .landing-cta {
+  background: var(--ux-surface-2);
+  border-top: 1px solid var(--ux-line);
+  padding: 56px 24px;
+}
+.u219 .landing-cta h2 {
+  font-size: clamp(28px, 3vw, 42px);
+  color: var(--ux-ink);
+}
+.u219 .landing-cta p {
+  color: var(--ux-ink-2);
+}
+.u219 .cta-orbit {
+  display: none;
+}
+.u219 .app-shell .hero-banner {
+  display: none;
+}
+.u219 .page-head {
+  margin-bottom: 24px;
+}
+.u219 .page-head h1 {
+  font-size: 32px;
+}
+.u219 .panel {
+  padding: 24px;
+}
+.u219 .panel :is(p, label) {
+  font-size: 14px;
+}
+.u219 .panel h2 {
+  font-size: 20px;
+}
+.u219 .steps {
+  margin-bottom: 24px;
+}
+.u219 .guide-panel > h2 {
+  font-size: 22px;
+}
+.u219 .standalone-auth .auth-story {
+  background: var(--ux-surface-2);
+}
+.u219 .standalone-auth .auth-story h2 em {
+  color: var(--ux-ink);
+  font-style: normal;
+}
+.u219 .standalone-auth .compact-art {
+  background: #dbf2fc;
+  border-radius: 12px;
+  max-height: 250px;
+}
+.u219 .auth-story-bottom {
+  border-color: var(--ux-line);
+}
+.u219 .u216-sc .career-art {
+  background: #dbf2fc;
+}
+@media (hover: hover) and (pointer: fine) {
+  .u219
+    :is(
+      .button.secondary,
+      .landing-button.outline,
+      .landing-button.navy,
+      .header-login,
+      .u219-tg,
+      .dismiss-control,
+      .command-trigger
+    ):hover {
+    background: var(--ux-surface-2);
+    color: var(--ux-ink);
+  }
+  .u219 .app-shell .button.primary:hover:not(:disabled),
+  .u219 .standalone-auth .button.primary:hover:not(:disabled),
+  .u219 .landing-button.pink:hover {
+    background: #0e4f89;
+    color: #ffffff;
+    opacity: 1;
+    transform: none;
+  }
+  .u219 .landing-feature:hover {
+    background: var(--ux-surface-2);
+    box-shadow: none;
+    transform: none;
+  }
+  .u219 .nav-item:hover {
+    background: var(--ux-surface-2);
+  }
+}
+@media (max-width: 1000px) {
+  .u219 .public-header {
+    gap: 12px;
+  }
+  .u219 .public-header nav {
+    gap: 14px;
+  }
+  .u219 .public-brand {
+    font-size: 20px;
+  }
+  .u219 .public-brand .brand-caption {
+    font-size: 7px;
+  }
+  .u219 .landing-feature {
+    grid-template-columns: 32px 1fr 1fr;
+    gap: 16px;
+  }
+  .u219 .feature-cta {
+    grid-column: 2/-1;
+  }
+}
+@media (max-width: 760px) {
+  .u219 .public-header {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+  .u219 .public-header .brand {
+    margin-right: auto;
+  }
+  .u219 .public-header .brand-caption {
+    display: none;
+  }
+  .u219 .public-header nav {
+    background: var(--ux-surface);
+    margin: 0;
+  }
+  .u219 .public-header .u219-tg {
+    order: 2;
+  }
+  .u219 .public-header .mobile-menu-button {
+    order: 3;
+  }
+  .u219 .public-header .header-login {
+    order: 4;
+  }
+  .u219 .public-header nav {
+    order: 5;
+  }
+  .u219 .landing-section {
+    padding: 48px 20px;
+  }
+  .u219 .intro-section {
+    gap: 24px;
+  }
+  .u219 .landing-feature {
+    grid-template-columns: 28px 1fr;
+  }
+  .u219 .landing-feature p {
+    grid-column: 2;
+  }
+  .u219 .feature-cta {
+    grid-column: 2;
+  }
+  .u219 .landing-feature h3 {
+    font-size: 18px;
+  }
+  .u219 .panel {
+    padding: 20px;
+  }
+  .u219 .topbar {
+    gap: 12px;
+  }
+  .u219 .topbar > span {
+    min-width: 0;
+  }
+  .u219 .page-head h1 {
+    font-size: 27px;
+  }
+  .u219 .auth-header {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .u219 .auth-header .brand-caption {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .u219 .u219-tg svg {
+    transition: none;
+  }
+  .u219.u219-reveal {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .u219 .public-header .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-left: 0;
+  }
+  .u219 .public-header nav {
+    display: none;
+    flex: 0 0 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .u219 .public-header nav.is-open {
+    display: flex;
+  }
+  .u219 .public-header nav button {
+    text-align: left;
+    min-height: 44px;
+  }
+  .u219 .public-header .header-login {
+    margin-left: auto;
+  }
+}
+.u219 .app-shell .hero-banner {
+  display: flex;
+  justify-content: space-between;
+  min-height: 0;
+  padding: 24px;
+  background: var(--ux-surface-2);
+  border: 1px solid var(--ux-line);
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+.u219 .app-shell .hero-banner h2 {
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--ux-ink);
+}
+.u219 .app-shell .hero-banner p,
+.u219 .app-shell .hero-banner .hero-link {
+  color: var(--ux-ink-2);
+}
+.u219 .app-shell .journey-visual {
+  display: none;
+}
+/* NEU identity: original supplied logo, framed with CSS without changing the asset. */
+.u219 .neu-logo {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+}
+.u219 .neu-logo img {
+  position: absolute;
+  width: 195.15%;
+  height: 122.73%;
+  max-width: none;
+  left: -32.42%;
+  top: -17.27%;
+  object-fit: fill;
+}
+.u219 .public-brand {
+  gap: 12px;
+  letter-spacing: -0.5px;
+  font-size: 23px;
+}
+.u219 .public-brand .brand-caption {
+  font-size: 8px;
+  letter-spacing: 0.8px;
+  line-height: 1.6;
+  margin-top: 4px;
+  white-space: normal;
+}
+.u219 .public-header {
+  max-width: 1440px;
+  min-height: 100px;
+  padding: 18px 4.5%;
+  border-bottom: 1px solid var(--ux-line);
+}
+.u219 .public-header nav {
+  gap: 24px;
+}
+.u219 .public-header .header-login {
+  background: var(--ux-accent);
+  border-color: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+.u219 .sidebar .public-brand {
+  font-size: 18px;
+  white-space: normal;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.u219 .sidebar .neu-logo {
+  width: 50px;
+  height: 50px;
+}
+.u219 .sidebar .brand-caption {
+  font-size: 7px;
+  letter-spacing: 0.3px;
+}
+.u219 .nav-item {
+  border-radius: 6px;
+}
+.u219 .nav-item.active {
+  background: var(--ux-surface-2);
+  font-weight: 700;
+}
+.u219 .nav-item.active svg {
+  color: var(--ux-accent-2);
+}
+.u219 .intro-section {
+  padding-top: 48px;
+  padding-bottom: 48px;
+  grid-template-columns: 1fr 1fr;
+}
+.u219 .intro-section p:first-child {
+  font-size: 18px;
+  line-height: 1.6;
+}
+.u219 .landing-section {
+  max-width: 1360px;
+  padding-left: 4.5%;
+  padding-right: 4.5%;
+}
+.u219 .landing-feature-grid {
+  border-top: 2px solid var(--ux-accent-2);
+}
+.u219 .landing-feature {
+  grid-template-columns: 48px 1fr 1.25fr 160px;
+  padding: 28px 0;
+}
+.u219 .feature-top > span:last-child {
+  color: var(--ux-accent-2);
+  font-weight: 700;
+}
+.u219 .landing-feature h3 {
+  font-size: 20px;
+}
+.u219 .feature-cta {
+  justify-content: flex-end;
+}
+.u219 .practice-section {
+  border-bottom: 1px solid var(--ux-line);
+}
+.u219 .practice-preview {
+  border-radius: 4px;
+  box-shadow: none;
+}
+.u219 .preview-label {
+  letter-spacing: 0.6px;
+}
+.u219 .preview-label > span {
+  background: var(--neu-gold);
+}
+.u219 .star-demo b {
+  background: var(--ux-accent-2);
+}
+.u219 .landing-cta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px 40px;
+  text-align: left;
+  padding: 48px max(4.5%, calc((100% - 1238px) / 2));
+  border-top: 3px solid var(--neu-red);
+  background: var(--ux-surface);
+}
+.u219 .landing-cta h2 {
+  margin: 0;
+  font-size: 32px;
+}
+.u219 .landing-cta h2 br {
+  display: none;
+}
+.u219 .landing-cta p {
+  grid-column: 1/-1;
+  margin: 0;
+}
+.u219 .landing-footer {
+  padding: 32px 4.5% 90px;
+}
+.u219 .landing-footer .neu-logo {
+  width: 48px;
+  height: 48px;
+}
+.u219 .standalone-auth .auth-grid {
+  border-radius: 6px;
+  max-width: 1040px;
+  box-shadow: none;
+}
+.u219 .standalone-auth .auth-story {
+  background: var(--ux-surface-2);
+  border-top: 4px solid var(--neu-blue);
+}
+.u219 .standalone-auth .auth-story h2 {
+  font-size: 34px;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+}
+.u219 .neu-auth-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ux-line);
+}
+.u219 .neu-auth-identity .neu-logo {
+  width: 96px;
+  height: 96px;
+}
+.u219 .neu-auth-identity strong {
+  font-size: 18px;
+}
+.u219 .neu-auth-identity > span:last-child {
+  font-size: 13px;
+  color: var(--ux-ink-2);
+}
+.u219 .panel {
+  border-radius: 8px;
+}
+.u219 .app-shell .hero-banner {
+  border-radius: 6px;
+}
+.u219 .button,
+.u219 .landing-button {
+  border-radius: 6px;
+}
+.u219 .app-shell .button.primary {
+  background: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+.u219 .undo-toast {
+  background: var(--ux-ink);
+  color: var(--ux-surface);
+}
+.u219 .undo-toast button {
+  color: var(--ux-surface);
+}
+@media (hover: hover) and (pointer: fine) {
+  .u219[data-theme="dark"] .app-shell .button.primary:hover:not(:disabled),
+  .u219[data-theme="dark"]
+    .standalone-auth
+    .button.primary:hover:not(:disabled),
+  .u219[data-theme="dark"] .landing-button.pink:hover {
+    background: #b5dcf8;
+    color: #072d59;
+  }
+}
+@media (max-width: 1000px) {
+  .u219 .public-brand {
+    font-size: 20px;
+  }
+  .u219 .public-header nav {
+    gap: 16px;
+  }
+  .u219 .landing-feature {
+    grid-template-columns: 32px 1fr 1fr;
+  }
+  .u219 .feature-cta {
+    grid-column: 2/-1;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 760px) {
+  .u219 .public-header {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+  .u219 .public-brand {
+    font-size: 19px;
+    gap: 9px;
+  }
+  .u219 .public-header .neu-logo {
+    width: 48px;
+    height: 48px;
+  }
+  .u219 .intro-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .u219 .landing-section {
+    padding: 40px 20px;
+  }
+  .u219 .landing-feature {
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+  }
+  .u219 .landing-feature p,
+  .u219 .feature-cta {
+    grid-column: 2;
+  }
+  .u219 .landing-feature h3 {
+    font-size: 18px;
+  }
+  .u219 .landing-cta {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 32px 20px;
+  }
+  .u219 .landing-cta h2 {
+    font-size: 27px;
+  }
+  .u219 .auth-header .neu-logo {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Pair each guide surface with its own theme foreground. */
+.u219 .guide-page .practice-section { background:var(--ux-surface-2); color:var(--ux-ink); }
+.u219 .guide-page .practice-copy :is(h2,h2 span) { color:var(--ux-ink); }
+.u219 .guide-page .practice-copy p { color:var(--ux-ink-2); opacity:1; }
+.u219 .guide-page .practice-preview { background:var(--ux-surface); }
+.u219 .guide-page .demo-message { background:transparent; }
+.u219 .guide-page .demo-message p { background:var(--ux-surface-2); color:var(--ux-ink); font-size:14px; }
+.u219 .guide-page .demo-answer p { background:var(--ux-surface-3); color:var(--ux-ink); }
+.u219 .guide-page .demo-ai { background:var(--ux-accent); color:var(--ux-accent-ink); }
+.u219 .guide-page :is(.preview-label,.preview-disclaimer,.star-demo strong) { color:var(--ux-ink-2); font-size:12px; }

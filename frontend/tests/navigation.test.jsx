@@ -1,3 +1,4 @@
+import { authFrame, frameMessage, loginThroughFrame } from "./christmas-test-helper";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -30,12 +31,7 @@ it("opens the separate homepage by default and autoplays its video without a mot
 it("opens a dedicated login page without workspace sidebar", () => {
   window.history.replaceState(null, "", "/#login");
   render(<App />);
-  expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
-    "Chào mừng bạn trở lại",
-  );
-  expect(
-    screen.getByRole("link", { name: "← Về trang chủ" }).getAttribute("href"),
-  ).toBe("#home");
+  expect(authFrame().getAttribute('src')).toBe('/christmas-auth/index.html');
   expect(
     screen.queryByRole("navigation", { name: "Điều hướng chính" }),
   ).toBeNull();
@@ -43,12 +39,12 @@ it("opens a dedicated login page without workspace sidebar", () => {
 it("supports direct registration links and switching back to login", async () => {
   window.history.replaceState(null, "", "/#register");
   render(<App />);
-  expect(screen.getByLabelText("Họ và tên")).toBeTruthy();
-  await userEvent.click(screen.getByRole("button", { name: "Đăng nhập" }));
-  await waitFor(() => expect(window.location.hash).toBe("#login"));
-  expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
-    "Chào mừng bạn trở lại",
-  );
+  const outgoing = vi.spyOn(authFrame().contentWindow, 'postMessage');
+  await frameMessage({type:'ready'});
+  expect(outgoing).toHaveBeenCalledWith(expect.objectContaining({type:'mode',mode:'register'}),location.origin);
+  await frameMessage({type:'navigate',route:'login'});
+  await waitFor(() => expect(window.location.hash).toBe('#login'));
+
 });
 it("navigates to the career workspace after successful student login", async () => {
   window.history.replaceState(null, "", "/#login");
@@ -61,11 +57,7 @@ it("navigates to the career workspace after successful student login", async () 
     },
   });
   render(<App />);
-  await userEvent.type(screen.getByLabelText("Email"), "an@example.com");
-  await userEvent.type(screen.getByLabelText(/^Mật khẩu/), "secret123");
-  await userEvent.click(
-    screen.getAllByRole("button", { name: "Đăng nhập" }).at(-1),
-  );
+  await loginThroughFrame();
   await waitFor(() => expect(window.location.hash).toBe("#cv"));
   expect(
     screen.getByRole("navigation", { name: "Điều hướng chính" }),
@@ -127,7 +119,7 @@ it("links About NEU to the exact supplied URL in a new tab", () => {
   expect(link.getAttribute("rel")).toContain("noopener");
 });
 
-it.each(['home','about','tools','getting-started','login','register','cv','matching','interview'])('switches theme in both directions directly on #%s', async (route) => {
+it.each(['home','about','tools','getting-started','cv','matching','interview'])('switches theme in both directions directly on #%s', async (route) => {
  localStorage.clear();
  window.history.replaceState(null,'',`/#${route}`);
  render(<App />);

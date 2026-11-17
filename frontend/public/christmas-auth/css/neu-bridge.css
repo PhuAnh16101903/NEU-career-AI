@@ -1,0 +1,16 @@
+/* Only API feedback/profile completion is added; the reference layout is unchanged. */
+#neu-profile-dialog select, #neu-profile-dialog input {
+  width:100%;min-height:46px;padding:10px 12px;border:1px solid #ba8d6a;
+  border-radius:10px;background:#fff8ed;color:#54211d;font:inherit;
+}
+#neu-profile-dialog .field { margin-bottom:18px; }
+#neu-profile-dialog label { display:block;margin-bottom:8px; }
+#neu-profile-dialog :focus-visible { outline:2px solid #a31118;outline-offset:3px; }
+.neu-auth-success .auth-sleigh-sprite { position:relative; }
+.neu-auth-success .auth-sleigh-sprite img { visibility:hidden; }
+.neu-auth-success .auth-sleigh-sprite::after {
+  content:'✓';position:absolute;inset:0;display:grid;place-items:center;
+  color:#edcda0;font:700 64px system-ui;animation:neu-auth-check .5s ease both;
+}
+@keyframes neu-auth-check { from { opacity:0;transform:scale(.7); } to { opacity:1;transform:scale(1); } }
+@media(prefers-reduced-motion:reduce) { .neu-auth-success .auth-sleigh-sprite::after { animation:none; } }

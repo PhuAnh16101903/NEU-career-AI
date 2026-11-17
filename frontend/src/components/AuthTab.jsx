@@ -1,4 +1,5 @@
 import GlassPanel from "./GlassPanel";
+import AdminAnalytics from "./AdminAnalytics";
 import AuthMotionForm from "./AuthMotionForm";
 import { t as tr, useLocale as useUiLanguage } from "../i18n";
 import neuLogo from "../assets/neu-logo.png";
@@ -23,6 +24,8 @@ export function AccountWorkspace({ user, view }) {
   const [jobs, setJobs] = useState([]),
     [users, setUsers] = useState([]),
     [stats, setStats] = useState(null),
+    [adminJobs, setAdminJobs] = useState(null),
+    [adminJobsError, setAdminJobsError] = useState(""),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
@@ -34,11 +37,17 @@ export function AccountWorkspace({ user, view }) {
     let alive = true;
     setBusy(true);
     setError("");
+    // The overview uses only existing admin endpoints; failing to load job dates
+    // must not hide the all-time statistics.
     const task =
       user.role === "admin"
         ? Promise.all([
             view === "users" ? null : careerApi.getAdminStats(),
             view === "overview" ? [] : careerApi.getAdminUsers(),
+            view === "overview"
+              ? Promise.resolve().then(() => careerApi.getAdminJobs()).then((items) => ({ items, error: "" }))
+                  .catch((err) => ({ items: null, error: errorText(err) }))
+              : Promise.resolve({ items: null, error: "" }),
           ])
         : careerApi.getEnterpriseJobs();
     task
@@ -47,6 +56,8 @@ export function AccountWorkspace({ user, view }) {
         if (user.role === "admin") {
           setStats(d[0]);
           setUsers(d[1]);
+          setAdminJobs(d[2].items);
+          setAdminJobsError(d[2].error);
         } else setJobs(d);
       })
       .catch((e) => {
@@ -116,7 +127,7 @@ export function AccountWorkspace({ user, view }) {
       {tr(busy && <p role="status">{tr("Đang xử lý…")}</p>)}
       {user.role === "admin" ? (
         <>
-          {view !== "users" && (
+          {view !== "users" && view !== "overview" && (
             <div className="stats-grid">
               {[
                 ["total_users", "Người dùng"],
@@ -132,6 +143,9 @@ export function AccountWorkspace({ user, view }) {
                 </article>
               ))}
             </div>
+          )}
+          {view === "overview" && (
+            <AdminAnalytics stats={stats} jobs={adminJobs} jobsError={adminJobsError} />
           )}
           {view !== "overview" && (
             <section className="panel">
@@ -428,6 +442,7 @@ export default function AuthTab({
                 </div>
               ),
             )}
+            {standalone && <div className="christmas-window" aria-hidden="true"><img src="/media/christmas/window-frame-desktop.svg" alt="" /></div>}
             <div className="auth-story-bottom">
               <Icon name="book" size={30} />
               <p>

@@ -1,3 +1,4 @@
+import {authFrame,frameMessage} from "./christmas-test-helper";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   cleanup,
@@ -49,20 +50,17 @@ it("switches the homepage, headings, controls and document language to English a
 it("preserves login inputs and keyboard focus when changing language", async () => {
   window.history.replaceState(null, "", "/#login");
   render(<App />);
-  await userEvent.type(screen.getByLabelText("Email"), "student@neu.edu.vn");
-  await userEvent.type(screen.getByLabelText(/^Mật khẩu/), "test-password");
-  const switcher = screen.getByRole("button", {
-    name: "Chọn ngôn ngữ: Tiếng Việt",
-  });
-  switcher.focus();
-  await userEvent.keyboard("{Enter}");
-  await userEvent.keyboard("{ArrowDown}{Enter}");
-  expect(document.activeElement).toBe(switcher);
-  expect(screen.getByLabelText("Email").value).toBe("student@neu.edu.vn");
-  expect(screen.getByLabelText(/^Password/).value).toBe("test-password");
-  expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
-    "Welcome back",
-  );
+  const frame = authFrame();
+  const outgoing = vi.spyOn(frame.contentWindow,'postMessage');
+  frame.contentDocument.open();frame.contentDocument.write('<!doctype html><html><body></body></html>');frame.contentDocument.close();
+  const input = frame.contentDocument.createElement('input');
+  input.value = 'student@neu.edu.vn';frame.contentDocument.body.append(input);input.focus();
+  await frameMessage({type:'locale',locale:'en'});
+  expect(authFrame()).toBe(frame);
+  expect(frame.contentDocument.activeElement).toBe(input);
+  expect(input.value).toBe('student@neu.edu.vn');
+  expect(outgoing).toHaveBeenCalledWith(expect.objectContaining({type:'locale',locale:'en'}),location.origin);
+
 });
 it("searches command navigation by the translated English label", async () => {
   render(<App />);
@@ -75,9 +73,7 @@ it("searches command navigation by the translated English label", async () => {
   expect(screen.getByRole("option", { name: /Account/ })).toBeTruthy();
   await userEvent.keyboard("{Enter}");
   expect(window.location.hash).toBe("#login");
-  expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
-    "Welcome back",
-  );
+  expect(authFrame()).toBeTruthy();
 });
 it("translates UI messages while preserving dynamic names and backend content", () => {
   act(() => setLanguage("en"));

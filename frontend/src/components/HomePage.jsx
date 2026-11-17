@@ -5,7 +5,7 @@ import { PublicHeader } from "./PublicLayout";
 import { Icon } from "./UI";
 import "./VideoHero.css";
 export { default as Brand } from "./Brand";
-export const HERO_VIDEO = `${import.meta.env.BASE_URL}media/career-hero.mp4`;
+export const HERO_VIDEO = `${import.meta.env.BASE_URL}media/christmas/rotating-christmas-tree.mp4`;
 export default function HomePage({ currentUser }) {
   useLocale();
   const video = useRef(null);
@@ -54,6 +54,7 @@ export default function HomePage({ currentUser }) {
         ref={video}
         className="video-hero-media"
         src={HERO_VIDEO}
+        poster={`${import.meta.env.BASE_URL}media/christmas/rotating-christmas-tree-poster.jpg`}
         autoPlay={!paused}
         muted
         loop

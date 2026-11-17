@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><script type="application/ecmascript"><![CDATA[
+(() => {
+  'use strict';
+  const token = new URL(location.href).searchParams.get('svg-asset');
+  if (!token || parent === window) return;
+  const root = document.documentElement.cloneNode(true);
+  root.querySelectorAll('script').forEach(script => script.remove());
+  parent.postMessage({ type: 'svg-asset', token, url: location.href,
+    source: new XMLSerializer().serializeToString(root) }, '*');
+})();
+]]></script></svg>

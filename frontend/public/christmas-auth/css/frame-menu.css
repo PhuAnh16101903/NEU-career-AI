@@ -1,0 +1,356 @@
+.auth-layout[data-menu-open="true"] {
+  z-index: 9;
+}
+
+html.frame-menu-scroll-locked, html.frame-menu-scroll-locked body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.frame-menu-toggle {
+  --frame-menu-blend: var(--winter-night-blend,0%);
+  --frame-menu-red: #7d1120e6;
+  --frame-menu-gold-start: #f1d6a6;
+  --frame-menu-gold-end: #dcb16f;
+  position: absolute;
+  z-index: 9;
+  top: 24px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 16px;
+  border: 2px solid color-mix(in srgb,#fff3dd,#fff0cb var(--frame-menu-blend));
+  border-radius: 999px;
+  background: linear-gradient(120deg,color-mix(in srgb,var(--frame-menu-red),var(--frame-menu-gold-start) var(--frame-menu-blend)),color-mix(in srgb,var(--frame-menu-red),var(--frame-menu-gold-end) var(--frame-menu-blend)));
+  color: color-mix(in srgb,#fff6e5,#723a28 var(--frame-menu-blend));
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 3px 12px #36060c18;
+  transition: box-shadow .18s;
+}
+
+.frame-menu-toggle:hover {
+  --frame-menu-red: #a02332;
+  --frame-menu-gold-start: #f8e3bc;
+  --frame-menu-gold-end: #e9c58a;
+  box-shadow: 0 4px 18px #36060c30;
+}
+
+.frame-menu-icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 30px;
+}
+
+.frame-menu-toggle:focus-visible, .frame-menu-panel button:focus-visible {
+  outline: 3px solid #ffe4a4;
+  outline-offset: 3px;
+}
+
+.frame-menu-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  overflow: hidden;
+  border-radius: inherit;
+  isolation: isolate;
+}
+
+.frame-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: #21071066;
+  touch-action: none;
+  cursor: default;
+}
+
+.frame-menu-panel {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: 1;
+  width: min(340px,100%);
+  padding: 28px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-left: 1px solid #e5c28f80;
+  background: linear-gradient(#6a0d19e8,#540d19f5),url("../image/christmas-red-snowflake-texture-v1.jpg") center top/cover no-repeat;
+  color: #fff2da;
+  box-shadow: -12px 0 42px #23020d40;
+}
+
+.frame-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.frame-menu-header h2 {
+  margin: 0;
+  color: #fff0cc;
+  font-family: "Cormorant Garamond",Georgia,serif;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.frame-menu-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #efd19c66;
+  border-radius: 50%;
+  background: #fff0c911;
+  color: #ffedc9;
+}
+
+.frame-menu-close:hover {
+  background: #fff0c928;
+}
+
+.frame-menu-close .svg-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.frame-menu-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.frame-menu-nav>button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid #e9cb8d33;
+  border-radius: 12px;
+  background: #fff2d707;
+  color: #f6e2c4;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  transition: background .18s,border-color .18s,color .18s;
+}
+
+.frame-menu-nav>button::after {
+  content: "›";
+  margin-left: auto;
+  color: #e8c88e;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.frame-menu-nav>button>.svg-icon {
+  width: 21px;
+  height: 21px;
+  color: #edca8d;
+}
+
+.frame-menu-row-shape {
+  display: none;
+}
+
+.frame-menu-nav>button:hover, .frame-menu-nav>button[aria-expanded="true"] {
+  border-color: #ebc98e88;
+  background: #ffedc51c;
+  color: #fff4db;
+}
+
+.frame-menu-nav>button[aria-current="page"] {
+  border-color: #e8c88e;
+  background: #f6d59724;
+  color: #fff2cd;
+}
+
+.frame-menu-about {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5c28f55;
+}
+
+.frame-menu-about h3 {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond",Georgia,serif;
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.frame-menu-about p {
+  margin: 0;
+  color: #f0d6bc;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.frame-menu-curve-edge, .mobile-header-lights {
+  display: none;
+}
+
+@media(min-width:851px) {
+  .frame-menu-panel {
+    width: min(329.6px,100%);
+    padding-left: 0;
+    border-left: 0;
+    clip-path: url(#frame-menu-left-clip);
+  }
+
+  .frame-menu-overlay[data-mode="register"] .frame-menu-panel {
+    clip-path: url(#frame-menu-left-clip-reverse);
+  }
+
+  .frame-menu-curve-edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 57.6px;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .frame-menu-overlay[data-mode="register"] .frame-menu-curve-edge {
+    transform: scaleX(-1);
+  }
+
+  .frame-menu-header {
+    padding-left: var(--frame-menu-inset,82px);
+  }
+
+  .frame-menu-nav>button {
+    --row-fill: #fff2d707;
+    --row-stroke: #e9cb8d33;
+    --row-text: #f6e2c4;
+    position: relative;
+    isolation: isolate;
+    padding-left: var(--frame-menu-inset,96px);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--row-text);
+  }
+
+  .frame-menu-nav>button:hover, .frame-menu-nav>button[aria-expanded="true"] {
+    --row-fill: #ffedc51c;
+    --row-text: #fff4db;
+    background: transparent;
+    color: var(--row-text);
+  }
+
+  .frame-menu-nav>button[aria-current="page"] {
+    --row-fill: #f6d59724;
+    --row-stroke: #e8c88e;
+    --row-text: #fff2cd;
+    background: transparent;
+    color: var(--row-text);
+  }
+
+  .frame-menu-nav>button>.frame-menu-row-shape {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .frame-menu-row-surface {
+    fill: var(--row-fill);
+    stroke: var(--row-stroke);
+    stroke-width: 2;
+    transition: fill .2s;
+  }
+
+  .frame-menu-about {
+    margin-left: 82px;
+  }
+}
+
+@media(max-width:850px) {
+  .banner>.hotel-brand {
+    position: relative;
+    z-index: 5;
+    isolation: isolate;
+    gap: 12px;
+    min-height: 64px;
+    padding: 4px 5%;
+    background: linear-gradient(#5b06111a,#5b06111a),url("../image/christmas-red-snowflake-texture-v1.jpg") center 8%/100% auto no-repeat,#a31118;
+  }
+
+  .banner>.hotel-brand .holiday-logo-day {
+    opacity: 0;
+  }
+
+  .banner>.hotel-brand .holiday-logo-night {
+    opacity: 1;
+  }
+
+  .winter-window {
+    margin: 0 -5% 0;
+  }
+
+  .mobile-header-lights {
+    display: block;
+  }
+
+  .frame-menu-toggle {
+    --frame-menu-blend: 100%;
+    top: 14px;
+    right: 5%;
+    gap: 6px;
+    min-height: 44px;
+    padding: 7px 12px;
+    font-size: 15px;
+  }
+
+  .banner>.hotel-brand>.frame-menu-toggle {
+    position: static;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .frame-menu-icon {
+    width: 22px;
+    height: 25px;
+  }
+
+  .frame-menu-overlay {
+    position: fixed;
+    inset: 0;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .frame-menu-panel {
+    height: 100%;
+    max-height: 100%;
+    padding: calc(22px + env(safe-area-inset-top)) 20px calc(22px + env(safe-area-inset-bottom));
+  }
+}
+
+@media(prefers-reduced-transparency:reduce) {
+  .frame-menu-backdrop {
+    background: #210710b3;
+  }
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 20" focusable="false">
+            <defs>
+              <linearGradient id="mobile-tab-gold" x1="0" y1="10" x2="180" y2="10" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#dfba66" stop-opacity="0"/>
+                <stop offset=".18" stop-color="#edcc8d"/>
+                <stop offset=".5" stop-color="#fff6c8"/>
+                <stop offset=".82" stop-color="#edcc8d"/>
+                <stop offset="1" stop-color="#dfba66" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path fill="url(#mobile-tab-gold)" d="M2 10C26 9.6 52 7.2 76 8.3C83 8.7 83 11.3 76 11.7C52 12.8 26 10.4 2 10ZM90 1C91.5 7.2 92.8 8.5 99 10C92.8 11.5 91.5 12.8 90 19C88.5 12.8 87.2 11.5 81 10C87.2 8.5 88.5 7.2 90 1ZM178 10C154 9.6 128 7.2 104 8.3C97 8.7 97 11.3 104 11.7C128 12.8 154 10.4 178 10Z"/>
+          </svg>

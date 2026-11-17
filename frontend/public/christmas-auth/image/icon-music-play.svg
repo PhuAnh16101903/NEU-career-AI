@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path transform="translate(-2 0)" d="M8 4.5a1 1 0 0 1 1.5-.86l11 7a1.6 1.6 0 0 1 0 2.72l-11 7A1 1 0 0 1 8 19.5Z"/><script type="application/ecmascript"><![CDATA[
+(() => {
+  'use strict';
+  const token = new URL(location.href).searchParams.get('svg-asset');
+  if (!token || parent === window) return;
+  const root = document.documentElement.cloneNode(true);
+  root.querySelectorAll('script').forEach(script => script.remove());
+  parent.postMessage({ type: 'svg-asset', token, url: location.href,
+    source: new XMLSerializer().serializeToString(root) }, '*');
+})();
+]]></script></svg>

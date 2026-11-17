@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="icon-library" aria-hidden="true">
+    <defs>
+
+      <clipPath id="frame-menu-left-clip" clipPathUnits="objectBoundingBox"><path d="M0 0C0 .2 .1747572816 .3775 .1747572816 .5825C.1747572816 .76875 .0436893204 .91875 .0436893204 1H1V0Z" /></clipPath>
+      <clipPath id="frame-menu-left-clip-reverse" clipPathUnits="objectBoundingBox"><path d="M.1747572816 0C.1747572816 .2 0 .3775 0 .5825C0 .76875 .1310679612 .91875 .1310679612 1H1V0Z" /></clipPath>
+      <clipPath id="frame-menu-motion-clip" clipPathUnits="objectBoundingBox"><path id="frame-menu-motion-path" d="M0 0H1V1H0Z" /></clipPath>
+    </defs>
+    <script type="application/ecmascript"><![CDATA[
+(() => {
+  'use strict';
+  const token = new URL(location.href).searchParams.get('svg-asset');
+  if (!token || parent === window) return;
+  const root = document.documentElement.cloneNode(true);
+  root.querySelectorAll('script').forEach(script => script.remove());
+  parent.postMessage({ type: 'svg-asset', token, url: location.href,
+    source: new XMLSerializer().serializeToString(root) }, '*');
+})();
+]]></script></svg>

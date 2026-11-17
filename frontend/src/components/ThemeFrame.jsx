@@ -3,6 +3,7 @@ import { t as tr, useLocale as useUiLanguage } from "../i18n";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import "./ThemeFrame.css";
+import ChristmasSnow from "./ChristmasSnow";
 import "./PromptMotion.css";
 import "./Polish.css";
 const ThemeContext = createContext({
@@ -243,8 +244,9 @@ export default function ThemeFrame({ children }) {
         toggle,
       }}
     >
-      <div className="u219 neu-prompt-only" data-theme={theme} ref={root}>
+      <div className="u219 neu-prompt-only christmas-theme" data-theme={theme} ref={root}>
         {tr(children)}
+        <ChristmasSnow />
       </div>
       {tr(
         typeof document !== "undefined" &&

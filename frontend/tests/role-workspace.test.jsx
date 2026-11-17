@@ -1,3 +1,4 @@
+import { authFrame, frameMessage, loginThroughFrame } from "./christmas-test-helper";
 import { StrictMode } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
@@ -61,11 +62,7 @@ it.each([
         <App />
       </StrictMode>,
     );
-    await userEvent.type(screen.getByLabelText("Email"), "an@example.com");
-    await userEvent.type(screen.getByLabelText(/^Mật khẩu/), "secret123");
-    await userEvent.click(
-      screen.getAllByRole("button", { name: "Đăng nhập" }).at(-1),
-    );
+    await loginThroughFrame();
     await waitFor(() => expect(location.hash).toBe("#" + route));
     const nav = screen.getByRole("navigation", { name: "Điều hướng chính" });
     expect(

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="90" viewBox="0 0 620 90" fill="none" aria-hidden="true">
+<defs>
+ <linearGradient id="snow" x1="0" y1="0" x2="0.28" y2="1"><stop stop-color="#fffefd"/><stop offset="0.38" stop-color="#f5ffff"/><stop offset="0.7" stop-color="#d4ecf3"/><stop offset="1" stop-color="#a8ceda"/></linearGradient>
+ <linearGradient id="icicle" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#b3d4e6" stop-opacity=".40"/><stop offset=".42" stop-color="#fff" stop-opacity=".99"/><stop offset=".72" stop-color="#e7faff" stop-opacity=".85"/><stop offset="1" stop-color="#8cb7c8" stop-opacity=".43"/></linearGradient>
+ <filter id="edge" x="-8%" y="-30%" width="116%" height="155%"><feGaussianBlur stdDeviation="2.4"/></filter>
+</defs>
+<!-- Grey-blue shadow under snow and soft translucence through the icy drips. -->
+<path d="M4 25Q28 16 54 21Q72 12 96 17Q116 8 143 15Q168 7 190 11Q222 0 249 12Q285 5 310 12Q340 7 363 15Q393 11 412 19Q441 13 473 24Q496 17 523 27Q552 23 568 30Q594 26 616 34" stroke="#547c95" stroke-opacity=".46" stroke-width="8" filter="url(#edge)"/>
+<path d="M2 26Q25 13 44 20Q55 15 68 18Q82 7 108 14Q126 5 144 12Q162 8 174 11Q192 -1 214 7Q242 2 259 10Q283 5 308 9Q323 2 344 12Q373 9 398 15Q418 10 438 18Q466 13 481 23Q505 18 519 24Q537 19 558 28Q581 24 614 33L618 39Q594 37 577 43Q572 47 570 55L567 70Q565 76 563 69L560 45Q548 42 534 42Q526 42 523 49L520 62Q518 67 515 61L513 44Q498 39 486 42Q479 45 474 53L470 79Q468 88 466 78L464 50Q449 41 435 40Q429 43 426 51L423 66Q421 70 419 63L416 40Q402 34 387 35Q375 34 368 39L365 57Q363 63 361 57L360 40Q344 31 327 34Q321 35 320 42L316 70Q314 76 312 69L310 36Q296 30 276 31Q270 37 265 44L261 60Q259 65 257 57L256 33Q240 26 225 29Q212 30 208 36L205 51Q203 58 201 51L198 29Q185 23 172 28Q162 28 159 40L156 68Q154 73 152 65L150 32Q134 24 123 29Q114 29 111 37L108 52Q105 57 104 50L102 28Q91 24 80 31Q75 35 73 43L70 63Q68 69 66 62L65 34Q52 28 43 30Q35 32 34 41L31 52Q28 56 27 49L26 30Q12 28 2 34Z" fill="url(#snow)"/>
+<path d="M64 32Q68 34 68 45L67 62Q68 65 70 60L73 42Q75 36 79 33M151 34L153 66Q154 70 155 65L159 41M310 37L312 68Q313 73 315 68L319 42M465 50L467 77Q468 82 470 76L474 54M560 43L563 67Q565 73 566 68L570 52" stroke="url(#icicle)" stroke-width="3" stroke-linecap="round"/>
+<path d="M10 24Q35 17 51 20M87 16Q109 12 126 15M175 12Q199 8 218 9M269 12Q297 9 317 12M350 14Q370 13 391 18M451 21Q471 21 481 26" stroke="#fff" stroke-opacity=".96" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="234" cy="16" r="2.3" fill="#fff"/><circle cx="432" cy="24" r="1.8" fill="#fff"/><circle cx="130" cy="21" r="1.8" fill="#fff"/>
+</svg>

@@ -1,4 +1,3 @@
-// Lucian UX/UI Prompt #040 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#040
 import { useRef } from "react";
 import Brand from "./Brand";
 import { Icon } from "./UI";

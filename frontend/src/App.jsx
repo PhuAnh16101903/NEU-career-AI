@@ -22,6 +22,7 @@ import { setAuthToken } from "./services/api";
 import HomePage, { Brand } from "./components/HomePage";
 import GuidePage from "./components/GuidePage";
 import AuthPage from "./components/AuthPage";
+import ChristmasMusicPlayer from "./components/ChristmasMusicPlayer";
 import "./styles.css";
 import "./public.css";
 import ThemeFrame, { ThemeToggle } from "./components/ThemeFrame";
@@ -29,6 +30,7 @@ import "./components/ThemeFrame.css";
 import "./components/UnifiedUI.css";
 import "./components/WorkspaceDesign.css";
 import "./components/SurfacePolish.css";
+import "./components/ChristmasTheme.css";
 const TABS = workspaceTabs;
 const getTab = () =>
   [
@@ -267,6 +269,11 @@ export default function App() {
           </main>
         </div>
       </div>
+      {/* One shared music player for public pages and workspace. Never mount
+          alongside the login/register iframe, which owns its own audio. */}
+      {!(["login", "register", "auth"].includes(activeTab)) && (
+        <ChristmasMusicPlayer />
+      )}
     </ThemeFrame>
   );
 }

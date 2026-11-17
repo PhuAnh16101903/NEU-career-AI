@@ -1,0 +1,55 @@
+.popup-decorated>.popup-content {
+  max-height: calc(100svh - 50px);
+  overflow: auto;
+  border-radius: inherit;
+}
+
+.popup-decorated:focus, .popup-decorated>.popup-content:focus {
+  outline: none;
+}
+
+.popup-decorated>.popup-lights {
+  z-index: 2;
+}
+
+.popup-decorated {
+  transform-origin: center center;
+}
+
+.popup-decorated[data-popup-state="closing"] {
+  pointer-events: none;
+}
+
+.popup-decorated[data-popup-state="opening"]::backdrop {
+  animation: popup-backdrop-in var(--popup-motion-duration,600ms) var(--popup-motion-easing,cubic-bezier(.42,0,.58,1)) both;
+}
+
+.popup-decorated[data-popup-state="closing"]::backdrop {
+  animation: popup-backdrop-out var(--popup-motion-duration,500ms) var(--popup-motion-easing,cubic-bezier(.42,0,.58,1)) both;
+}
+
+@keyframes popup-backdrop-in {
+  from {
+    opacity: var(--popup-backdrop-from,0);
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popup-backdrop-out {
+  from {
+    opacity: var(--popup-backdrop-from,1);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .popup-decorated::backdrop {
+    animation: none!important;
+  }
+}

@@ -113,7 +113,10 @@ async def _generate_ai_interview(
         max_turns=max_turns,
     )
 
-    result = await gemini_service.generate_json(prompt)
+    result = await gemini_service.generate_json(
+        prompt,
+        feature="interview",
+    )
     return _parse_ai_evaluation(result)
 
 class InterviewService:
@@ -249,7 +252,11 @@ class InterviewService:
             session.turn_index = turn + 1
 
         history_with_answer.append(
-            {"role": "assistant", "content": reply}
+            {
+                "role": "assistant",
+                "content": reply,
+                "is_mock": is_mock,
+            }
         )
 
         session.history = history_with_answer

@@ -1,45 +1,136 @@
-/**
- * Màn hình Đăng nhập / Đăng ký & Phân quyền 3 Actor (Sinh viên - Doanh nghiệp - Admin)
- *
- * TODO (Nhánh feat/frontend-ui):
- * 1. Form Đăng nhập:
- *    - Ô nhập `email` và `password` -> gọi `await careerApi.login(email, password)`.
- *    - Lưu thông tin người dùng bằng `onAuthSuccess(res.user)`.
- *    - Gợi ý 3 tài khoản mẫu trên giao diện để bấm test nhanh (Mật khẩu chung: 123456):
- *      + Sinh viên (`student`): phu@st.neu.edu.vn
- *      + Doanh nghiệp (`enterprise`): hr@fpt.com
- *      + Quản trị viên (`admin`): admin@neu.edu.vn
- *
- * 2. Form Đăng ký tài khoản mới:
- *    - Ô nhập `full_name`, `email`, `password` (tối thiểu 6 ký tự).
- *    - Chọn vai trò (`role`):
- *      + `"student"` (Sinh viên NEU) -> hiển thị thêm ô nhập `student_major` (Chuyên ngành).
- *      + `"enterprise"` (Doanh nghiệp) -> hiển thị thêm ô nhập `company_name` (Tên công ty).
- *    - Gọi `await careerApi.register({ email, password, full_name, role, company_name, student_major })`.
- *
- * 3. Giao diện theo từng Actor sau khi đăng nhập (`currentUser.role`):
- *    - Nếu `role === "enterprise"`: Hiển thị form Đăng tin tuyển dụng (`careerApi.createEnterpriseJob`)
- *      và danh sách ứng viên nộp đơn kèm điểm % độ khớp (`careerApi.getJobCandidates`).
- *    - Nếu `role === "admin"`: Hiển thị bảng thống kê hệ thống (`careerApi.getAdminStats`)
- *      và danh sách quản lý người dùng (`careerApi.getAdminUsers`).
- */
+
+import { useState } from 'react'
+import { careerApi } from '../services/api'
+
+const DEMO_ACCOUNTS = [
+  { role: 'Sinh viên', email: 'phu@st.neu.edu.vn' },
+  { role: 'Doanh nghiệp', email: 'hr@fpt.com' },
+  { role: 'Quản trị viên', email: 'admin@neu.edu.vn' },
+]
+
 export default function AuthTab({ currentUser, onAuthSuccess, onLogout }) {
+  const [email, setEmail] = useState('admin@neu.edu.vn')
+  const [password, setPassword] = useState('123456')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    setError('')
+    setSuccess('')
+    setLoading(true)
+
+    try {
+      const data = await careerApi.login(email.trim(), password)
+      onAuthSuccess(data.user)
+      setSuccess('Đăng nhập thành công!')
+    } catch (err) {
+      setError(
+        err.response?.data?.detail ||
+        'Đăng nhập thất bại. Vui lòng kiểm tra email và mật khẩu.'
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleLogout = () => {
+    onLogout()
+    setSuccess('Bạn đã đăng xuất.')
+    setError('')
+  }
+
   return (
-    <section>
-      <h2>Đăng nhập / Đăng ký (3 Actor: Sinh viên – Doanh nghiệp – Admin)</h2>
-      <p>
-        Tích hợp <code>careerApi.login(email, password)</code> và{' '}
-        <code>careerApi.register(payload)</code> tại component này.
-      </p>
-      {currentUser && (
-        <p>
-          Đang đăng nhập: <strong>{currentUser.full_name}</strong> ({currentUser.email}) — Vai trò:{' '}
-          <code>{currentUser.role}</code>{' '}
-          <button type="button" onClick={onLogout}>
+    <section className="career-card">
+      <h2>Đăng nhập hệ thống</h2>
+
+      {currentUser ? (
+        <div>
+          <p>
+            Đang đăng nhập: <strong>{currentUser.full_name}</strong>
+          </p>
+          <p>Email: {currentUser.email}</p>
+          <p>
+            Vai trò: <strong>{currentUser.role}</strong>
+          </p>
+
+          <button
+            type="button"
+            className="career-submit"
+            onClick={handleLogout}
+          >
             Đăng xuất
           </button>
-        </p>
+        </div>
+      ) : (
+        <form onSubmit={handleLogin}>
+          <div className="career-field">
+            <label htmlFor="login-email">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Nhập email"
+              required
+            />
+          </div>
+
+          <div className="career-field" style={{ marginTop: 16 }}>
+            <label htmlFor="login-password">Mật khẩu</label>
+            <input
+              id="login-password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Nhập mật khẩu"
+              required
+            />
+          </div>
+
+          {error && <p className="career-error">{error}</p>}
+          {success && <p style={{ color: 'var(--success)' }}>{success}</p>}
+
+          <button
+            type="submit"
+            className="career-submit"
+            disabled={loading}
+          >
+            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          </button>
+        </form>
       )}
+
+      <div style={{ marginTop: 28 }}>
+        <h3>Tài khoản dùng thử</h3>
+        <p>Mật khẩu chung: <strong>123456</strong></p>
+
+        {DEMO_ACCOUNTS.map((account) => (
+          <button
+            key={account.email}
+            type="button"
+            onClick={() => {
+              setEmail(account.email)
+              setPassword('123456')
+              setError('')
+              setSuccess('')
+            }}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: 12,
+              marginBottom: 8,
+              textAlign: 'left',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              background: 'white',
+            }}
+          >
+            {account.role}: {account.email}
+          </button>
+        ))}
+      </div>
     </section>
   )
 }

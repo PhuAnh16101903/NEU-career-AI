@@ -33,7 +33,7 @@ def test_match_uses_job_description_when_given(client):
     body = res.json()
     assert body["requirements_source"] == "job_description"
     assert body["required_skills"] == ["SQL", "Tableau"]
-    assert body["overall_match_percentage"] == 50.0
+    assert body["overall_match_percentage"] == 60.0
     assert body["missing_skills"] == ["Tableau"]
 
 
@@ -101,7 +101,7 @@ def test_match_uses_gemini_advice(client, monkeypatch):
     assert "INVALID999" not in course_codes
 
     # Gemini không được thay đổi kết quả Matching.
-    assert body["overall_match_percentage"] == 42.9
+    assert body["overall_match_percentage"] == 40.0
     assert "SQL" in body["missing_skills"]
 
     mock_generate_json.assert_awaited_once()
@@ -148,7 +148,7 @@ def test_match_falls_back_when_gemini_returns_invalid_structure(client, monkeypa
     assert res.status_code == 200
     body = res.json()
 
-    assert body["overall_match_percentage"] == 42.9
+    assert body["overall_match_percentage"] == 40.0
     assert body["general_advice"]
     assert body["skill_gap_analysis"] == ""
     assert body["learning_roadmap"] == []

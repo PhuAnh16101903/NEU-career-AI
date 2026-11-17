@@ -350,7 +350,10 @@ class CVService:
             raw_cv_text=text,
         )
 
-        result = await gemini_service.generate_json(prompt)
+        result = await gemini_service.generate_json(
+            prompt,
+            feature="cv",
+        )
 
         if not isinstance(result, dict):
             raise LLMError("Gemini không trả về một JSON object hợp lệ.")

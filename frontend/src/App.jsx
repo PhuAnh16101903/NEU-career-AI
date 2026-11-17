@@ -6,6 +6,7 @@ import InterviewTab from './components/InterviewTab'
 import MatchingTab from './components/MatchingTab'
 import { setAuthToken } from './services/api'
 import CareerAdvisorTab from './components/CareerAdvisorTab'
+import AdminDashboard from './components/AdminDashboard'
 
 const TABS = [
   { id: 'auth', label: 'Đăng nhập / Đăng ký' },
@@ -14,6 +15,7 @@ const TABS = [
   { id: 'interview', label: 'Phỏng vấn STAR' },
   { id: 'courses', label: 'Học phần NEU' },
   { id: 'career', label: 'Định hướng nghề nghiệp' },
+  { id: 'admin', label: 'Quản trị hệ thống', roles: ['admin'] },
 ]
 
 export default function App() {
@@ -21,9 +23,14 @@ export default function App() {
   const [cvData, setCvData] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
 
+  const visibleTabs = TABS.filter(
+    (tab) => !tab.roles || tab.roles.includes(currentUser?.role)
+  )
+
   const handleLogout = () => {
     setAuthToken(null)
     setCurrentUser(null)
+    setActiveTab('auth')
   }
 
   return (
@@ -31,7 +38,7 @@ export default function App() {
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
         <h1 style={{ margin: 0, fontSize: '1.25rem' }}>NEU Career AI</h1>
         <nav style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {TABS.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -60,6 +67,9 @@ export default function App() {
         {activeTab === 'interview' && <InterviewTab />}
         {activeTab === 'courses' && <CoursesTab />}
         {activeTab === 'career' && <CareerAdvisorTab cvData={cvData} />}
+        {activeTab === 'admin' && currentUser?.role === 'admin' && (
+          <AdminDashboard />
+        )}
       </main>
     </div>
   )

@@ -71,12 +71,18 @@ export const careerApi = {
     return data
   },
 
-  // 4. Gửi câu trả lời phỏng vấn -> trả về { interviewer_reply, current_evaluation, is_finished, overall_summary }
+  // 4. Gửi câu trả lời phỏng vấn
   sendInterviewAnswer: async (sessionId, userAnswer) => {
     const { data } = await apiClient.post('/interview/chat', {
       session_id: sessionId,
       user_answer: userAnswer,
     })
+    return data
+  },
+
+  // 5. Lấy lại lịch sử và kết quả của một phiên phỏng vấn
+  getInterviewSession: async (sessionId) => {
+    const { data } = await apiClient.get(`/interview/${sessionId}`)
     return data
   },
 
@@ -128,6 +134,30 @@ export const careerApi = {
 
   getAdminUsers: async (role) => {
     const { data } = await apiClient.get('/admin/users', { params: role ? { role } : {} })
+    return data
+  },
+
+
+  // --- E. AI Usage Monitoring (admin) ---
+  getAIUsageStats: async () => {
+    const { data } = await apiClient.get('/admin/ai-usage/stats')
+    return data
+  },
+
+  getAIUsageByFeature: async () => {
+    const { data } = await apiClient.get('/admin/ai-usage/by-feature')
+    return data
+  },
+
+  getAIUsageLogs: async ({ page = 1, pageSize = 10, feature, status } = {}) => {
+    const { data } = await apiClient.get('/admin/ai-usage/logs', {
+      params: {
+        page,
+        page_size: pageSize,
+        ...(feature ? { feature } : {}),
+        ...(status ? { status } : {}),
+      },
+    })
     return data
   },
 }

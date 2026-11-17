@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from typing import Any, List, Optional
+from uuid import uuid4
 
 from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -81,3 +82,39 @@ class InterviewSession(Base):
     # Danh sách điểm STAR của từng câu trả lời
     evaluations: Mapped[List[Any]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class AIUsageLog(Base):
+    """Lưu lịch sử sử dụng AI để theo dõi hiệu năng và chi phí."""
+
+    __tablename__ = "ai_usage_logs"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: uuid4().hex,
+    )
+
+    provider: Mapped[str] = mapped_column(String(50), default="gemini")
+    model: Mapped[str] = mapped_column(String(100))
+    feature: Mapped[str] = mapped_column(String(100), index=True)
+
+    status: Mapped[str] = mapped_column(String(20), index=True)
+
+    prompt_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    completion_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    total_tokens: Mapped[int] = mapped_column(Integer, default=0)
+
+    latency_ms: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cost_usd: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    error_type: Mapped[Optional[str]] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_utcnow,
+        index=True,
+    )

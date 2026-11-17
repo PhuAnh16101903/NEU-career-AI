@@ -268,7 +268,10 @@ class CareerAdvisorService:
     ) -> Dict[str, Any]:
         """Gọi Gemini để tạo nội dung tư vấn nghề nghiệp."""
 
-        result = await gemini_service.generate_json(prompt)
+        result = await gemini_service.generate_json(
+            prompt,
+            feature="career_advisor",
+        )
 
         if not isinstance(result, dict):
             raise LLMError("Gemini trả về dữ liệu không đúng định dạng JSON.")

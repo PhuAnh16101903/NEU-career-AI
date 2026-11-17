@@ -21,8 +21,38 @@ from app.schemas.analysis import (
 )
 from app.services.curriculum_service import curriculum_service
 
+CATEGORY_WEIGHTS = {
+    "Kỹ năng chuyên môn": 3,
+    "Nghiệp vụ": 3,
+    "Công cụ": 2,
+    "Kỹ năng mềm": 1,
+    "Ngoại ngữ": 1,
+}
+
 
 class MatchingService:
+    @staticmethod
+    def _calculate_weighted_match(
+        required: List[str],
+        matched: List[str],
+    ) -> float:
+        """Tính tỷ lệ Matching có xét trọng số từng nhóm kỹ năng."""
+
+        total_weight = sum(
+            CATEGORY_WEIGHTS.get(category_of(skill), 1)
+            for skill in required
+        )
+
+        matched_weight = sum(
+            CATEGORY_WEIGHTS.get(category_of(skill), 1)
+            for skill in matched
+        )
+
+        if total_weight == 0:
+            return 0.0
+
+        return round(matched_weight / total_weight * 100, 1)
+
     @staticmethod
     def _resolve_requirements(request: SkillGapRequest):
         """Yêu cầu lấy từ JD nếu có và nhận diện được kỹ năng, nếu không thì theo bộ mặc định của vị trí."""
@@ -76,7 +106,10 @@ class MatchingService:
             job_description=request.target_job_description or "Không cung cấp JD.",
         )
 
-        result = await gemini_service.generate_json(prompt)
+        result = await gemini_service.generate_json(
+            prompt,
+            feature="matching",
+        )
 
         if not isinstance(result, dict):
             raise LLMError("Gemini không trả về JSON object hợp lệ.")
@@ -144,7 +177,11 @@ class MatchingService:
 
         matched = [s for s in required if s in candidate]
         missing = [s for s in required if s not in candidate]
-        match_percentage = round(len(matched) / len(required) * 100, 1)
+
+        match_percentage = MatchingService._calculate_weighted_match(
+            required=required,
+            matched=matched,
+        )
 
         # Radar: mỗi nhóm kỹ năng có trong yêu cầu là một trục.
         radar = []

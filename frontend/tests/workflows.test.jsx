@@ -35,6 +35,7 @@ import { resetCurriculumCache } from "../src/hooks/useCurriculum";
 afterEach(cleanup);
 beforeEach(() => {
   vi.resetAllMocks();
+  resetCurriculumCache();
   localStorage.removeItem("neu-career-interview-session");
 });
 describe("Career workflows", () => {

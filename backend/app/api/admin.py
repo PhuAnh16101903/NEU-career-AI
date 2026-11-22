@@ -1,3 +1,4 @@
+from datetime import timezone
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
@@ -255,23 +256,33 @@ def get_ai_usage_logs(
         .all()
     )
 
-    items = [
-        AIUsageLogResponse(
-            id=str(row.id),
-            provider=row.provider,
-            model=row.model,
-            feature=row.feature,
-            status=row.status,
-            prompt_tokens=row.prompt_tokens,
-            completion_tokens=row.completion_tokens,
-            total_tokens=row.total_tokens,
-            latency_ms=row.latency_ms,
-            cost_usd=row.cost_usd,
-            error_type=row.error_type,
-            created_at=row.created_at.isoformat(),
+    items = []
+
+    for row in rows:
+        created_at = row.created_at
+
+        # SQLite có thể trả datetime naive dù dữ liệu gốc được tạo theo UTC.
+        if created_at.tzinfo is None:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+        else:
+            created_at = created_at.astimezone(timezone.utc)
+
+        items.append(
+            AIUsageLogResponse(
+                id=str(row.id),
+                provider=row.provider,
+                model=row.model,
+                feature=row.feature,
+                status=row.status,
+                prompt_tokens=row.prompt_tokens,
+                completion_tokens=row.completion_tokens,
+                total_tokens=row.total_tokens,
+                latency_ms=row.latency_ms,
+                cost_usd=row.cost_usd,
+                error_type=row.error_type,
+                created_at=created_at.isoformat(),
+            )
         )
-        for row in rows
-    ]
 
     return AIUsageLogListResponse(
         total=total,

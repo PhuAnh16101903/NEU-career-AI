@@ -315,7 +315,10 @@ def test_admin_ai_usage_logs_filter_and_pagination(client):
     assert item["prompt_tokens"] == 50
     assert item["completion_tokens"] == 0
     assert item["total_tokens"] == 50
-    assert item["created_at"]
+    created_at = datetime.fromisoformat(item["created_at"])
+
+    assert created_at.tzinfo is not None
+    assert created_at.utcoffset() == timezone.utc.utcoffset(created_at)
 
 
 @pytest.mark.parametrize(

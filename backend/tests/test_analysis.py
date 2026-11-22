@@ -155,3 +155,33 @@ def test_match_falls_back_when_gemini_returns_invalid_structure(client, monkeypa
     assert body["course_explanations"] == []
 
     mock_generate_json.assert_awaited_once()
+
+
+def test_postgresql_satisfies_sql_requirement(client):
+    res = post_match(
+        client,
+        target_job_description="Cần thành thạo SQL và Tableau",
+        candidate_skills=["PostgreSQL"],
+    )
+
+    assert res.status_code == 200
+    body = res.json()
+
+    assert body["matched_skills"] == ["SQL"]
+    assert body["missing_skills"] == ["Tableau"]
+    assert body["overall_match_percentage"] == 60.0
+
+
+def test_mysql_and_sqlite_do_not_automatically_satisfy_sql(client):
+    res = post_match(
+        client,
+        target_job_description="Cần thành thạo SQL",
+        candidate_skills=["MySQL", "SQLite"],
+    )
+
+    assert res.status_code == 200
+    body = res.json()
+
+    assert body["matched_skills"] == []
+    assert body["missing_skills"] == ["SQL"]
+    assert body["overall_match_percentage"] == 0.0

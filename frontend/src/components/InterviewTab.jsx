@@ -1,389 +1,396 @@
+import { t as tr, useLocale as useUiLanguage } from "../i18n";
+import { useEffect, useRef, useState } from "react";
+import { careerApi } from "../services/api";
+import { Empty, ErrorNotice, Icon, PageHead, errorText } from "./UI";
+const INTERVIEW_STORAGE_KEY = "neu-career-interview-session";
 
-import { useEffect, useState } from 'react'
-import { careerApi } from '../services/api'
+function buildRestoredSession(data) {
+  const history = Array.isArray(data.history) ? data.history : [];
+  const evaluations = Array.isArray(data.evaluations)
+    ? data.evaluations
+    : [];
 
-const SESSION_STORAGE_KEY = 'neu_career_ai_interview_session'
+  const messages = history
+    .map((item) => ({
+      who:
+        item.role === "assistant" || item.role === "ai"
+          ? "ai"
+          : "you",
+      text: item.content ?? item.text ?? "",
+      pending: false,
+    }))
+    .filter((item) => item.text);
 
-const STAR_ITEMS = [
-  { key: 'situation_score', label: 'Situation', description: 'Bối cảnh' },
-  { key: 'task_score', label: 'Task', description: 'Nhiệm vụ' },
-  { key: 'action_score', label: 'Action', description: 'Hành động' },
-  { key: 'result_score', label: 'Result', description: 'Kết quả' },
-]
+  const isMock = history.some(
+    (item) =>
+      (item.role === "assistant" || item.role === "ai") &&
+      item.is_mock === true,
+  );
 
-function StarEvaluation({ evaluation }) {
-  if (!evaluation) return null
+  let overallSummary = null;
 
-  const scores = STAR_ITEMS.map((item) => evaluation[item.key] ?? 0)
-  const average = scores.reduce((sum, score) => sum + score, 0) / 4
+  if (data.is_finished && evaluations.length > 0) {
+    const scoreKeys = [
+      "situation_score",
+      "task_score",
+      "action_score",
+      "result_score",
+    ];
 
-  return (
-    <div className="interview-evaluation">
-      <h3>Đánh giá STAR</h3>
+    const total = evaluations.reduce(
+      (sum, item) =>
+        sum +
+        scoreKeys.reduce(
+          (score, key) => score + (Number(item[key]) || 0),
+          0,
+        ),
+      0,
+    );
 
-      <div className="interview-star-grid">
-        {STAR_ITEMS.map((item) => (
-          <div className="interview-star-item" key={item.key}>
-            <strong>{item.label}</strong>
-            <span>{item.description}</span>
-            <b>{evaluation[item.key] ?? 0}/10</b>
-          </div>
-        ))}
-      </div>
+    const average = (
+      total /
+      (evaluations.length * scoreKeys.length)
+    ).toFixed(1);
 
-      <div className="interview-average">
-        Điểm trung bình lượt trả lời: <strong>{average.toFixed(1)}/10</strong>
-      </div>
+    overallSummary =
+      `Điểm STAR trung bình qua ${evaluations.length} câu trả lời: ${average}/10.`;
+  }
 
-      {evaluation.feedback && (
-        <div className="interview-feedback">
-          <strong>Nhận xét:</strong>
-          <p>{evaluation.feedback}</p>
-        </div>
-      )}
-    </div>
-  )
+  return {
+    session_id: data.session_id,
+    candidate_name: data.candidate_name,
+    target_role: data.target_role,
+    turn_index: data.turn_index,
+    is_finished: data.is_finished,
+    is_mock: isMock,
+    overall_summary: overallSummary,
+  };
 }
-
 export default function InterviewTab() {
-  const [candidateName, setCandidateName] = useState('')
-  const [targetRole, setTargetRole] = useState('Junior Data Analyst')
-  const [sessionId, setSessionId] = useState('')
-  const [messages, setMessages] = useState([])
-  const [evaluations, setEvaluations] = useState([])
-  const [answer, setAnswer] = useState('')
-  const [overallSummary, setOverallSummary] = useState('')
-  const [isFinished, setIsFinished] = useState(false)
-  // true: có lượt dùng fallback
-  // false: đã xác nhận không có fallback trong phiên mới
-  // null: phiên cũ không có dữ liệu để xác định
-  const [usedFallback, setUsedFallback] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  // Khôi phục phiên phỏng vấn gần nhất nếu có.
+  useUiLanguage();
+  const [name, setName] = useState(""),
+    [role, setRole] = useState(""),
+    [session, setSession] = useState(null),
+    [messages, setMessages] = useState([]),
+    [answer, setAnswer] = useState(""),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(""),
+    [evaluation, setEvaluation] = useState(null);
+  const log = useRef(null),
+    inFlight = useRef(false),
+    messageId = useRef(0);
   useEffect(() => {
-    const savedSessionId = localStorage.getItem(SESSION_STORAGE_KEY)
+    if (log.current) log.current.scrollTop = log.current.scrollHeight;
+  }, [messages, busy]);
+  useEffect(() => {
+    const savedSessionId = localStorage.getItem(INTERVIEW_STORAGE_KEY);
+    if (!savedSessionId) return;
 
-    if (!savedSessionId) return
+    let active = true;
 
-    let cancelled = false
+    async function restoreSession() {
+      setBusy(true);
+      setError("");
 
-    const restoreSession = async () => {
       try {
-        const data = await careerApi.getInterviewSession(savedSessionId)
+        const data = await careerApi.getInterviewSession(savedSessionId);
 
-        if (cancelled) return
+        if (!active) return;
 
-        setSessionId(data.session_id)
-        setCandidateName(data.candidate_name)
-        setTargetRole(data.target_role)
-        const history = data.history || []
+        const restoredSession = buildRestoredSession(data);
 
-        setMessages(history)
-        setEvaluations(data.evaluations || [])
-        setIsFinished(data.is_finished)
+        setSession(restoredSession);
+        setName(data.candidate_name ?? "");
+        setRole(data.target_role ?? "");
+        setMessages(
+          (Array.isArray(data.history) ? data.history : [])
+            .map((item) => ({
+              who:
+                item.role === "assistant" || item.role === "ai"
+                  ? "ai"
+                  : "you",
+              text: item.content ?? item.text ?? "",
+              pending: false,
+            }))
+            .filter((item) => item.text),
+        );
 
-        // Tin nhắn assistant đầu tiên là lời chào, không phải lượt đánh giá.
-        const assistantReplies = history.filter(
-          (message, index) => index > 0 && message.role === 'assistant'
-        )
+        const evaluations = Array.isArray(data.evaluations)
+          ? data.evaluations
+          : [];
 
-        // Kiểm tra backend đã lưu is_mock cho tất cả phản hồi chưa.
-        const hasCompleteMetadata = assistantReplies.every(
-          (message) => typeof message.is_mock === 'boolean'
-        )
+        setEvaluation(evaluations.at(-1) ?? null);
+      } catch (e) {
+        if (!active) return;
 
-        const hasFallbackInHistory = assistantReplies.some(
-          (message) => message.is_mock === true
-        )
-
-        const savedFallback = localStorage.getItem(
-          `${SESSION_STORAGE_KEY}_fallback_${data.session_id}`
-        )
-
-        // Ưu tiên dữ liệu backend; giữ lại thông tin fallback cũ nếu có.
-        setUsedFallback(
-          hasFallbackInHistory
-            ? true
-            : hasCompleteMetadata
-              ? false
-              : savedFallback === 'true'
-                ? true
-                : null
-        )
-      } catch {
-        localStorage.removeItem(SESSION_STORAGE_KEY)
+        // Chỉ xóa ID nếu backend xác nhận phiên không tồn tại.
+        if (e.response?.status === 404) {
+          localStorage.removeItem(INTERVIEW_STORAGE_KEY);
+        } else {
+          setError(errorText(e));
+        }
+      } finally {
+        if (active) setBusy(false);
       }
     }
 
-    restoreSession()
+    restoreSession();
 
     return () => {
-      cancelled = true
-    }
-  }, [])
-
-  const handleStartInterview = async (event) => {
-    event.preventDefault()
-
-    if (!candidateName.trim() || !targetRole.trim()) {
-      setError('Vui lòng nhập tên và vị trí ứng tuyển.')
-      return
-    }
-
-    setLoading(true)
-    setError('')
-
+      active = false;
+    };
+  }, []);
+  async function start(e) {
+    e.preventDefault();
+    if (busy) return;
+    if (!name.trim() || !role.trim()) return;
+    setBusy(true);
+    setError("");
     try {
-      const data = await careerApi.startInterview(
-        candidateName.trim(),
-        targetRole.trim()
-      )
-
-      setSessionId(data.session_id)
+      const d = await careerApi.startInterview(name.trim(), role.trim());
+      if (d.session_id) {
+        localStorage.setItem(INTERVIEW_STORAGE_KEY, d.session_id);
+      }
+      setSession(d);
       setMessages([
-        { role: 'assistant', content: data.interviewer_reply },
-      ])
-      setEvaluations([])
-      setOverallSummary('')
-      setIsFinished(false)
-      setUsedFallback(false)
-
-      localStorage.setItem(
-        `${SESSION_STORAGE_KEY}_fallback_${data.session_id}`,
-        'false'
-      )
-      setAnswer('')
-
-      localStorage.setItem(SESSION_STORAGE_KEY, data.session_id)
-    } catch (err) {
-      setError(
-        err.response?.data?.detail || 'Không thể bắt đầu phỏng vấn. Vui lòng thử lại.'
-      )
+        {
+          who: "ai",
+          text: d.interviewer_reply,
+        },
+      ]);
+      setEvaluation(d.current_evaluation);
+    } catch (e) {
+      setError(errorText(e));
     } finally {
-      setLoading(false)
+      setBusy(false);
     }
   }
-
-  const handleSendAnswer = async (event) => {
-    event.preventDefault()
-
-    if (!answer.trim() || !sessionId || isFinished) return
-
-    const submittedAnswer = answer.trim()
-
-    setLoading(true)
-    setError('')
-
-    // Hiển thị câu trả lời ngay trên giao diện.
-    setMessages((previous) => [
-      ...previous,
-      { role: 'user', content: submittedAnswer },
-    ])
-    setAnswer('')
-
+  async function send(e) {
+    e.preventDefault();
+    if (!answer.trim() || busy || inFlight.current) return;
+    inFlight.current = true;
+    setBusy(true);
+    setError("");
+    const text = answer.trim();
+    const pendingId = ++messageId.current;
+    setMessages((m) => [
+      ...m,
+      {
+        who: "you",
+        text,
+        pending: true,
+        id: pendingId,
+      },
+    ]);
     try {
-      const data = await careerApi.sendInterviewAnswer(
-        sessionId,
-        submittedAnswer
-      )
-
-      setMessages((previous) => [
-        ...previous,
-        { role: 'assistant', content: data.interviewer_reply },
-      ])
-
-      if (data.current_evaluation) {
-        setEvaluations((previous) => [
-          ...previous,
-          data.current_evaluation,
-        ])
-      }
-
-      setIsFinished(data.is_finished)
-
-      // Tổng hợp trạng thái fallback của toàn bộ phiên.
-      const nextUsedFallback =
-        usedFallback === null
-          ? (data.is_mock === true ? true : null)
-          : usedFallback || data.is_mock === true
-
-      setUsedFallback(nextUsedFallback)
-
-      localStorage.setItem(
-        `${SESSION_STORAGE_KEY}_fallback_${sessionId}`,
-        nextUsedFallback === null ? 'unknown' : String(nextUsedFallback)
-      )
-
-      if (data.overall_summary) {
-        setOverallSummary(data.overall_summary)
-      }
-    } catch (err) {
-      // Khôi phục câu trả lời vào ô nhập nếu gửi thất bại.
-      setAnswer(submittedAnswer)
-      setMessages((previous) => previous.slice(0, -1))
-      setError(
-        err.response?.data?.detail || 'Không thể gửi câu trả lời. Vui lòng thử lại.'
-      )
+      const d = await careerApi.sendInterviewAnswer(session.session_id, text);
+      setMessages((m) => [
+        ...m.map((message) =>
+          message.id === pendingId
+            ? {
+                ...message,
+                pending: false,
+              }
+            : message,
+        ),
+        {
+          who: "ai",
+          text: d.interviewer_reply,
+        },
+      ]);
+      setSession(d);
+      if (d.current_evaluation) setEvaluation(d.current_evaluation);
+      setAnswer("");
+    } catch (e) {
+      setMessages((m) => m.filter((message) => message.id !== pendingId));
+      setError(errorText(e));
     } finally {
-      setLoading(false)
+      inFlight.current = false;
+      setBusy(false);
     }
   }
-
-  const handleNewInterview = () => {
-    if (sessionId) {
-      localStorage.removeItem(
-        `${SESSION_STORAGE_KEY}_fallback_${sessionId}`
-      )
-    }
-    localStorage.removeItem(SESSION_STORAGE_KEY)
-    setSessionId('')
-    setMessages([])
-    setEvaluations([])
-    setAnswer('')
-    setOverallSummary('')
-    setIsFinished(false)
-    setUsedFallback(false)
-    setError('')
-  }
-
   return (
-    <section className="interview-container">
-      <div className="interview-header">
-        <h2>3. Phòng phỏng vấn mô phỏng STAR</h2>
-        <p>
-          Luyện tập phỏng vấn với AI và nhận đánh giá theo mô hình
-          Situation – Task – Action – Result.
-        </p>
-      </div>
-
-      {!sessionId && (
-        <form className="interview-start-form" onSubmit={handleStartInterview}>
-          <h3>Bắt đầu buổi phỏng vấn</h3>
-
-          <label htmlFor="interview-name">Họ và tên</label>
-          <input
-            id="interview-name"
-            value={candidateName}
-            onChange={(event) => setCandidateName(event.target.value)}
-            placeholder="Nhập họ và tên"
-            required
-          />
-
-          <label htmlFor="interview-role">Vị trí ứng tuyển</label>
-          <input
-            id="interview-role"
-            value={targetRole}
-            onChange={(event) => setTargetRole(event.target.value)}
-            placeholder="Ví dụ: Junior Data Analyst"
-            required
-          />
-
-          <button type="submit" disabled={loading}>
-            {loading ? 'Đang khởi tạo...' : 'Bắt đầu phỏng vấn'}
-          </button>
-        </form>
-      )}
-
-      {error && <div className="interview-error">{error}</div>}
-
-      {sessionId && (
-        <div className="interview-workspace">
-          <div className="interview-session-info">
+    <>
+      <PageHead visual="interview"
+        eyebrow={tr("LUYỆN TẬP HÔM NAY · TỰ TIN NGÀY MAI")}
+        title={tr("Kể câu chuyện của bạn thật thuyết phục.")}
+      >
+        {tr(
+          "Luyện trả lời phỏng vấn theo STAR: Bối cảnh, Nhiệm vụ, Hành động và Kết quả.",
+        )}
+      </PageHead>
+      <div className="interview-grid">
+        <section className="panel chat-panel">
+          <div className="panel-heading">
             <div>
-              <strong>{candidateName}</strong>
-              <span>{targetRole}</span>
-            </div>
-
-            <div className="interview-session-status">
-              {isFinished ? 'Đã hoàn thành' : 'Đang phỏng vấn'}
-            </div>
-          </div>
-
-          <div className="interview-chat">
-            {messages.map((message, index) => (
-              <div
-                className={`interview-message ${
-                  message.role === 'user' ? 'interview-message-user' : 'interview-message-ai'
-                }`}
-                key={`${index}-${message.role}`}
-              >
-                <span className="interview-message-label">
-                  {message.role === 'user' ? 'Bạn' : 'Nhà tuyển dụng AI'}
-                </span>
-                <p>{message.content}</p>
-              </div>
-            ))}
-
-            {loading && (
-              <div className="interview-loading">
-                AI đang xử lý câu trả lời...
-              </div>
-            )}
-          </div>
-
-          {!isFinished && (
-            <form className="interview-answer-form" onSubmit={handleSendAnswer}>
-              <textarea
-                value={answer}
-                onChange={(event) => setAnswer(event.target.value)}
-                placeholder="Nhập câu trả lời của bạn..."
-                rows={4}
-                maxLength={5000}
-                disabled={loading}
-              />
-
-              <div className="interview-answer-footer">
-                <span>{answer.length}/5000 ký tự</span>
-                <button
-                  type="submit"
-                  disabled={loading || !answer.trim()}
-                >
-                  {loading ? 'Đang gửi...' : 'Gửi câu trả lời'}
-                </button>
-              </div>
-            </form>
-          )}
-
-          {evaluations.length > 0 && (
-            <div className="interview-results">
-              <h3>Kết quả đánh giá</h3>
-
-              {evaluations.map((evaluation, index) => (
-                <StarEvaluation
-                  key={index}
-                  evaluation={evaluation}
-                />
-              ))}
-            </div>
-          )}
-
-          {isFinished && (
-            <div className="interview-completed">
-              <h3>Buổi phỏng vấn đã hoàn thành!</h3>
-
-              {overallSummary && <p>{overallSummary}</p>}
-
+              <h2>{tr("Phòng phỏng vấn")}</h2>
               <p>
-                Bạn đã hoàn thành {evaluations.length} lượt trả lời.
+                {tr(session ? role : "Chuẩn bị cho cuộc trò chuyện tiếp theo.")}
               </p>
-
-              <button type="button" onClick={handleNewInterview}>
-                Bắt đầu buổi phỏng vấn mới
-              </button>
             </div>
-          )}
-
-          <div className="interview-mode-note">
-            {usedFallback === true
-              ? 'Lưu ý: Có ít nhất một lượt đánh giá sử dụng cơ chế dự phòng khi AI không khả dụng.'
-              : usedFallback === false
-                ? 'Các lượt đánh giá trong phiên này đều được xử lý bởi AI.'
-                : 'Không có dữ liệu để xác định trạng thái AI của các lượt trước.'}
+            <span className="badge">
+              {tr(
+                session?.is_finished
+                  ? "Hoàn thành"
+                  : session
+                    ? "Đang luyện tập"
+                    : "Sẵn sàng",
+              )}
+            </span>
           </div>
-        </div>
-      )}
-    </section>
-  )
+          {!session ? (
+            <form onSubmit={start}>
+              <Empty icon="chat" title={tr("Một không gian để thử sức")}>
+                {tr(
+                  "Chọn vị trí mục tiêu. Bạn có thể dành thời gian suy nghĩ trước mỗi câu trả lời.",
+                )}
+              </Empty>
+              <label>
+                {tr("Tên của bạn")}
+                <input
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={tr("Bạn muốn được gọi là gì?")}
+                />
+              </label>
+              <label>
+                {tr("Vị trí phỏng vấn")}
+                <input
+                  required
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  placeholder={tr("Ví dụ: Business Analyst")}
+                />
+              </label>
+              <button className="button primary full" disabled={busy}>
+                {tr(busy ? "Đang chuẩn bị…" : "Bắt đầu phỏng vấn")}
+                <Icon name="arrow" size={18} />
+              </button>
+            </form>
+          ) : (
+            <>
+              {tr(
+                session.is_mock && (
+                  <div className="notice">
+                    {tr(
+                      "Chế độ mô phỏng: câu hỏi và điểm số chưa do AI thật sinh ra.",
+                    )}
+                  </div>
+                ),
+              )}
+              <div
+                className="chat-log"
+                role="log"
+                aria-label={tr("Cuộc phỏng vấn")}
+                ref={log}
+              >
+                {messages.map((m, i) => (
+                  <div className={`message ${m.who}`} key={i}>
+                    <span className="message-label">
+                      {tr(m.who === "ai" ? "Người phỏng vấn" : "Bạn")}
+                    </span>
+                    <p>{tr(m.text)}</p>
+                    {tr(m.pending && <small>{tr("Đang gửi…")}</small>)}
+                  </div>
+                ))}
+                {tr(
+                  busy && <p role="status">{tr("Đang xử lý câu trả lời…")}</p>,
+                )}
+              </div>
+              {session.is_finished ? (
+                <div className="interview-summary">
+                  <h3>{tr("Bạn đã hoàn thành buổi luyện tập")}</h3>
+                  <p>{tr(session.overall_summary)}</p>
+                  <button
+                    className="button secondary"
+                    onClick={() => {
+                      localStorage.removeItem(INTERVIEW_STORAGE_KEY);
+                      setSession(null);
+                      setEvaluation(null);
+                      setMessages([]);
+                      setAnswer("");
+                      setError("");
+                    }}
+                  >
+                    {tr("Luyện tập buổi mới")}
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={send} className="answer-form">
+                  <label>
+                    {tr("Câu trả lời của bạn")}
+                    <textarea
+                      rows="4"
+                      disabled={busy}
+                      maxLength={5000}
+                      required
+                      value={answer}
+                      onChange={(e) => setAnswer(e.target.value)}
+                      placeholder={tr(
+                        "Mô tả một tình huống cụ thể và những gì bạn đã làm…",
+                      )}
+                    />
+                  </label>
+                  <div className="form-bottom">
+                    <span className="helper">
+                      {tr(answer.length)}
+                      {tr("/5.000 ký tự")}
+                    </span>
+                    <button
+                      className="button primary"
+                      disabled={busy || !answer.trim()}
+                    >
+                      {tr("Gửi câu trả lời")}
+                      <Icon name="arrow" size={17} />
+                    </button>
+                  </div>
+                </form>
+              )}
+            </>
+          )}
+          <ErrorNotice message={error} />
+        </section>
+        <aside className="panel">
+          <span className="eyebrow">{tr("KHUNG TRẢ LỜI STAR")}</span>
+          <h2>{tr("Cấu trúc tạo khác biệt.")}</h2>
+          {[
+            ["S", "Bối cảnh", "situation_score", "Chuyện gì đã xảy ra?"],
+            ["T", "Nhiệm vụ", "task_score", "Bạn cần đạt mục tiêu gì?"],
+            ["A", "Hành động", "action_score", "Cụ thể bạn đã làm gì?"],
+            ["R", "Kết quả", "result_score", "Kết quả và bài học là gì?"],
+          ].map(([letter, title, key, hint]) => (
+            <div className="star-row" key={letter}>
+              <span className="star-letter">{tr(letter)}</span>
+              <div>
+                <h3>{tr(title)}</h3>
+                <p>{tr(hint)}</p>
+                {tr(
+                  evaluation && (
+                    <progress
+                      value={evaluation[key]}
+                      max="10"
+                      aria-label={tr(`Điểm ${title}`)}
+                    />
+                  ),
+                )}
+              </div>
+              <strong>{tr(evaluation ? `${evaluation[key]}/10` : "—")}</strong>
+            </div>
+          ))}
+          <div className="notice">
+            <strong>
+              {tr(evaluation ? "Nhận xét câu trả lời" : "Một gợi ý nhỏ")}
+            </strong>
+            <p>
+              {tr(
+                evaluation?.feedback ||
+                  "Dùng ví dụ thật từ môn học, hoạt động ngoại khóa hoặc thực tập. Nêu rõ đóng góp của chính bạn.",
+              )}
+            </p>
+          </div>
+        </aside>
+      </div>
+    </>
+  );
 }

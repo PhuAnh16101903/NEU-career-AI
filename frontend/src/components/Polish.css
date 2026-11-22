@@ -1,0 +1,477 @@
+/* Typography and layout polish, scoped to the NEU application. */
+.u219 {
+  font-family: "Geist", Arial, "Segoe UI", sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px;
+  line-height: 1.6;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+.u219 :is(button, input, textarea, select) {
+  font-family: inherit;
+  letter-spacing: normal;
+}
+.u219 :is(h1, h2, h3) {
+  font-family: inherit;
+  font-style: normal;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.u219 :is(p, label, small, li) {
+  letter-spacing: normal;
+}
+.u219 .language-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 10px;
+  flex-shrink: 0;
+  background: var(--ux-surface);
+  color: var(--ux-ink-2);
+  border: 1px solid var(--ux-line);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.u219 .language-toggle .selected {
+  color: var(--ux-ink);
+  font-weight: 700;
+}
+.u219 .public-header {
+  gap: 16px;
+  padding: 16px 4.5%;
+  max-width: 1440px;
+}
+.u219 .public-header nav {
+  gap: 20px;
+  margin-left: auto;
+}
+.u219 .public-header .brand-caption {
+  max-width: 210px;
+  letter-spacing: 0.45px;
+}
+.u219 .topbar .language-toggle,
+.u219 .auth-header .language-toggle {
+  margin-left: auto;
+}
+.u219 .topbar .u219-tg,
+.u219 .auth-header .u219-tg {
+  margin-left: 0;
+}
+.u219 .u216 .u216-body {
+  padding-top: 56px;
+  padding-bottom: 64px;
+  gap: 0 48px;
+}
+.u219 .u216 .u216-h {
+  font-size: clamp(34px, 3.8vw, 53px);
+  line-height: 1.28;
+  letter-spacing: -0.035em;
+  margin: 0 0 24px;
+}
+.u219 .u216 .u216-ln {
+  padding: 0.08em 0.02em 0.14em;
+  overflow: hidden;
+}
+.u219 .u216 .u216-p {
+  font-size: 16px;
+  line-height: 1.75;
+}
+.u219 .u216 .u216-sc {
+  align-self: center;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 390px;
+}
+.u219 .u216 .neu-route {
+  padding: 26px;
+}
+.u219 .u216 .neu-route-title > strong {
+  line-height: 1.45;
+}
+.u219 .landing-section {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+.u219 .landing-section h2 {
+  font-size: clamp(28px, 2.8vw, 40px);
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.u219 .section-heading {
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.u219 .how-section {
+  border-radius: 0;
+  background: var(--ux-page);
+  border-top: 1px solid var(--ux-line);
+}
+.u219 .how-steps {
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-items: start;
+}
+.u219 .how-steps li {
+  padding: 24px 0 0;
+  display: block;
+  border-top: 1px solid var(--ux-line);
+}
+.u219 .how-steps li > span {
+  font-size: 32px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0 0 18px;
+  border: 0;
+  font-weight: 600;
+  display: block;
+  letter-spacing: -0.02em;
+}
+.u219 .how-steps h3 {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+.u219 .how-steps p {
+  font-size: 14px;
+  line-height: 1.75;
+  margin: 0;
+  max-width: 340px;
+}
+.u219 .landing-cta {
+  margin: 0 auto;
+  max-width: 1360px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 40px;
+  padding: 40px 4.5%;
+  border-top: 1px solid var(--ux-line);
+  border-bottom: 1px solid var(--ux-line);
+  background: var(--ux-surface-2);
+}
+.u219 .landing-cta h2 {
+  font-size: clamp(25px, 2.6vw, 34px);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+}
+.u219 .landing-cta p {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+.u219 .landing-cta > .landing-button {
+  grid-column: 2;
+  grid-row: 1/3;
+  align-self: center;
+  white-space: nowrap;
+  min-height: 48px;
+}
+.u219 .landing-footer {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 36px 4.5% 82px;
+  gap: 24px;
+  align-items: center;
+}
+.u219 .landing-footer > p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.u219 .landing-footer > span {
+  padding-top: 20px;
+  margin-top: 0;
+}
+.u219 .landing-feature h3 {
+  line-height: 1.5;
+}
+.u219 .landing-feature p {
+  line-height: 1.75;
+}
+/* Restore only the requested theme icon transition; the reveal uses WAAPI. */
+.u219.neu-prompt-only .u219-tg svg {
+  transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) !important;
+}
+@media (max-width: 1100px) {
+  .u219 .public-header {
+    gap: 10px;
+  }
+  .u219 .public-header nav {
+    gap: 12px;
+  }
+  .u219 .public-header .public-brand {
+    font-size: 18px;
+  }
+  .u219 .public-header .neu-logo {
+    width: 48px;
+    height: 48px;
+  }
+  .u219 .public-header .brand-caption {
+    font-size: 7px;
+    max-width: 170px;
+  }
+  .u219 .header-login {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+}
+@media (max-width: 850px) {
+  .u219 .public-header {
+    flex-wrap: wrap;
+  }
+  .u219 .public-header .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    order: 4;
+    margin: 0;
+  }
+  .u219 .public-header .language-toggle {
+    order: 2;
+    margin-left: auto;
+  }
+  .u219 .public-header .u219-tg {
+    order: 3;
+  }
+  .u219 .public-header .header-login {
+    order: 5;
+  }
+  .u219 .public-header nav {
+    order: 6;
+    display: none;
+    flex: 0 0 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+  }
+  .u219 .public-header nav.is-open {
+    display: flex;
+  }
+  .u219 .public-header nav button {
+    text-align: left;
+  }
+  .u219 .public-header .brand-caption {
+    display: none;
+  }
+  .u219 .public-header .brand {
+    margin-right: 0;
+  }
+}
+@media (max-width: 760px) {
+  .u219 .u216 .u216-body {
+    padding: 32px 20px 40px;
+    gap: 0;
+  }
+  .u219 .u216 .u216-h {
+    font-size: clamp(30px, 7.3vw, 44px);
+  }
+  .u219 .u216 .u216-sc {
+    min-height: 0;
+    width: 100%;
+  }
+  .u219 .landing-section {
+    padding: 40px 20px;
+  }
+  .u219 .how-steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .u219 .how-steps li {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 0 14px;
+    padding-top: 20px;
+  }
+  .u219 .how-steps li > span {
+    grid-row: 1/3;
+    font-size: 25px;
+    margin: 0;
+  }
+  .u219 .how-steps h3 {
+    font-size: 17px;
+  }
+  .u219 .how-steps p {
+    grid-column: 2;
+    max-width: none;
+  }
+  .u219 .landing-cta {
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .u219 .landing-cta > .landing-button {
+    align-self: flex-start;
+    order: 3;
+  }
+  .u219 .landing-footer {
+    padding: 28px 20px 82px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .u219 .landing-footer > p {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  .u219 .landing-footer > span {
+    flex-basis: 100%;
+  }
+  .u219 .auth-header {
+    gap: 8px;
+    padding: 16px;
+  }
+  .u219 .auth-header .brand {
+    flex-basis: 100%;
+  }
+  .u219 .auth-header .language-toggle {
+    margin-left: 0;
+  }
+  .u219 .topbar > span {
+    font-size: 11px;
+  }
+  .u219 .topbar {
+    padding: 12px;
+    gap: 8px;
+  }
+  .u219 .language-toggle {
+    padding: 0 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .u219.neu-prompt-only .u219-tg svg {
+    transition: none !important;
+  }
+}
+.u219.neu-prompt-only [data-motion-speed] {
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+.u219.neu-prompt-only .motion-reveal {
+  transform: translateY(24px);
+}
+.u219.neu-prompt-only .motion-in .motion-reveal {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .u219.neu-prompt-only [data-motion-speed] {
+    transition: none !important;
+  }
+  .u219.neu-prompt-only .motion-reveal {
+    transform: none;
+  }
+}
+/* Theme snapshots show the current content, without replaying the hero entrance. */
+.u219.u219-snapshot.neu-prompt-only .neu-rise-line,
+.u219.u219-snapshot.neu-prompt-only .u216-p,
+.u219.u219-snapshot.neu-prompt-only .u216-ct {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.u219 .public-header nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  color: var(--ux-ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  position: relative;
+}
+.u219 .public-header nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--ux-accent-2);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+.u219 .public-header nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 7px;
+}
+.u219 .home-page-summary {
+  max-width: 1238px;
+  margin: 0 auto;
+  padding: 32px 4.5%;
+  border-top: 1px solid var(--ux-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.u219 .home-page-summary h2 {
+  font-size: 25px;
+  margin: 0 0 10px;
+}
+.u219 .home-page-summary p {
+  font-size: 14px;
+  margin: 0;
+}
+.u219 .guide-page-heading {
+  max-width: 1238px;
+  padding: 44px 4.5% 16px;
+  margin: auto;
+}
+.u219 .guide-page-heading h1 {
+  font-size: clamp(28px, 3.3vw, 42px);
+  margin: 0 0 12px;
+}
+.u219 .guide-page-heading p {
+  margin: 0;
+}
+.u219 .guide-page .landing-section {
+  scroll-margin-top: 24px;
+}
+@media (max-width: 1180px) {
+  .u219 .public-header {
+    flex-wrap: wrap;
+  }
+  .u219 .public-header nav {
+    order: 6;
+    flex: 0 0 100%;
+    justify-content: center;
+    margin: 0;
+  }
+  .u219 .public-header .language-toggle {
+    margin-left: auto;
+  }
+}
+@media (max-width: 850px) {
+  .u219 .public-header nav {
+    justify-content: flex-start;
+  }
+  .u219 .public-header nav a {
+    width: 100%;
+  }
+  .u219 .home-page-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 20px;
+  }
+  .u219 .guide-page-heading {
+    padding: 32px 20px 0;
+  }
+}
+
+/* Readable secondary text on pale surfaces; dark theme keeps its own tokens. */
+.u219[data-theme="light"] {
+  --muted: var(--ux-ink-2);
+}
+.u219[data-theme="light"] :is(input, textarea)::placeholder {
+  color: var(--ux-ink-3);
+  opacity: 1;
+}

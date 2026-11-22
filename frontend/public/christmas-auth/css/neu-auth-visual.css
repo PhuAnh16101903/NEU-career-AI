@@ -1,0 +1,46 @@
+/* NEU Career AI · additive visual treatment of the existing Christmas iframe. */
+/* Preserve the original login/register card size and responsive zoom from styles.css. */
+/* The source-owned NEU seal is the only replacement for the placeholder logo. */
+.banner > .hotel-brand { isolation: isolate; }
+.banner > .hotel-brand .holiday-logo { width: 112px; height: 112px; max-width: 100%; min-width: 0; aspect-ratio: 1 / 1; flex: 0 0 auto; filter: drop-shadow(0 3px 4px #163f5830); }
+.banner > .hotel-brand .holiday-logo > img { width: 100%; height: 100%; object-fit: contain; }
+/* Natural snow crust with uneven edges and small hanging frozen drips. */
+.form-heading h1, .banner-copy h2 { position: relative; }
+.form-heading h1::after, .banner-copy h2::after {
+  content:""; display:block; position:absolute;
+  left:-.03em; top:-.23em;
+  width:clamp(54px, 36%, 164px); height:.48em;
+  background: url('../../media/christmas/frozen-snow-rim.svg') center / 100% 100% no-repeat;
+  pointer-events:none; z-index:1; opacity:.95;
+  filter:drop-shadow(0 1px 2px #315a7266);
+}
+.banner-copy h2::after { width:clamp(70px, 45%, 190px); height:.42em; }
+/* Progressive register wizard, with the original form and validators left in place. */
+.neu-register-wizard > .field[hidden], .neu-register-wizard > .submit[hidden] { display:none!important; }
+.neu-register-progress { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 0 18px; }
+.neu-register-progress-track { height:5px; flex:1; background:#ffffff29; border-radius:8px; overflow:hidden; }
+.neu-register-progress-fill { display:block; height:100%; background:#e8ce94; border-radius:inherit; transition:width .18s ease; }
+.neu-register-progress-caption { font-size:12px; letter-spacing:.03em; color:#f8e8c5; white-space:nowrap; }
+.neu-register-nav { display:flex; gap:12px; align-items:center; margin-top:19px; }
+.neu-register-back { padding:10px 15px; min-height:43px; background:#ffffff12; color:#f8e9d4; border:1px solid #dcb16f8c; border-radius:24px; }
+.neu-register-back:hover { background:#fff3d624; }
+.neu-register-back:focus-visible, .neu-register-next:focus-visible { outline:3px solid #fff0bc; outline-offset:3px; }
+.neu-register-back[hidden], .neu-register-next[hidden] { display:none!important; }
+.neu-register-next { flex:1; min-height:44px; border:0; border-radius:25px; color:#4f2917; background:linear-gradient(115deg,#f6e2b9,#dcb16f); font-weight:700; }
+.neu-register-next:hover { filter:brightness(1.055); }
+#register-form.neu-register-wizard { display:block; }
+#register-form.neu-register-wizard > .field { margin-top:0; }
+#register-form.neu-register-wizard > .submit { margin-top:18px; width:100%; }
+#neu-profile-dialog.neu-profile-wizard .field[hidden], #neu-profile-dialog.neu-profile-wizard #neu-profile-form > .submit[hidden] { display:none!important; }
+#neu-profile-dialog .neu-register-progress { margin:12px 0 20px; }
+#neu-profile-dialog .neu-register-progress-caption { color:#70482c; }
+#neu-profile-dialog .neu-register-progress-track { background:#d7c6ad; }
+#neu-profile-dialog .neu-register-back { color:#663820; background:#f8f0df; }
+#neu-profile-dialog .neu-register-nav { margin-bottom:15px; }
+@media(max-width:850px) {
+ .banner > .hotel-brand .holiday-logo { width: clamp(72px, 19vw, 94px); height: clamp(72px, 19vw, 94px); }
+ .neu-register-progress { margin-bottom:12px; }
+ .neu-register-nav { margin-top:12px; }
+ .form-heading h1::after { top:-.22em; }
+}
+@media(prefers-reduced-motion:reduce) { .neu-register-progress-fill { transition:none; } }

@@ -19,6 +19,7 @@ from app.schemas.admin import (
 from app.schemas.auth import ActorRole, UserOut
 from app.schemas.enterprise import JobPostingOut
 from app.services.admin_service import admin_service
+from app.services.enterprise_service import enterprise_service
 
 router = APIRouter(prefix="/admin", tags=["Quản trị Hệ thống (Admin)"])
 
@@ -33,6 +34,18 @@ def get_admin_stats(
     _: User = Depends(require_roles("admin")),
 ):
     return admin_service.get_system_stats(db)
+
+
+@router.get(
+    "/jobs",
+    response_model=List[JobPostingOut],
+    summary="[Quyền: admin] Xem toàn bộ tin tuyển dụng",
+)
+def list_all_jobs(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_roles("admin")),
+):
+    return enterprise_service.list_jobs(db, status_filter=None)
 
 
 @router.get(

@@ -1,0 +1,576 @@
+/* Seasonal skin using the supplied Christmas.2006 artwork. Existing layout and motion remain intact. */
+.u219.christmas-theme[data-theme="light"] {
+  --brand-primary:#f5eee3; --brand-secondary:#382c29; --brand-accent:#a31118;
+  --ux-page:#f7f3ec; --ux-surface:#fffdf8; --ux-surface-2:#f2eadd; --ux-surface-3:#eadcc8;
+  --ux-ink:#382c29; --ux-ink-2:#665044; --ux-ink-3:#705746;
+  --ux-line:#ded0bd; --ux-line-2:#a88d70;
+  --ux-accent:#a31118; --ux-accent-2:#28634c; --ux-accent-soft:#f8e8e5; --ux-accent-ink:#fffdf8;
+  --ux-shadow:#53201212; --ux-shadow-strong:#53201233;
+  --neu-blue:#28634c; --neu-red:#c41212; --neu-gold:#c79b4e;
+  --winter-scene:url('/media/christmas/christmas-festive-garden-day-v1-2x.jpg');
+}
+.u219.christmas-theme[data-theme="dark"] {
+  --brand-primary:#28251f; --brand-secondary:#fff4df; --brand-accent:#f1d6a6;
+  --ux-page:#171b19; --ux-surface:#222924; --ux-surface-2:#2c352e; --ux-surface-3:#3c463c;
+  --ux-ink:#fff4df; --ux-ink-2:#e2d4bd; --ux-ink-3:#c8b99f;
+  --ux-line:#505b4e; --ux-line-2:#8c947b;
+  --ux-accent:#f1d6a6; --ux-accent-2:#95cfab; --ux-accent-soft:#3d3027; --ux-accent-ink:#382316;
+  --ux-shadow:#0003; --ux-shadow-strong:#0008;
+  --neu-blue:#95cfab; --neu-red:#c41212; --neu-gold:#f1d6a6;
+  --winter-scene:url('/media/christmas/christmas-festive-garden-night-v1-2x.jpg');
+}
+.u219.christmas-theme .standalone-auth.auth-frosted { background:var(--ux-page); }
+.u219.christmas-theme .auth-glass-scene { display:none; }
+.u219.christmas-theme .auth-story em { color:var(--ux-accent); }
+.u219.christmas-theme .christmas-window {
+  position:relative; width:min(100%,400px); aspect-ratio:680/600; margin:24px 0 0;
+  background:var(--winter-scene) center/cover; border-radius:32% 32% 8px 8px;
+  overflow:hidden; box-shadow:0 12px 32px -18px var(--ux-shadow-strong);
+}
+.u219.christmas-theme .christmas-window img { display:block; width:100%;height:100%;object-fit:fill; }
+.u219.christmas-theme .standalone-auth.auth-frosted .frosted-panel {
+  --ux-surface:#650e19; --ux-surface-2:#791522; --ux-surface-3:#8a2531;
+  --ux-ink:#fff5e2; --ux-ink-2:#f2dcc0; --ux-ink-3:#e8cba6;
+  --ux-line:#b86c61; --ux-line-2:#c89476;
+  --ux-accent:#f1d6a6; --ux-accent-ink:#54211d; --ux-accent-soft:#8a2531;
+  --ux-danger:#ffe0a6; --ux-danger-bg:#54201d;
+  background:#850e1b url('/media/christmas/christmas-red-snowflake-texture-v1.jpg') center/cover;
+  color:var(--ux-ink); border:1px solid #dcb16f; border-radius:24px;
+  box-shadow:inset 0 1px 0 #ffe9b866,0 24px 60px -32px #510d1466;
+  backdrop-filter:none; -webkit-backdrop-filter:none;
+}
+.u219.christmas-theme[data-theme="dark"] .standalone-auth.auth-frosted .frosted-panel {
+  background-color:#590810; background-image:linear-gradient(#26000866,#26000866),url('/media/christmas/christmas-red-snowflake-texture-v1.jpg');
+}
+.u219.christmas-theme .standalone-auth .frosted-panel :is(h1,p,label) { color:var(--ux-ink); }
+.u219.christmas-theme .standalone-auth .frosted-panel :is(input,select) { background:#510d14; color:#fff5e2; border-color:#c89476; }
+.u219.christmas-theme .standalone-auth .frosted-panel input::placeholder { color:#e8cba6; opacity:1; }
+.u219.christmas-theme .standalone-auth .frosted-panel .segmented { background:#510d14; border-color:#b86c61; }
+.u219.christmas-theme .standalone-auth .frosted-panel .segmented button { color:#f2dcc0; }
+.u219.christmas-theme .standalone-auth .frosted-panel .segmented button[aria-pressed="true"] { background:#f1d6a6; color:#54211d; }
+.u219.christmas-theme .standalone-auth .frosted-panel :is(.u062-go,.u063-next) { background:#f1d6a6; color:#54211d; }
+.u219.christmas-theme .standalone-auth .frosted-panel :focus-visible { outline-color:#ffe4ae; }
+.u219.christmas-theme .standalone-auth .frosted-panel input:autofill { -webkit-text-fill-color:#fff5e2; box-shadow:inset 0 0 0 1000px #510d14; }
+/* Preserve the hero entrance, while recoloring its reading surface. */
+.u219.christmas-theme[data-theme="light"] .video-hero-scrim { background:linear-gradient(90deg,#f7f3ec 0%,#f7f3eceb 36%,#f7f3ec55 65%,#f7f3ec0a); }
+.u219.christmas-theme[data-theme="dark"] .video-hero-scrim { background:linear-gradient(90deg,#171b19f5 0%,#171b19d9 38%,#171b1940 80%); }
+.u219.christmas-theme .video-hero :is(h1,.video-hero-heading,.public-brand,.brand-caption,.video-hero-description) { color:var(--ux-ink); }
+.u219.christmas-theme .video-hero .public-header nav a { color:var(--ux-ink); }
+.u219.christmas-theme .video-hero :is(.u219-tg,.u267-trigger) { background:var(--ux-surface);color:var(--ux-ink);border-color:var(--ux-line); }
+.u219.christmas-theme .public-header nav a::after { background:var(--ux-accent); }
+/* Lightweight decorative snowfall: transform/opacity only, no hit-testing or layout work. */
+.u219.christmas-theme .christmas-snow {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 40;
+  pointer-events: none;
+  contain: strict;
+}
+.u219.christmas-theme .christmas-snow i {
+  position: absolute;
+  top: -12px;
+  left: var(--snow-x);
+  display: block;
+  width: var(--snow-size);
+  height: var(--snow-size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 35%, #e8f2f4 72%, #cbdde0 100%);
+  box-shadow: 0 0 3px #fff9, 0 0 7px #71948b44;
+  opacity: 0;
+  animation: neu-christmas-snow var(--snow-time) linear var(--snow-delay) infinite;
+  will-change: transform, opacity;
+}
+@keyframes neu-christmas-snow {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0) rotate(0deg);
+  }
+  12% { opacity: var(--snow-opacity); }
+  48% {
+    transform: translate3d(calc(var(--snow-mid) + var(--snow-sway)), 48dvh, 0) rotate(var(--snow-tilt));
+  }
+  72% { transform: translate3d(calc(var(--snow-mid) - var(--snow-sway)), 72dvh, 0) rotate(var(--snow-rotation)); }
+  88% { opacity: var(--snow-opacity); }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--snow-drift), calc(100dvh + 24px), 0) rotate(var(--snow-rotation));
+  }
+}
+@media(max-width:700px) {
+  .u219.christmas-theme .christmas-window { max-width:240px;margin:16px auto; }
+  .u219.christmas-theme .christmas-snow i:nth-child(n+17) { display:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .u219.christmas-theme .christmas-snow { display:none; }
+  .u219.christmas-theme .christmas-snow i { animation:none !important; }
+}
+@media print { .u219.christmas-theme .christmas-snow { display:none; } }
+.u219.christmas-theme .video-hero :is(.video-hero-eyebrow,.video-hero-bottom > p) { color:var(--ux-ink-2); }
+.u219.christmas-theme .video-hero .video-hero-cta { background:var(--ux-accent);color:var(--ux-accent-ink); }
+.u219.christmas-theme .video-hero { background:var(--ux-page); }
+@media(max-width:1000px) {
+  .u219.christmas-theme[data-theme] .video-hero .public-header nav { background:var(--ux-surface); }
+}
+
+/* Workspace and public surfaces share the seasonal palette; no geometry is changed. */
+.u219.christmas-theme[data-theme="light"] {
+  --brand-primary: #f3eadb;
+  --brand-secondary: #382c29;
+  --brand-accent: #9b1721;
+  --ux-page: #f7f2e9;
+  --ux-surface: #fffdf8;
+  --ux-surface-2: #f2e9da;
+  --ux-surface-3: #e9dcc8;
+  --ux-ink: #382c29;
+  --ux-ink-2: #665044;
+  --ux-ink-3: #705746;
+  --ux-line: #ded0bd;
+  --ux-line-2: #b99b78;
+  --ux-accent: #9b1721;
+  --ux-accent-2: #28634c;
+  --ux-accent-soft: #f8e8e5;
+  --ux-accent-ink: #fffaf1;
+  --neu-blue: #28634c;
+  --neu-red: #a31118;
+  --neu-gold: #c79b4e;
+}
+.u219.christmas-theme[data-theme="dark"] {
+  --brand-primary: #29342d;
+  --brand-secondary: #fff4df;
+  --brand-accent: #f1d6a6;
+  --ux-page: #171d19;
+  --ux-surface: #222b25;
+  --ux-surface-2: #2d382f;
+  --ux-surface-3: #3b493d;
+  --ux-ink: #fff4df;
+  --ux-ink-2: #e2d4bd;
+  --ux-ink-3: #c8b99f;
+  --ux-line: #505d50;
+  --ux-line-2: #8c987f;
+  --ux-accent: #e7c98e;
+  --ux-accent-2: #95cfab;
+  --ux-accent-soft: #3d3027;
+  --ux-accent-ink: #382316;
+  --neu-blue: #95cfab;
+  --neu-red: #e05b5b;
+  --neu-gold: #f1d6a6;
+}
+
+.u219.christmas-theme .app-shell :is(.sidebar, .topbar, .panel, .course-card, .filter-bar) {
+  background-color: var(--ux-surface);
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .app-shell .topbar {
+  background-image: linear-gradient(
+      90deg,
+      var(--ux-surface) 0%,
+      color-mix(in srgb, var(--ux-surface) 82%, transparent) 62%,
+      color-mix(in srgb, var(--ux-surface) 28%, transparent) 100%
+    ),
+    var(--winter-scene);
+  background-position: center right;
+  background-size: cover;
+}
+.u219.christmas-theme .app-shell .nav-item.active {
+  background: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+.u219.christmas-theme .app-shell .nav-item.active svg {
+  color: currentColor;
+}
+.u219.christmas-theme .app-shell :is(input, select, textarea) {
+  background-color: var(--ux-surface);
+  color: var(--ux-ink);
+  border-color: var(--ux-line-2);
+}
+.u219.christmas-theme .app-shell :is(input, select, textarea)::placeholder {
+  color: var(--ux-ink-3);
+  opacity: 1;
+}
+.u219.christmas-theme .app-shell :is(input, select, textarea):focus-visible {
+  outline-color: var(--ux-accent-2);
+}
+.u219.christmas-theme .app-shell .button.primary {
+  background: var(--ux-accent);
+  border-color: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+.u219.christmas-theme .app-shell .button.secondary {
+  background: var(--ux-surface-2);
+  border-color: var(--ux-line);
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .app-shell .stat {
+  box-shadow: inset 0 3px 0 var(--neu-gold), 0 8px 22px var(--ux-shadow);
+}
+.u219.christmas-theme .app-shell .stat strong {
+  color: var(--ux-accent);
+}
+.u219.christmas-theme .app-shell .table-wrap :is(th, td) {
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .app-shell .table-wrap th {
+  background: var(--ux-surface-2);
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .app-shell .table-wrap tr:hover td {
+  background: var(--ux-accent-soft);
+}
+.u219.christmas-theme .app-shell .moderation-job {
+  border-color: var(--ux-line);
+  background: var(--ux-surface);
+}
+.u219.christmas-theme .app-shell .tag {
+  border-color: var(--ux-line);
+}
+
+/* Realistic uneven snow/ice edging: an overlay, never part of text flow. */
+.u219.christmas-theme :is(.page-head-copy h1, .panel > h2, .panel-heading h2, .business-moderation h2, .public-page h1, .video-hero-heading) {
+  position: relative;
+}
+.u219.christmas-theme :is(.page-head-copy h1, .panel > h2, .panel-heading h2, .business-moderation h2, .public-page h1, .video-hero-heading)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -.23em;
+  width: clamp(50px, 32%, 220px);
+  height: .48em;
+  background: url('/media/christmas/frozen-snow-rim.svg') center / 100% 100% no-repeat;
+  filter: drop-shadow(0 1px 2px #547c9566);
+  opacity: .94;
+  pointer-events: none;
+  z-index: 2;
+}
+.u219.christmas-theme .video-hero-heading::before { width: clamp(95px, 42%, 270px); }
+.u219.christmas-theme[data-theme="dark"] :is(.page-head-copy h1, .panel > h2, .panel-heading h2, .business-moderation h2, .public-page h1, .video-hero-heading)::before {
+  filter: drop-shadow(0 1px 2px #b6e3f766);
+}
+@media print {
+  .u219.christmas-theme :is(.page-head-copy h1, .panel > h2, .panel-heading h2, .business-moderation h2, .public-page h1, .video-hero-heading)::before { display:none; }
+}
+
+/* Workspace music is an opt-in, single-instance floating control. */
+.u219.christmas-theme .christmas-music-player {
+  position: fixed;
+  right: 22px;
+  bottom: 20px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 6px 10px 6px 12px;
+  border: 1px solid var(--ux-line-2);
+  border-radius: 999px;
+  background: var(--ux-surface);
+  color: var(--ux-ink);
+  box-shadow: 0 8px 24px var(--ux-shadow-strong);
+}
+.u219.christmas-theme .christmas-music-player__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ux-ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.u219.christmas-theme .christmas-music-player__title > span:first-child {
+  color: var(--neu-red);
+  font-size: 16px;
+}
+.u219.christmas-theme .christmas-music-player button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  padding: 0;
+  border: 1px solid var(--ux-line);
+  border-radius: 50%;
+  background: var(--ux-surface-2);
+  color: var(--ux-ink);
+  cursor: pointer;
+}
+.u219.christmas-theme .christmas-music-player__play {
+  background: var(--ux-accent) !important;
+  border-color: var(--ux-accent) !important;
+  color: var(--ux-accent-ink) !important;
+}
+.u219.christmas-theme .christmas-music-player button:focus-visible,
+.u219.christmas-theme .christmas-music-player input:focus-visible {
+  outline: 2px solid var(--ux-accent-2);
+  outline-offset: 2px;
+}
+.u219.christmas-theme .christmas-music-player__volume {
+  display: flex;
+  align-items: center;
+  width: 76px;
+}
+.u219.christmas-theme .christmas-music-player audio {
+  display: none;
+}
+.u219.christmas-theme .christmas-music-player__volume input {
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  accent-color: var(--ux-accent);
+  cursor: pointer;
+}
+.u219.christmas-theme .christmas-music-player__error {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  padding: 6px 9px;
+  border: 1px solid var(--ux-line);
+  border-radius: 8px;
+  background: var(--ux-surface);
+  color: var(--ux-ink);
+  font-size: 12px;
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .u219.christmas-theme .christmas-music-player {
+    right: 12px;
+    bottom: 12px;
+    gap: 6px;
+    padding: 5px 8px;
+  }
+  .u219.christmas-theme .christmas-music-player__title {
+    font-size: 11px;
+  }
+  .u219.christmas-theme .christmas-music-player__volume {
+    width: 56px;
+  }
+}
+
+
+/* Additional public/workspace seasonal skin. Color and decoration ONLY;
+   all inherited typography, layout, dimensions, routing and motion are preserved. */
+.u219.christmas-theme {
+  --christmas-red: #aa1c2e;
+  --christmas-evergreen: #266447;
+  --christmas-gold: #c99c4c;
+  --christmas-frost: #f6f2e9;
+  --christmas-bulb: #ffe4a0;
+}
+.u219.christmas-theme[data-theme="dark"] {
+  --christmas-red: #f08a89;
+  --christmas-evergreen: #9ed4b0;
+  --christmas-gold: #efd18b;
+  --christmas-frost: #243128;
+  --christmas-bulb: #ffdc85;
+}
+/* The about/features/how-to public routes use the exact same seasonal tokens. */
+.u219.christmas-theme .public-page:not(.video-hero) {
+  --seal: var(--ux-surface-2);
+  --navy: var(--ux-ink);
+  --pink: var(--ux-accent);
+  color: var(--ux-ink);
+  background: var(--ux-page);
+  background-image: linear-gradient(
+    to bottom, color-mix(in srgb, var(--ux-page) 90%, transparent),
+    var(--ux-page) 44%
+  );
+}
+.u219.christmas-theme .public-page:not(.video-hero) :is(h1, h2, h3) {
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .public-page:not(.video-hero) :is(p, .section-heading > p) {
+  color: var(--ux-ink-2);
+}
+.u219.christmas-theme .guide-page-heading,
+.u219.christmas-theme .feature-section,
+.u219.christmas-theme .landing-footer > span {
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .public-page .landing-section h2 > span,
+.u219.christmas-theme .public-page .feature-cta,
+.u219.christmas-theme .public-page .intro-section .text-link,
+.u219.christmas-theme .public-page .strip-star {
+  color: var(--christmas-evergreen);
+}
+.u219.christmas-theme .public-page :is(.landing-feature, .practice-preview, .demo-message, .course-card) {
+  background-color: var(--ux-surface);
+  border-color: var(--ux-line);
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .public-page :is(.practice-section, .preview-disclaimer, .capability-strip) {
+  background-color: var(--ux-surface-2);
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .public-page .feature-icon,
+.u219.christmas-theme .public-page :is(.feature-matching, .feature-courses) .feature-icon {
+  background: var(--ux-accent-soft);
+  color: var(--christmas-evergreen);
+}
+.u219.christmas-theme .public-page .preview-label > span {
+  background: var(--christmas-red);
+}
+.u219.christmas-theme .public-page .feature-cta {
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .public-page :is(.landing-footer, .public-header) {
+  background-color: var(--ux-surface);
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .public-page .header-login,
+.u219.christmas-theme .public-page .mobile-menu-cta {
+  background-color: var(--ux-accent);
+  border-color: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+.u219.christmas-theme .public-page .public-header .public-brand,
+.u219.christmas-theme .public-page .public-header nav a {
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .public-page .public-header :is(.brand-caption, .header-description) {
+  color: var(--ux-ink-2);
+}
+.u219.christmas-theme .public-page .public-brand .brand-mark,
+.u219.christmas-theme .app-shell .brand-mark {
+  background: #24523b;
+  border-color: var(--christmas-gold);
+}
+.u219.christmas-theme .app-shell :is(.sidebar, .course-sheet, .command-dialog, .account-card, .filter-bar),
+.u219.christmas-theme :is(.command-trigger, .command-dialog, .course-card) {
+  border-color: var(--ux-line);
+  background-color: var(--ux-surface);
+}
+.u219.christmas-theme .app-shell :is(.badge, .tag, .avatar, .icon-tile) {
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .app-shell :is(.page-head, .panel-heading) :is(h1, h2) {
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .app-shell :is(.nav-pill, .small-dot, .steps li > span) {
+  background-color: var(--christmas-evergreen);
+}
+.u219.christmas-theme .app-shell :is(.button.primary, .nav-item.active) {
+  background-color: var(--ux-accent);
+  color: var(--ux-accent-ink);
+}
+/* Snow resting along the upper edge of display headings only, never controls or data. */
+.u219.christmas-theme .video-hero h1,
+.u219.christmas-theme .guide-page-heading h1,
+.u219.christmas-theme .public-page .intro-section h2,
+.u219.christmas-theme .public-page .section-heading h2 {
+  position: relative;
+}
+.u219.christmas-theme .video-hero h1::before,
+.u219.christmas-theme .guide-page-heading h1::before,
+.u219.christmas-theme .public-page .intro-section h2::before,
+.u219.christmas-theme .public-page .section-heading h2::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  top: -0.10em;
+  left: 0.06em;
+  width: clamp(26px, 9%, 70px);
+  height: .115em;
+  border-radius: 78% 35% 50% 30%;
+  background: linear-gradient(180deg, #fff, #eff9f9 80%, #b9d5d2);
+  box-shadow: 0 1px 2px #6e8b864d, 0 -1px 3px #fff8;
+}
+/* Extra fairy-light strands decorate existing headers as paint, not DOM elements. */
+.u219.christmas-theme .public-page .public-header,
+.u219.christmas-theme .app-shell .topbar {
+  position: relative;
+}
+.u219.christmas-theme .public-page .public-header::after,
+.u219.christmas-theme .app-shell .topbar::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  inset: auto 0 -3px;
+  height: 8px;
+  background-image:
+    radial-gradient(circle, #ffe3a0 0 2px, #c99b5155 3px, transparent 5px),
+    radial-gradient(circle, #dc4450 0 2px, transparent 4px),
+    radial-gradient(circle, #3f9369 0 2px, transparent 4px);
+  background-size: 72px 8px, 72px 8px, 72px 8px;
+  background-position: 0 0, 24px 0, 48px 0;
+  background-repeat: repeat-x;
+  opacity: .8;
+}
+.u219.christmas-theme .video-hero .public-header {
+  background-color: transparent;
+}
+/* Hero frame has been replaced with a real self-contained video of a revolving tree. */
+.u219.christmas-theme .video-hero {
+  background: var(--ux-page);
+}
+.u219.christmas-theme .video-hero-media {
+  object-position: center center;
+}
+.u219.christmas-theme[data-theme="light"] .video-hero-scrim {
+  background: linear-gradient(90deg, #f7f2e9 0%, #f7f2e9f4 32%, #f7f2e9ad 55%, #f7f2e900 78%);
+}
+.u219.christmas-theme[data-theme="dark"] .video-hero-scrim {
+  background: linear-gradient(90deg, #171d19 0%, #171d19f5 35%, #171d19b6 55%, #171d1911 80%);
+}
+/* Screenshot/print: no animated snow or visual interference. */
+@media (prefers-reduced-motion: reduce) {
+  .u219.christmas-theme .public-page .public-header::after,
+  .u219.christmas-theme .app-shell .topbar::after {
+    animation: none;
+  }
+}
+@media print {
+  .u219.christmas-theme .public-page .public-header::after,
+  .u219.christmas-theme .app-shell .topbar::after { display: none; }
+}
+/* Contrast-safe decorative colors for the introduction's original CTA and demo. */
+.u219.christmas-theme .public-page .landing-cta {
+  background: #23563e;
+  color: #fffaf1;
+}
+.u219.christmas-theme .public-page .landing-cta h2,
+.u219.christmas-theme .public-page .landing-cta p,
+.u219.christmas-theme .public-page .landing-cta > .landing-kicker {
+  color: #fffaf1;
+}
+.u219.christmas-theme .public-page .landing-cta .cta-orbit,
+.u219.christmas-theme .public-page .landing-cta .cta-orbit::before,
+.u219.christmas-theme .public-page .landing-cta .cta-orbit::after {
+  border-color: #e1c98d55;
+}
+.u219.christmas-theme .public-page .landing-cta .landing-button,
+.u219.christmas-theme .public-page .landing-button.navy {
+  background: #a91e2c;
+  color: #fffaf1;
+  border-color: #d5a45c;
+}
+.u219.christmas-theme .public-page .demo-answer p {
+  background: var(--ux-accent-soft);
+  color: var(--ux-ink);
+}
+.u219.christmas-theme .public-page .star-demo > div,
+.u219.christmas-theme .public-page .how-steps li > span {
+  border-color: var(--ux-line);
+}
+.u219.christmas-theme .public-page .star-demo strong,
+.u219.christmas-theme .public-page .preview-disclaimer {
+  color: var(--ux-ink-2);
+}
+.u219.christmas-theme .public-page .star-demo i {
+  background: var(--ux-surface-3);
+}
+.u219.christmas-theme .public-page .star-demo b,
+.u219.christmas-theme .public-page .preview-label > span {
+  background: var(--christmas-red);
+}
+.u219.christmas-theme .public-page .how-steps svg {
+  color: var(--christmas-red);
+}
+.u219.christmas-theme .video-hero-media[hidden] {
+  display: none;
+}

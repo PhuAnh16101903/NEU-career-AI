@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="winter-world" viewBox="-720 -724 3600 2400" fill="none" preserveAspectRatio="none" aria-hidden="true">
+      <title>Festive Christmas garden — decorated firs, presents, red bows and warm lights by day and night</title>
+      <defs>
+
+        <pattern id="garden-day-panorama" x="-720" y="-724" width="7200" height="2400" patternUnits="userSpaceOnUse" viewBox="0 0 3072 1024">
+          <image width="1536" height="1024" href="christmas-festive-garden-day-v1-2x.jpg" />
+          <image width="1536" height="1024" href="christmas-festive-garden-day-v1-2x.jpg" transform="translate(3072 0) scale(-1 1)" />
+        </pattern>
+        <pattern id="garden-day-foreground" class="garden-foreground-pattern" x="-720" y="1441.625" width="7200" height="600" patternUnits="userSpaceOnUse" viewBox="0 924 3072 100" preserveAspectRatio="none">
+          <image width="1536" height="1024" href="christmas-festive-garden-day-v1-2x.jpg" />
+          <image width="1536" height="1024" href="christmas-festive-garden-day-v1-2x.jpg" transform="translate(3072 0) scale(-1 1)" />
+        </pattern>
+        </defs>
+      <g><rect x="-12000" y="-12000" width="24000" height="24000" fill="#88b9ef" /><rect x="-12000" y="-724" width="24000" height="2166.375" fill="url(#garden-day-panorama)" /><rect x="-12000" y="1441.625" width="24000" height="24000" fill="url(#garden-day-foreground)" /></g>
+      <script type="application/ecmascript"><![CDATA[
+(() => {
+  'use strict';
+  const token = new URL(location.href).searchParams.get('svg-asset');
+  if (!token || parent === window) return;
+  const root = document.documentElement.cloneNode(true);
+  root.querySelectorAll('script').forEach(script => script.remove());
+  parent.postMessage({ type: 'svg-asset', token, url: location.href,
+    source: new XMLSerializer().serializeToString(root) }, '*');
+})();
+]]></script></svg>

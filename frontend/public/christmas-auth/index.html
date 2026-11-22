@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b8cedc">
+  <meta name="description" content="Đăng nhập hoặc tạo tài khoản bằng email và mật khẩu.">
+  <title>Đăng nhập · NEU Career AI</title>
+  <script src="js/config.js?v=61a933fa"></script>
+  <link rel="preload" as="image" href="image/neu-seal.png">
+
+  <link rel="preload" as="image" href="image/christmas-festive-garden-day-v1-2x.jpg">
+  <link rel="preload" as="image" href="image/christmas-festive-garden-night-v1-2x.jpg">
+  <link rel="preload" as="image" href="image/window-frame-mobile.svg?v=41c5339e" media="(max-width:850px)">
+  <link rel="preload" as="image" href="image/christmas-red-snowflake-texture-v1.jpg">
+  <link rel="preload" as="image" href="image/santa-sleigh-loading.png?v=2">
+  <link rel="stylesheet" href="css/fonts.css?v=f95bca2d">
+  <link rel="stylesheet" href="css/styles.css?v=9f4975ca">
+  <link rel="stylesheet" href="css/frame-menu.css?v=5fbbbda5">
+  <link rel="stylesheet" href="css/recovery-dialog.css?v=a9b62c41">
+  <link rel="stylesheet" href="css/popup-lights.css?v=25325ce6">
+<link rel="stylesheet" href="css/neu-bridge.css">
+  <link rel="stylesheet" href="css/neu-auth-visual.css">
+</head>
+<body>
+  <div class="page-winter-scene" aria-hidden="true">
+    <span data-svg-src="image/winter-world-day.svg?v=745ef880"></span>
+    <span data-svg-src="image/winter-world-night.svg?v=e2c5ec26"></span>
+    <div class="winter-sunset-wash"></div>
+    <canvas id="courtyard-children" aria-hidden="true"></canvas>
+    <canvas id="winter-light-glints" aria-hidden="true"></canvas><canvas id="winter-snowfall" aria-hidden="true"></canvas>
+  </div>
+  <span data-svg-src="image/frame-menu-clips.svg?v=feb2e02e"></span>
+  <main class="auth-shell">
+    <div class="auth-layout" id="auth-layout" data-mode="login" aria-busy="false">
+    <button class="frame-menu-toggle" type="button" aria-expanded="false" aria-controls="frame-menu-panel" aria-haspopup="dialog">
+      <span class="frame-menu-icon" data-svg-src="image/menu-decoration.svg?v=5d5745e7" aria-hidden="true"></span><span>MENU</span>
+    </button>
+    <span data-svg-src="image/form-surface.svg?v=8f908389"></span>
+    <section class="auth-card" id="auth-card" aria-label="Đăng nhập và đăng ký tài khoản">
+      <nav class="mobile-mode-switch" aria-label="Chọn biểu mẫu">
+        <button type="button" data-mobile-mode="login" aria-pressed="true" aria-controls="login-panel">Đăng nhập</button>
+        <button type="button" data-mobile-mode="register" aria-pressed="false" aria-controls="register-panel">Đăng ký</button>
+        <span class="mobile-tab-indicator" aria-hidden="true">
+          <img src="image/mobile-tab-indicator.svg?v=fe0d85dc" width="180" height="20" alt="">
+        </span>
+      </nav>
+
+      <div class="auth-panels">
+      <div class="auth-panel" id="login-panel" role="group" aria-labelledby="login-title" aria-hidden="false">
+        <div class="form-heading"><h1 id="login-title">Đăng nhập</h1><p>Đăng nhập để tiếp tục.</p></div>
+        <form id="login-form" method="post" novalidate>
+          <div class="field">
+            <label for="login-email">Địa chỉ email</label>
+            <div class="input-wrap"><img class="input-icon" src="image/input-postcard.svg?v=683d3471" width="24" height="24" alt="" aria-hidden="true"><input id="login-email" name="email" type="email" placeholder="ban@example.com" autocomplete="username" autocapitalize="none" spellcheck="false" aria-describedby="login-email-error" required></div>
+            <p class="field-error" id="login-email-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="login-password">Mật khẩu</label>
+            <div class="input-wrap"><img class="input-icon" src="image/input-sleigh-bell.svg?v=01073b93" width="24" height="24" alt="" aria-hidden="true"><input id="login-password" name="password" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password" aria-describedby="login-password-error" required><button class="password-toggle" type="button" aria-label="Hiện mật khẩu" aria-controls="login-password" aria-pressed="false"><span class="svg-icon eye-open" data-svg-src="image/icon-eye.svg?v=897b3c43" aria-hidden="true"></span><span class="svg-icon eye-closed" data-svg-src="image/icon-eye-off.svg?v=abcd792e" aria-hidden="true"></span></button></div>
+            <p class="field-error" id="login-password-error" hidden></p>
+          </div>
+          <div class="login-options">
+            <label class="remember-option" for="login-remember"><input id="login-remember" name="remember" type="checkbox" value="1"><span>Ghi nhớ đăng nhập</span></label>
+            <button class="forgot-button" id="recovery-open" type="button">Quên mật khẩu?</button>
+          </div>
+          <button class="submit" type="submit">Đăng nhập<span class="svg-icon" data-svg-src="image/icon-arrow.svg?v=539a06ff" aria-hidden="true"></span></button>
+        </form>
+      </div>
+
+      <div class="auth-panel" id="register-panel" role="group" aria-labelledby="register-title" aria-hidden="true" hidden inert>
+        <div class="form-heading"><h1 id="register-title">Đăng ký</h1><p>Điền thông tin bên dưới để đăng ký.</p></div>
+        <form id="register-form" method="post" novalidate>
+          <div class="field">
+            <label for="register-name">Họ và tên</label>
+            <div class="input-wrap"><img class="input-icon" src="image/input-boy.svg?v=fe1d5dac" width="24" height="24" alt="" aria-hidden="true"><input id="register-name" name="name" type="text" placeholder="Nhập họ tên" autocomplete="name" maxlength="100" aria-describedby="register-name-error" required></div>
+            <p class="field-error" id="register-name-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="register-email">Địa chỉ email</label>
+            <div class="input-wrap"><img class="input-icon" src="image/input-postcard.svg?v=683d3471" width="24" height="24" alt="" aria-hidden="true"><input id="register-email" name="email" type="email" placeholder="ban@example.com" autocomplete="email" autocapitalize="none" spellcheck="false" aria-describedby="register-email-error" required></div>
+            <p class="field-error" id="register-email-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="register-password">Mật khẩu</label>
+            <div class="input-wrap"><img class="input-icon" src="image/input-sleigh-bell.svg?v=01073b93" width="24" height="24" alt="" aria-hidden="true"><input id="register-password" name="password" type="password" placeholder="Mật khẩu" autocomplete="new-password" minlength="8" aria-describedby="register-password-error" required><button class="password-toggle" type="button" aria-label="Hiện mật khẩu" aria-controls="register-password" aria-pressed="false"><span class="svg-icon eye-open" data-svg-src="image/icon-eye.svg?v=897b3c43" aria-hidden="true"></span><span class="svg-icon eye-closed" data-svg-src="image/icon-eye-off.svg?v=abcd792e" aria-hidden="true"></span></button></div>
+            <div class="password-meta">
+
+              <div class="strength" id="password-strength" hidden><span class="strength-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="strength-text" id="strength-text"></span></div>
+            </div>
+            <p class="field-error" id="register-password-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="register-confirm">Nhập lại mật khẩu</label>
+            <div class="input-wrap"><img class="input-icon" src="image/input-sleigh-bell.svg?v=01073b93" width="24" height="24" alt="" aria-hidden="true"><input id="register-confirm" name="confirmPassword" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" aria-describedby="register-confirm-error" required><button class="password-toggle" type="button" aria-label="Hiện mật khẩu nhập lại" aria-controls="register-confirm" aria-pressed="false"><span class="svg-icon eye-open" data-svg-src="image/icon-eye.svg?v=897b3c43" aria-hidden="true"></span><span class="svg-icon eye-closed" data-svg-src="image/icon-eye-off.svg?v=abcd792e" aria-hidden="true"></span></button></div>
+            <p class="field-error" id="register-confirm-error" hidden></p>
+          </div>
+          <button class="submit" type="submit">Đăng ký<span class="svg-icon" data-svg-src="image/icon-arrow.svg?v=539a06ff" aria-hidden="true"></span></button>
+        </form>
+      </div>
+      </div>
+      <div class="account-switch"><span id="account-switch-prompt">Chưa có tài khoản?</span><button class="banner-switch" id="mode-switch" type="button" data-switch="register" aria-controls="register-panel"><span id="mode-switch-label">Đăng ký</span></button></div>
+
+    </section>
+    <aside class="banner" id="auth-banner" aria-labelledby="banner-title">
+      <span class="wave-wing wave-right" data-svg-src="image/divider-wave.svg?v=e01afd7a" aria-hidden="true"></span>
+      <span class="wave-wing wave-left" data-svg-src="image/divider-wave.svg?v=e01afd7a" aria-hidden="true"></span>
+
+      <div class="hotel-brand" aria-label="Đại học Kinh tế Quốc dân (NEU)">
+        <span class="holiday-logo">
+          <img class="holiday-logo-day" src="image/neu-seal.png" alt="Logo Đại học Kinh tế Quốc dân – NEU" width="354" height="354">
+          <img class="holiday-logo-night" src="image/neu-seal.png" alt="" aria-hidden="true" width="354" height="354">
+        </span>
+      </div>
+      <div class="winter-window" role="group" aria-label="Khung cửa nhìn ra sân vườn phủ tuyết, có mèo trắng. Ban ngày một trong ba bé ghé thăm góc trái; ban đêm có bé gái vẫy tay, một bé trai nhìn qua kính và một bé trai xoa tay cho ấm">
+        <canvas id="window-visitors" width="680" height="600" aria-hidden="true"></canvas>
+        <img class="winter-vector winter-vector--desktop" src="image/window-frame-desktop.svg?v=7dd0fa0f" width="680" height="600" alt="" aria-hidden="true">
+        <img class="winter-vector winter-vector--mobile" src="image/window-frame-mobile.svg?v=41c5339e" width="680" height="360" alt="" aria-hidden="true">
+        <div class="music-player" id="music-player" role="group" aria-label="Nhạc Giáng sinh trong ô cửa sổ bên trái" data-playing="false">
+          <audio id="christmas-audio" src="audio/jingle-bells-orchestra.mp3" preload="none"></audio>
+          <button class="music-toggle" id="music-toggle" type="button" aria-label="Bật nhạc Jingle Bells" aria-pressed="false" title="Bật nhạc">
+            <span class="svg-icon music-play" data-svg-src="image/icon-music-play.svg?v=8f4c40ca" aria-hidden="true"></span>
+            <span class="svg-icon music-pause" data-svg-src="image/icon-music-pause.svg?v=9663e9e9" aria-hidden="true"></span>
+          </button>
+          <canvas class="music-wave" id="music-wave" width="480" height="160" aria-hidden="true"></canvas>
+          <span class="sr-only" id="music-status" role="status" aria-live="polite"></span>
+        </div>
+        <canvas id="sill-kitten" width="680" height="600" aria-hidden="true"></canvas>
+      </div>
+      <div class="banner-copy" id="banner-copy">
+        <h2 id="banner-title">Chào mừng<br><em>bạn trở lại.</em></h2>
+        <p id="banner-description">Đăng nhập bằng email và mật khẩu của bạn.</p>
+
+      </div>
+    </aside>
+    <div class="frame-menu-overlay" hidden>
+      <button class="frame-menu-backdrop" type="button" tabindex="-1" aria-label="Đóng menu"></button>
+      <aside class="frame-menu-panel" id="frame-menu-panel" role="dialog" aria-modal="true" aria-labelledby="frame-menu-title">
+        <span data-svg-src="image/frame-menu-curve.svg?v=fba4ad08"></span>
+        <div class="frame-menu-header">
+          <h2 id="frame-menu-title">Menu</h2>
+          <button class="frame-menu-close" type="button" aria-label="Đóng menu"><span class="svg-icon" data-svg-src="image/icon-close.svg?v=ae9fec76" aria-hidden="true"></span></button>
+        </div>
+        <nav class="frame-menu-nav" aria-label="Điều hướng chính">
+          <button type="button" id="neu-language">VI / EN</button>
+          <button type="button" data-frame-route="home"><span class="svg-icon" data-svg-src="image/icon-menu-home.svg?v=692b9d20" aria-hidden="true"></span><span>Trang chủ</span></button>
+          <button type="button" data-frame-route="register"><span class="svg-icon" data-svg-src="image/icon-menu-register.svg?v=ad7621af" aria-hidden="true"></span><span>Đăng ký</span></button>
+          <button type="button" data-frame-route="login"><span class="svg-icon" data-svg-src="image/icon-menu-login.svg?v=7f3f8f5a" aria-hidden="true"></span><span>Đăng nhập</span></button>
+          <button type="button" data-frame-route="recovery"><span class="svg-icon" data-svg-src="image/icon-menu-recovery.svg?v=6ec8191d" aria-hidden="true"></span><span>Quên mật khẩu</span></button>
+          <button type="button" data-frame-route="about" aria-expanded="false" aria-controls="frame-menu-about"><span class="svg-icon" data-svg-src="image/icon-menu-about.svg?v=0c42ef11" aria-hidden="true"></span><span>About</span></button>
+        </nav>
+        <section class="frame-menu-about" id="frame-menu-about" aria-labelledby="frame-menu-about-title" hidden>
+          <h3 id="frame-menu-about-title" tabindex="-1">Giới thiệu</h3>
+          <p>Không gian tài khoản mang chủ đề Giáng sinh, với cảnh ngày và đêm cùng nhạc nền Jingle Bells.</p>
+        </section>
+      </aside>
+    </div>
+    </div>
+    <p class="sr-only" id="mode-status" role="status" aria-live="polite"></p>
+    <footer class="site-footer"><span>© 2026</span><span>Tài khoản cá nhân</span></footer>
+  </main>
+  <div class="mobile-landscape-footer" aria-hidden="true"></div>
+  <dialog class="recovery-dialog" id="recovery-dialog" aria-labelledby="recovery-title" aria-describedby="recovery-description">
+    <div class="popup-content">
+    <div class="recovery-header">
+      <div class="recovery-heading"><p class="recovery-kicker">Khôi phục tài khoản</p><h2 id="recovery-title">Quên mật khẩu?</h2></div>
+      <button class="recovery-close" id="recovery-close" type="button" aria-label="Đóng"><span class="svg-icon" data-svg-src="image/icon-close.svg?v=ae9fec76" aria-hidden="true"></span></button>
+    </div>
+    <p id="recovery-description">Nhập email bạn đã dùng để đăng ký tài khoản.</p>
+    <form id="recovery-form" method="post" novalidate>
+      <div class="field"><label for="recovery-email">Địa chỉ email</label><div class="input-wrap"><img class="input-icon" src="image/input-postcard.svg?v=683d3471" width="24" height="24" alt="" aria-hidden="true"><input id="recovery-email" name="email" type="email" autocomplete="email" placeholder="ban@example.com" aria-describedby="recovery-email-error" required></div><p class="field-error" id="recovery-email-error" hidden></p></div>
+      <button class="submit" type="submit">Tiếp tục<span class="svg-icon" data-svg-src="image/icon-arrow-thin.svg?v=ee6de365" aria-hidden="true"></span></button>
+      <p class="notice" id="recovery-notice" role="status" aria-live="polite" hidden></p>
+    </form>
+    <button class="recovery-back" id="recovery-back" type="button"><span class="svg-icon" data-svg-src="image/icon-back.svg?v=90522696" aria-hidden="true"></span>Quay lại</button>
+    </div>
+  </dialog>
+  <dialog class="recovery-dialog" id="neu-profile-dialog" aria-labelledby="neu-profile-title">
+    <h2 id="neu-profile-title">Thông tin tài khoản NEU</h2>
+    <form id="neu-profile-form">
+      <div class="field"><label for="neu-role">Bạn là</label><select id="neu-role"><option value="student">Sinh viên</option><option value="enterprise">Doanh nghiệp</option></select></div>
+      <div class="field"><label for="neu-profile-detail" id="neu-profile-label">Chuyên ngành</label><input id="neu-profile-detail" autocomplete="organization" maxlength="200"></div>
+      <button class="submit" type="submit">Tạo tài khoản</button>
+      <button class="recovery-back" type="button" id="neu-profile-cancel">Quay lại</button>
+    </form>
+  </dialog>
+  <dialog class="auth-feedback auth-loading-dialog" id="auth-loading-dialog" aria-labelledby="auth-loading-title" aria-describedby="auth-loading-description" tabindex="-1">
+    <div class="popup-content">
+    <div class="auth-sleigh-sprite" aria-hidden="true"><div class="auth-sleigh-viewport"><img src="image/santa-sleigh-loading.png?v=2" width="1800" height="1080" alt=""></div></div>
+    <div role="status" aria-live="polite"><h2 id="auth-loading-title">Đang xử lý…</h2><p id="auth-loading-description">Vui lòng chờ trong giây lát.</p></div>
+    </div>
+  </dialog>
+  <dialog class="auth-feedback auth-error-dialog" id="auth-error-dialog" role="alertdialog" aria-labelledby="auth-error-title" aria-describedby="auth-error-description">
+    <div class="popup-content">
+    <button class="auth-feedback-close" id="auth-error-close" type="button" aria-label="Đóng thông báo"><span class="svg-icon" data-svg-src="image/icon-close.svg?v=ae9fec76" aria-hidden="true"></span></button>
+    <div class="auth-error-emblem" aria-hidden="true"><img src="image/santa-hat-error.svg?v=20c80c38" width="56" height="56" alt=""></div>
+    <h2 id="auth-error-title">Chưa thể tiếp tục</h2>
+    <p id="auth-error-description">Sai email hoặc mật khẩu, vui lòng thử lại</p>
+    <button class="auth-feedback-retry" id="auth-error-retry" type="button" autofocus>Thử lại</button>
+    </div>
+  </dialog>
+  <script type="application/x-oklogin" data-app-src="js/popup-motion.js?v=dfeae2be"></script>
+  <script type="application/x-oklogin" data-app-src="js/auth-feedback.js?v=f5136e9f"></script>
+  <script type="application/x-oklogin" data-app-src="js/sill-kitten.js?v=28a89259"></script>
+  <script type="application/x-oklogin" data-app-src="js/window-visitors.js?v=455e91c9"></script>
+  <script type="application/x-oklogin" data-app-src="js/tree-light-patterns.js?v=160ba569"></script>
+  <script type="application/x-oklogin" data-app-src="js/tree-lights.js?v=10ac93c2"></script>
+  <script type="application/x-oklogin" data-app-src="js/frame-lights.js?v=cc239ccc"></script>
+  <script type="application/x-oklogin" data-app-src="js/music-spectrum.js?v=7da49ba3" data-music-spectrum></script>
+  <script type="application/x-oklogin" data-app-src="js/music-player.js?v=fd96d961"></script>
+  <script type="application/x-oklogin" data-app-src="js/frame-menu.js?v=4342b9d9"></script>
+  <script type="application/x-oklogin" data-app-src="js/app.js?v=bd29f500"></script>
+  <script type="application/x-oklogin" data-app-src="js/neu-bridge.js"></script>
+  <script type="application/x-oklogin" data-app-src="js/neu-register-steps.js"></script>
+  <script src="js/svg-assets.js?v=6fa6063a"></script>
+  <script src="js/bootstrap.js?v=7fce38b5"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+.recovery-dialog {
+  width: min(420px,calc(100vw - 48px));
+  margin: auto;
+  padding: 0;
+  border: 1px solid #e3d0b6;
+  border-radius: 24px;
+  overflow: visible;
+  background: linear-gradient(145deg,#fffdf9,#fbf5ec);
+  color: #57252e;
+  box-shadow: 0 28px 90px #23081340,0 3px 12px #23081312;
+}
+
+.recovery-dialog>.popup-content {
+  padding: 28px;
+}
+
+.recovery-dialog::backdrop {
+  background: #25141f70;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.recovery-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recovery-heading {
+  min-width: 0;
+}
+
+.recovery-kicker {
+  margin: 0 0 8px;
+  color: #926637;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.recovery-dialog h2 {
+  margin: 0;
+  color: #57252e;
+  font-family: inherit;
+  font-size: 27px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -.7px;
+}
+
+.recovery-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #e4d7c9;
+  border-radius: 50%;
+  background: #fffdfa;
+  color: #81635a;
+  transition: background .18s,border-color .18s;
+}
+
+.recovery-close .svg-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.recovery-close:hover {
+  border-color: #cbb3a0;
+  background: #f2e8dc;
+  color: #672d35;
+}
+
+.recovery-dialog .popup-content>p {
+  margin: 14px 0 24px;
+  color: #75635d;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.recovery-dialog .field {
+  margin: 0;
+}
+
+.recovery-dialog .field label {
+  margin: 0 0 8px;
+  color: #573b37;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.recovery-dialog .input-wrap {
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #dfcfc0;
+  border-radius: 12px;
+  background: #fffdf9;
+  color: #887369;
+  box-shadow: 0 1px 2px #57252e04;
+}
+
+.recovery-dialog .input-wrap:hover {
+  border-color: #bda48e;
+}
+
+.recovery-dialog .input-wrap:focus-within {
+  border-color: #9b3441;
+  box-shadow: 0 0 0 3px #9b344118;
+}
+
+.recovery-dialog .input-wrap:has(input[aria-invalid="true"]) {
+  border-color: #b13543;
+  box-shadow: 0 0 0 3px #b1354312;
+}
+
+.recovery-dialog .input-wrap input {
+  height: 50px;
+  color: #3d2c2b;
+  font-size: 16px;
+  caret-color: #8a2736;
+}
+
+.recovery-dialog .input-wrap input::placeholder {
+  color: #887369;
+  font-size: 16px;
+}
+
+.recovery-dialog input:-webkit-autofill {
+  -webkit-text-fill-color: #3d2c2b;
+  caret-color: #8a2736;
+}
+
+.recovery-dialog .field-error {
+  margin: 8px 0 0;
+  color: #b13543;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.recovery-dialog .submit {
+  gap: 10px;
+  min-height: 50px;
+  margin-top: 20px;
+  padding: 13px 18px;
+  border: 1px solid #edd0a5;
+  border-radius: 12px;
+  background: var(--noel-gold-fill);
+  color: #713c2d;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  box-shadow: inset 0 1px 0 #fff7e9,0 4px 12px #773a281a;
+}
+
+.recovery-dialog .submit:hover {
+  background: linear-gradient(120deg,#f8e3bc,#e9c58a);
+  box-shadow: inset 0 1px 0 #fffaf2,0 5px 16px #773a2826;
+}
+
+.recovery-dialog .submit:active {
+  box-shadow: inset 0 2px 5px #96663b26;
+}
+
+.recovery-dialog .submit .svg-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.recovery-dialog .notice {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #e1c6a1;
+  border-radius: 10px;
+  background: #f7eddf;
+  color: #725a45;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.recovery-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  margin: 16px auto 0;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #865649;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.recovery-back .svg-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.recovery-back:hover {
+  background: #f2e8de;
+  color: #6e1f2f;
+}
+
+.recovery-dialog button:focus-visible {
+  outline: 3px solid #a34a56;
+  outline-offset: 3px;
+}
+
+@media(max-width:380px) {
+  .recovery-dialog {
+    border-radius: 20px;
+  }
+
+  .recovery-dialog>.popup-content {
+    padding: 24px 22px;
+  }
+
+  .recovery-dialog h2 {
+    font-size: 24px;
+  }
+}
+
+@media(prefers-reduced-transparency:reduce) {
+  .recovery-dialog::backdrop {
+    background: #25141fa3;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

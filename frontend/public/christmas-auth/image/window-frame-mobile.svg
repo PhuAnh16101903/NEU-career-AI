@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="0 0 680 360" fill="none" width="680" height="360">
+  <defs>
+    <linearGradient id="window-frame-paint" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fffdf8" />
+      <stop offset=".45" stop-color="#eeeae3" />
+      <stop offset="1" stop-color="#d4cdc2" />
+    </linearGradient>
+    <linearGradient id="window-frame-bead" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fffefa" />
+      <stop offset=".28" stop-color="#f7f4ed" />
+      <stop offset=".62" stop-color="#ded8ce" />
+      <stop offset="1" stop-color="#bcb2a5" />
+    </linearGradient>
+    <linearGradient id="window-frame-rail" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#bcb2a5" />
+      <stop offset=".12" stop-color="#fffdf8" />
+      <stop offset=".38" stop-color="#f6f2eb" />
+      <stop offset=".78" stop-color="#e5dfd5" />
+      <stop offset="1" stop-color="#b8ada0" />
+    </linearGradient>
+    <linearGradient id="window-frame-horizontal" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fffefa" />
+      <stop offset=".22" stop-color="#faf7f1" />
+      <stop offset=".72" stop-color="#e2dbd0" />
+      <stop offset="1" stop-color="#b6aa99" />
+    </linearGradient>
+    <linearGradient id="window-frame-sill-top" gradientUnits="userSpaceOnUse" x1="340" y1="302" x2="340" y2="313">
+      <stop stop-color="#ddd6ca" />
+      <stop offset=".22" stop-color="#f4f0e8" />
+      <stop offset="1" stop-color="#fffdf7" />
+    </linearGradient>
+    <linearGradient id="window-frame-sill" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fffdf8" />
+      <stop offset=".24" stop-color="#f4f0e8" />
+      <stop offset=".65" stop-color="#d8d0c3" />
+      <stop offset="1" stop-color="#b9ac99" />
+    </linearGradient>
+    <linearGradient id="window-frame-metal" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#80601e" />
+      <stop offset=".18" stop-color="#c08b25" />
+      <stop offset=".4" stop-color="#ffe6a0" />
+      <stop offset=".56" stop-color="#ecc367" />
+      <stop offset=".82" stop-color="#b17a19" />
+      <stop offset="1" stop-color="#e4bb5c" />
+    </linearGradient>
+    <filter id="window-frame-shadow" x="-.2" y="-.2" width="1.4" height="1.4">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+    <mask id="window-frame-wall" maskUnits="userSpaceOnUse" x="0" y="0" width="680" height="360">
+      <path fill="white" d="M0 0H680V360H0Z" />
+      <path fill="black" d="M88 38H592V302H88Z" />
+    </mask>
+    <clipPath id="window-frame-glass">
+      <path d="M103 53H577V288H103Z" />
+    </clipPath>
+    <g id="window-frame-hinge">
+      <path d="M3 2H8V32H3Z" fill="#715329" opacity=".2" transform="translate(1 1)" />
+      <rect x="2" y="3" width="6" height="28" rx="1" fill="url(#window-frame-metal)" stroke="#9b7429" stroke-width=".6" />
+      <rect x="1" y="1" width="4" height="32" rx="2" fill="url(#window-frame-metal)" stroke="#9b7429" stroke-width=".5" />
+      <path d="M2.2 4V29M1.5 10H4.5M1.5 23H4.5" stroke="#fff1b7" stroke-opacity=".7" stroke-width=".7" />
+      <path d="M6 8V10M6 24V26" stroke="#7c561f" stroke-width=".8" />
+    </g>
+    <g id="window-frame-handle">
+      <rect x="0" y="0" width="7" height="42" rx="3.5" fill="#61461e" opacity=".2" transform="translate(1.3 1.5)" />
+      <rect x="0" y="0" width="7" height="42" rx="3.5" fill="url(#window-frame-metal)" stroke="#a37726" stroke-width=".6" />
+      <path d="M3.5 5V7M3.5 35V37" stroke="#8f631d" stroke-width="1" stroke-linecap="round" />
+      <path d="M4 9C9 9 10 11 10 15V31C10 34 8 35 5.5 35C3.5 35 3 33.5 3 32V16C3 13.5 2 12 2 11C2 9.8 2.7 9 4 9Z" fill="url(#window-frame-metal)" stroke="#ab7921" stroke-width=".7" />
+      <path d="M5 10.5C7.5 10.5 8.2 12 8.2 15V30.5" stroke="#fff0b4" stroke-width="1.1" stroke-linecap="round" />
+      <path d="M1.5 4V31" stroke="#fff4c6" stroke-opacity=".5" stroke-width=".6" />
+    </g>
+  </defs>
+  <path fill="#f2f5f3" mask="url(#window-frame-wall)" d="M0 0H680V360H0Z" />
+  <path d="M88 38H592V302H88Z" transform="translate(1 4)" stroke="#655447" stroke-opacity=".19" stroke-width="29" filter="url(#window-frame-shadow)" />
+  <path fill="url(#window-frame-paint)" fill-rule="evenodd" d="M74 24H606V316H74ZM103 53V287.524H577V53Z" />
+  <path d="M74 24H606L601 29H79Z" fill="#fffefb" />
+  <path d="M74 24L79 29V311L74 316Z" fill="#f9f6f0" />
+  <path d="M606 24V316L601 311V29Z" fill="#c6bdb0" />
+  <path d="M74 316L79 311H601L606 316Z" fill="#c0b5a5" />
+  <path d="M79.5 29.5H600.5V310.5H79.5Z" stroke="#d0c7ba" />
+  <path d="M81 31H599V309H81Z" stroke="#fffdf8" stroke-width="2" />
+  <path d="M85 35H595V305H85Z" stroke="url(#window-frame-bead)" stroke-width="5" />
+  <path d="M88 38H592V302H88Z" stroke="#bfb4a5" stroke-width="1.1" />
+  <path d="M89.5 39.5H590.5V300.5H89.5Z" stroke="#fffdf7" stroke-width="1.4" />
+  <path d="M92 42H588L583 47H97Z" fill="#c8bfb2" />
+  <path d="M92 42L97 47V293L92 298Z" fill="#d6cec2" />
+  <path d="M588 42V298L583 293V47Z" fill="#fdfaf4" />
+  <path d="M92 298L97 293H583L588 298Z" fill="#fffdf8" />
+  <path d="M98 48H582V292H98Z" stroke="#a99c8b" stroke-opacity=".65" stroke-width="1.5" />
+  <path d="M100 50H580V290H100Z" stroke="url(#window-frame-bead)" stroke-width="4" />
+  <path d="M103 288V53H577" stroke="#756b5c" stroke-opacity=".48" stroke-width="1.3" />
+  <path d="M103 288H577V53" stroke="#fffdf6" stroke-width="1.6" />
+  <path d="M75 25L102 52M605 25L578 52M75 315L102 288M605 315L578 288" stroke="#a99d8b" stroke-opacity=".4" stroke-width=".75" />
+  <g clip-path="url(#window-frame-glass)">
+    <path d="M105 54H575V62H111V287.048H105Z" fill="#152a31" opacity=".07" />
+    <path d="M110 176L297 52H317L110 189.948ZM160 290L497 52H506L169 290ZM504 290L578 239.45V248.017L518 290Z" fill="#fffdf5" opacity=".035" />
+  </g>
+  <path d="M328 51H354V290H328Z" fill="#4f463a" opacity=".16" transform="translate(1.5 1.5)" />
+  <path d="M329 50H340V290H329ZM341 50H352V290H341Z" fill="url(#window-frame-rail)" />
+  <path d="M330 51V289M342 51V289" stroke="#fffefa" stroke-width="1.2" />
+  <path d="M338.5 51V289M350.5 51V289" stroke="#b8ad9e" stroke-width=".8" />
+  <path d="M340.5 50V290" stroke="#948574" stroke-width="1" />
+  <path d="M103 164H577V177H103Z" fill="#4f463a" opacity=".19" transform="translate(0 2)" />
+  <path d="M103 164H329V176H103ZM352 164H577V176H352Z" fill="url(#window-frame-horizontal)" />
+  <path d="M104 165H328M353 165H576" stroke="#fffefa" stroke-width="1.5" />
+  <path d="M104 175H328M353 175H576" stroke="#b8ab98" stroke-width=".8" />
+  <path d="M104 177H328M353 177H576" stroke="#fffdf4" stroke-opacity=".45" stroke-width=".7" />
+  <g>
+    <use href="#window-frame-hinge" transform="translate(89 85)" />
+    <use href="#window-frame-hinge" transform="translate(89 225)" />
+    <use href="#window-frame-hinge" transform="translate(591 85) scale(-1 1)" />
+    <use href="#window-frame-hinge" transform="translate(591 225) scale(-1 1)" />
+    <use href="#window-frame-handle" transform="translate(325 148)" />
+    <use href="#window-frame-handle" transform="translate(356 148) scale(-1 1)" />
+  </g>
+  <ellipse cx="340" cy="324" rx="278" ry="7" fill="#71604c" opacity=".16" filter="url(#window-frame-shadow)" />
+  <path d="M80 302H600L615 313H65Z" fill="url(#window-frame-sill-top)" />
+  <path d="M80 302H600" stroke="#b9ae9e" stroke-width=".8" />
+  <path d="M76 306H604M69 311H611" stroke="#fffef9" stroke-opacity=".8" />
+  <path d="M65 313H615V320H65Z" fill="url(#window-frame-sill)" />
+  <path d="M65.5 313.5H614.5" stroke="#fffefa" stroke-width="1.3" />
+  <path d="M66 319.5H614" stroke="#b4a691" stroke-width=".8" />
+  <path d="M78 320H602L600 325H80Z" fill="url(#window-frame-sill)" />
+  <path d="M79 321H601" stroke="#fffdf7" stroke-width="1.1" />
+  <path d="M81 324.5H599" stroke="#b6a995" stroke-width=".8" />
+</svg>

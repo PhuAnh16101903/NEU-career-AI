@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="frame-lights" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="bulb-0" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#ff9980"/><stop offset=".45" stop-color="#cf5350"/><stop offset="1" stop-color="#853c36"/></linearGradient>
+    <radialGradient id="glow-0"><stop stop-color="#ff9980" stop-opacity=".72"/><stop offset=".28" stop-color="#ff9980" stop-opacity=".3"/><stop offset="1" stop-color="#ff9980" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bulb-1" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#ffe5a2"/><stop offset=".45" stop-color="#d5ad57"/><stop offset="1" stop-color="#8f7138"/></linearGradient>
+    <radialGradient id="glow-1"><stop stop-color="#ffe5a2" stop-opacity=".72"/><stop offset=".28" stop-color="#ffe5a2" stop-opacity=".3"/><stop offset="1" stop-color="#ffe5a2" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bulb-2" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#a3ecb5"/><stop offset=".45" stop-color="#518667"/><stop offset="1" stop-color="#30513e"/></linearGradient>
+    <radialGradient id="glow-2"><stop stop-color="#a3ecb5" stop-opacity=".72"/><stop offset=".28" stop-color="#a3ecb5" stop-opacity=".3"/><stop offset="1" stop-color="#a3ecb5" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bulb-3" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#bceaff"/><stop offset=".45" stop-color="#80a8b9"/><stop offset="1" stop-color="#426778"/></linearGradient>
+    <radialGradient id="glow-3"><stop stop-color="#bceaff" stop-opacity=".72"/><stop offset=".28" stop-color="#bceaff" stop-opacity=".3"/><stop offset="1" stop-color="#bceaff" stop-opacity="0"/></radialGradient>
+    <g data-light-bulb="0">
+      <path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="url(#bulb-0)" stroke="#853c36" stroke-width=".5"/>
+      <path d="M-2.4 5Q-3.5 7.5-1.5 10" fill="none" stroke="#fff9df" stroke-opacity=".65" stroke-width="1" stroke-linecap="round"/>
+      <rect x="-3.5" y="-2" width="7" height="5" rx="1" fill="#3c4e3f"/>
+      <path d="M-2.5 0H2.5" stroke="#9eaa89" stroke-opacity=".6" stroke-width=".7"/>
+    </g>
+    <g data-light-bulb="1">
+      <path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="url(#bulb-1)" stroke="#8f7138" stroke-width=".5"/>
+      <path d="M-2.4 5Q-3.5 7.5-1.5 10" fill="none" stroke="#fff9df" stroke-opacity=".65" stroke-width="1" stroke-linecap="round"/>
+      <rect x="-3.5" y="-2" width="7" height="5" rx="1" fill="#3c4e3f"/>
+      <path d="M-2.5 0H2.5" stroke="#9eaa89" stroke-opacity=".6" stroke-width=".7"/>
+    </g>
+    <g data-light-bulb="2">
+      <path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="url(#bulb-2)" stroke="#30513e" stroke-width=".5"/>
+      <path d="M-2.4 5Q-3.5 7.5-1.5 10" fill="none" stroke="#fff9df" stroke-opacity=".65" stroke-width="1" stroke-linecap="round"/>
+      <rect x="-3.5" y="-2" width="7" height="5" rx="1" fill="#3c4e3f"/>
+      <path d="M-2.5 0H2.5" stroke="#9eaa89" stroke-opacity=".6" stroke-width=".7"/>
+    </g>
+    <g data-light-bulb="3">
+      <path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="url(#bulb-3)" stroke="#426778" stroke-width=".5"/>
+      <path d="M-2.4 5Q-3.5 7.5-1.5 10" fill="none" stroke="#fff9df" stroke-opacity=".65" stroke-width="1" stroke-linecap="round"/>
+      <rect x="-3.5" y="-2" width="7" height="5" rx="1" fill="#3c4e3f"/>
+      <path d="M-2.5 0H2.5" stroke="#9eaa89" stroke-opacity=".6" stroke-width=".7"/>
+    </g>
+    <g data-light-shine="0"><circle cx="0" cy="8" r="22" fill="url(#glow-0)"/><path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="#ff9980" fill-opacity=".72"/><path d="M-2 7L0 9L2 7" fill="none" stroke="#fffbe5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g data-light-shine="1"><circle cx="0" cy="8" r="22" fill="url(#glow-1)"/><path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="#ffe5a2" fill-opacity=".72"/><path d="M-2 7L0 9L2 7" fill="none" stroke="#fffbe5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g data-light-shine="2"><circle cx="0" cy="8" r="22" fill="url(#glow-2)"/><path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="#a3ecb5" fill-opacity=".72"/><path d="M-2 7L0 9L2 7" fill="none" stroke="#fffbe5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g data-light-shine="3"><circle cx="0" cy="8" r="22" fill="url(#glow-3)"/><path d="M-3 2C-6 5-5 10-2 13Q0 16 2 13C5 10 6 5 3 2Z" fill="#bceaff" fill-opacity=".72"/><path d="M-2 7L0 9L2 7" fill="none" stroke="#fffbe5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g data-light-phase="" class="frame-light-phase"/>
+  </defs>
+  <path data-light-wire="" fill="none" stroke="#425544" stroke-width="1.8" stroke-linejoin="round"/>
+  <g data-light-bulbs=""/>
+  <g class="frame-lights-glow"/>
+<script type="application/ecmascript"><![CDATA[
+(() => {
+  'use strict';
+  const token = new URL(location.href).searchParams.get('svg-asset');
+  if (!token || parent === window) return;
+  const root = document.documentElement.cloneNode(true);
+  root.querySelectorAll('script').forEach(script => script.remove());
+  parent.postMessage({ type: 'svg-asset', token, url: location.href,
+    source: new XMLSerializer().serializeToString(root) }, '*');
+})();
+]]></script></svg>

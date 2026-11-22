@@ -1,0 +1,154 @@
+/* Shared NEU visual language, derived from the homepage. */
+.u219 {
+  --ui-space:24px;
+  --ui-control-radius:8px;
+  --ui-panel-radius:12px;
+  font-family:"Geist",Arial,"Segoe UI",sans-serif;
+}
+.u219[data-theme="light"] {
+  --ux-page:#edf5fb;
+  --ux-surface:#ffffff;
+  --ux-surface-2:#e6f0f8;
+  --ux-surface-3:#d8e7f3;
+  --ux-ink:#15334f;
+  --ux-ink-2:#344f68;
+  --ux-ink-3:#405b73;
+  --ux-line:#c4d7e6;
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) {
+  font-family:inherit;
+  font-size:15px;
+  line-height:1.65;
+  color:var(--ux-ink);
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) :is(h1,h2,h3) {
+  color:var(--ux-ink);
+  font-family:inherit;
+  font-weight:600;
+  letter-spacing:-.03em;
+  line-height:1.2;
+  text-wrap:balance;
+}
+.u219 .guide-page .guide-page-heading h1 { font-size:clamp(32px,4vw,56px); }
+.u219 .app-shell h1 { font-size:clamp(28px,3vw,42px); }
+.u219 .standalone-auth .auth-form h1 { font-size:clamp(30px,3vw,42px); }
+.u219 :is(.guide-page,.standalone-auth,.app-shell) p { color:var(--ux-ink-2); }
+.u219 :is(.guide-page .public-header,.auth-header,.topbar) {
+  background:var(--ux-surface);
+  border-bottom:1px solid var(--ux-line);
+  padding:20px clamp(20px,4vw,64px);
+  gap:16px;
+}
+.u219 :is(.guide-page .public-brand,.auth-header .public-brand,.sidebar .public-brand) {
+  color:var(--ux-ink);
+  font-size:20px;
+  font-weight:600;
+  letter-spacing:-.025em;
+  gap:10px;
+}
+.u219 :is(.guide-page,.standalone-auth,.sidebar) .neu-logo { width:42px;height:42px;flex-shrink:0; }
+.u219 :is(.guide-page,.standalone-auth,.app-shell) :is(.button,.landing-button,.header-login,.hero-link) {
+  min-height:46px;
+  border-radius:var(--ui-control-radius);
+  padding:12px 20px;
+  font-size:14px;
+  line-height:1.4;
+  font-weight:600;
+  letter-spacing:0;
+  box-shadow:none;
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) :is(.button.primary,.landing-button,.header-login,.hero-link) {
+  background:var(--ux-accent);
+  color:var(--ux-accent-ink);
+  border:1px solid transparent;
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) .button.secondary {
+  background:var(--ux-surface);
+  color:var(--ux-ink);
+  border:1px solid var(--ux-line-2);
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) :is(.button,.landing-button,.header-login):hover:not(:disabled) {
+  filter:brightness(.96);
+  opacity:1;
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),select,textarea) {
+  border:1px solid var(--ux-line-2);
+  border-radius:var(--ui-control-radius);
+  background:var(--ux-surface);
+  color:var(--ux-ink);
+  font:inherit;
+  padding:12px 14px;
+  min-height:46px;
+  max-width:100%;
+}
+.u219 :is(.guide-page,.standalone-auth,.app-shell) label { color:var(--ux-ink);font-weight:500; }
+.u219 :is(input,textarea)::placeholder { color:var(--ux-ink-3);opacity:1; }
+.u219 :is(.guide-page,.standalone-auth,.app-shell) :focus-visible { outline:2px solid var(--ux-accent);outline-offset:3px; }
+.u219 :is(.app-shell,.standalone-auth) :is(.panel,.course-card,.candidate) {
+  border:1px solid var(--ux-line);
+  border-radius:var(--ui-panel-radius);
+  background:var(--ux-surface);
+  color:var(--ux-ink);
+  padding:24px;
+  box-shadow:none;
+}
+.u219 .app-shell :is(.content-grid,.course-grid,.stats-grid) { gap:24px; }
+.u219 .app-shell .sidebar { background:var(--ux-surface);border-right:1px solid var(--ux-line); }
+.u219 .app-shell .nav-item { min-height:48px;border-radius:8px;margin-bottom:6px;color:var(--ux-ink-2);font-weight:500; }
+.u219 .app-shell .nav-item.active { background:var(--ux-accent);color:var(--ux-accent-ink);box-shadow:none; }
+.u219 .app-shell .nav-item.active svg { color:inherit; }
+.u219 .app-shell .hero-banner { background:var(--ux-surface-2);border:1px solid var(--ux-line);border-radius:12px; }
+.u219 .app-shell .hero-banner :is(h1,h2,strong) { color:var(--ux-ink); }
+.u219 .app-shell .table-wrap { overflow-x:auto;border:1px solid var(--ux-line);border-radius:8px; }
+.u219 .app-shell table { width:100%;border-collapse:collapse;font-size:14px; }
+.u219 .app-shell :is(th,td) { padding:16px;text-align:left;border-bottom:1px solid var(--ux-line);color:var(--ux-ink); }
+.u219 .app-shell th { background:var(--ux-surface-2);font-weight:600;white-space:nowrap; }
+.u219 .app-shell tbody tr:last-child td { border-bottom:0; }
+.u219 .app-shell .stat strong { font-size:36px;line-height:1.2;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ux-ink); }
+.u219 .app-shell :is(.badge,.tag) { font-size:12px;line-height:1.5;border-radius:6px; }
+.u219 .standalone-auth .auth-story { border-radius:12px;background:var(--ux-surface-2);border:1px solid var(--ux-line); }
+.u219 .standalone-auth .auth-story h2 { font-size:clamp(32px,3.5vw,48px); }
+.u219 .standalone-auth .segmented { padding:4px;border:1px solid var(--ux-line);border-radius:8px;background:var(--ux-surface-2); }
+.u219 .standalone-auth .segmented button { min-height:44px;border-radius:6px;color:var(--ux-ink-2); }
+.u219 .standalone-auth .segmented button[aria-pressed="true"] { background:var(--ux-surface);color:var(--ux-ink); }
+.u219 .guide-page :is(.intro-section,.feature-section,.how-section,.practice-section) { border-radius:12px; }
+.u219 .guide-page :is(.section-heading,.practice-copy,.intro-section) h2 { font-size:clamp(28px,3.5vw,48px); }
+.u219 .guide-page .landing-feature { background:transparent; }
+.u219 :is(.command-dialog,.course-sheet) { font-family:inherit;border:1px solid var(--ux-line);border-radius:12px;background:var(--ux-surface);color:var(--ux-ink); }
+@media(max-width:760px) {
+ .u219 :is(.guide-page .public-header,.auth-header,.topbar) { padding:16px 20px;gap:12px; }
+ .u219 :is(.app-shell,.standalone-auth) :is(.panel,.course-card,.candidate) { padding:20px; }
+ .u219 .app-shell :is(.content-grid,.course-grid,.stats-grid) { gap:16px; }
+ .u219 .app-shell :is(th,td) { padding:12px; }
+}
+@media(max-width:420px) {
+ .u219 :is(.guide-page .public-brand,.auth-header .public-brand) { font-size:16px; }
+}
+/* Native circular reveal uses the browser's compositor, without duplicate forms. */
+::view-transition-old(root), ::view-transition-new(root) { animation:none;mix-blend-mode:normal; }
+::view-transition-new(root) { z-index:2; }
+::view-transition-old(root) { z-index:1; }
+.u219 :is(.public-header,.auth-header) { isolation:isolate; }
+.u219 :is(.public-header,.auth-header) .u219-tg { position:relative;z-index:60;pointer-events:auto;touch-action:manipulation;min-width:44px;min-height:44px; }
+.u219 .u219-tg svg { pointer-events:none; }
+.u219 .standalone-auth.auth-motion .auth-story { position:relative;overflow:hidden;isolation:isolate; }
+.u219.neu-prompt-only .auth-motion .auth-story h2 { animation:neu-fold-up .8s ease .2s both!important; }
+.u219.neu-prompt-only .auth-motion .auth-story > p { animation:neu-fold-up .8s ease .4s both!important; }
+.u219.neu-prompt-only .auth-motion .auth-form { animation:neu-fold-up .8s ease .2s both!important; }
+.u219.u219-snapshot .auth-motion :is(.auth-story h2,.auth-story > p,.auth-form) { animation:none!important; }
+.u219 .app-shell :is(.dropzone,.upload-zone,.empty) { background:var(--ux-surface-2);border:1px dashed var(--ux-line-2);color:var(--ux-ink);border-radius:12px; }
+.u219 .app-shell :is(.message,.candidate,.match-score,.star-row) { border-color:var(--ux-line);color:var(--ux-ink); }
+.u219 .app-shell .message { background:var(--ux-surface-2);border-radius:12px; }
+.u219 .app-shell .message.user { background:var(--ux-surface-3); }
+.u219 .app-shell .message :is(p,strong) { color:var(--ux-ink); }
+.u219 .app-shell :is(.filter-bar,.answer-form,.panel-heading,.account-toolbar) { gap:16px; }
+.u219 .app-shell .answer-form textarea { line-height:1.7; }
+.u219 .app-shell .skill-tag { background:var(--ux-surface-2);color:var(--ux-ink);border:1px solid var(--ux-line);border-radius:6px; }
+.u219 .app-shell :is(.notice,.error) { border-radius:8px;line-height:1.65; }
+@media(prefers-reduced-motion:reduce) {
+ .u219.neu-prompt-only .auth-motion :is(.auth-story h2,.auth-story > p,.auth-form) { animation:none!important; }
+}
+@media(max-width:760px) {
+ .u219 .standalone-auth.auth-motion .auth-story { display:block; }
+ .u219 .standalone-auth.auth-motion .auth-story .neu-auth-identity { display:none; }
+}

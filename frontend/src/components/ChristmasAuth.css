@@ -1,0 +1,5 @@
+.u219 .christmas-auth-frame { display:block;width:100%;height:100dvh;min-height:320px;border:0;background:#b8cedc; }
+/* The reference already supplies its own snowfall. */
+.u219:has(> .christmas-auth-frame) > .christmas-snow { display:none; }
+
+.u219:has(> .christmas-auth-frame) > .command-trigger { display:none; }

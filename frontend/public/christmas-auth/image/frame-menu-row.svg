@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="frame-menu-row-shape" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath data-row-clip="" clipPathUnits="objectBoundingBox"><path data-row-mask=""/></clipPath>
+  </defs>
+  <path data-row-surface="" class="frame-menu-row-surface" vector-effect="non-scaling-stroke"/>
+<script type="application/ecmascript"><![CDATA[
+(() => {
+  'use strict';
+  const token = new URL(location.href).searchParams.get('svg-asset');
+  if (!token || parent === window) return;
+  const root = document.documentElement.cloneNode(true);
+  root.querySelectorAll('script').forEach(script => script.remove());
+  parent.postMessage({ type: 'svg-asset', token, url: location.href,
+    source: new XMLSerializer().serializeToString(root) }, '*');
+})();
+]]></script></svg>

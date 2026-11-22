@@ -29,8 +29,31 @@ CATEGORY_WEIGHTS = {
     "Ngoại ngữ": 1,
 }
 
+# Kỹ năng tương thích một chiều khi đánh giá yêu cầu công việc.
+# PostgreSQL có thể đáp ứng yêu cầu SQL, nhưng không thay đổi canonical skill.
+SKILL_COMPATIBILITY = {
+    "SQL": {"PostgreSQL"},
+}
+
 
 class MatchingService:
+    @staticmethod
+    def _has_required_skill(
+        required_skill: str,
+        candidate_skills: set,
+    ) -> bool:
+        """Kiểm tra ứng viên có kỹ năng đáp ứng yêu cầu công việc không."""
+
+        if required_skill in candidate_skills:
+            return True
+
+        compatible_skills = SKILL_COMPATIBILITY.get(
+            required_skill,
+            set(),
+        )
+
+        return bool(compatible_skills & candidate_skills)
+
     @staticmethod
     def _calculate_weighted_match(
         required: List[str],
@@ -175,8 +198,15 @@ class MatchingService:
                 else:
                     unrecognized.append(raw.strip())
 
-        matched = [s for s in required if s in candidate]
-        missing = [s for s in required if s not in candidate]
+        matched = [
+            s for s in required
+            if MatchingService._has_required_skill(s, candidate)
+        ]
+
+        missing = [
+            s for s in required
+            if not MatchingService._has_required_skill(s, candidate)
+        ]
 
         match_percentage = MatchingService._calculate_weighted_match(
             required=required,
@@ -187,7 +217,10 @@ class MatchingService:
         radar = []
         for category in dict.fromkeys(category_of(s) for s in required):
             in_category = [s for s in required if category_of(s) == category]
-            got = sum(1 for s in in_category if s in candidate)
+            got = sum(
+                1 for s in in_category
+                if MatchingService._has_required_skill(s, candidate)
+            )
             radar.append(
                 RadarSkillCategory(
                     category_name=category,

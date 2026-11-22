@@ -1,472 +1,322 @@
-
-import { useEffect, useMemo, useState } from 'react'
-import { careerApi } from '../services/api'
-
-function getSkillNames(skills) {
-  if (!Array.isArray(skills)) return []
-
-  return skills
-    .map((skill) => {
-      if (typeof skill === 'string') return skill.trim()
-      return skill?.name?.trim() || ''
-    })
-    .filter(Boolean)
-}
-
-function RadarChart({ data }) {
-  if (!data?.length) {
-    return <p>Chưa có dữ liệu biểu đồ.</p>
-  }
-
-  const size = 320
-  const center = size / 2
-  const radius = 105
-  const count = data.length
-  const angleFor = (index) => (Math.PI * 2 * index) / count - Math.PI / 2
-
-  const pointFor = (index, value) => {
-    const angle = angleFor(index)
-    const distance = (Math.max(0, Math.min(100, value)) / 100) * radius
-
-    return {
-      x: center + Math.cos(angle) * distance,
-      y: center + Math.sin(angle) * distance,
-    }
-  }
-
-  const polygonFor = (field) =>
-    data
-      .map((item, index) => {
-        const point = pointFor(index, item[field])
-        return `${point.x},${point.y}`
-      })
-      .join(' ')
-
+import { t as tr, useLocale as useUiLanguage } from "../i18n";
+import { useEffect, useState } from "react";
+import { careerApi } from "../services/api";
+import {
+  Empty,
+  ErrorNotice,
+  Icon,
+  PageHead,
+  Tags,
+  errorText,
+  skillList,
+} from "./UI";
+function Radar({ data }) {
+  useUiLanguage();
+  const n = data.length,
+    point = (i, score, radius = 96) => {
+      const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+      return [
+        170 + (Math.cos(angle) * radius * score) / 100,
+        145 + (Math.sin(angle) * radius * score) / 100,
+      ];
+    };
+  if (n < 3) return null;
   return (
-    <div className="matching-radar-wrapper">
-      <svg
-        className="matching-radar"
-        viewBox={`0 0 ${size} ${size}`}
-        role="img"
-        aria-label="Biểu đồ radar so sánh kỹ năng ứng viên và yêu cầu công việc"
-      >
-        {[20, 40, 60, 80, 100].map((level) => {
-          const points = data
-            .map((_, index) => {
-              const point = pointFor(index, level)
-              return `${point.x},${point.y}`
-            })
-            .join(' ')
-
-          return (
-            <polygon
-              key={level}
-              points={points}
-              className="matching-radar-grid"
-            />
-          )
-        })}
-
-        {data.map((item, index) => {
-          const point = pointFor(index, 100)
-          return (
-            <line
-              key={`axis-${index}`}
-              x1={center}
-              y1={center}
-              x2={point.x}
-              y2={point.y}
-              className="matching-radar-axis"
-            />
-          )
-        })}
-
-        <polygon
-          points={polygonFor('job_requirement_score')}
-          className="matching-radar-requirement"
-        />
-
-        <polygon
-          points={polygonFor('candidate_score')}
-          className="matching-radar-candidate"
-        />
-
-        {data.map((item, index) => {
-          const point = pointFor(index, 100)
-          const labelPoint = pointFor(index, 118)
-
-          return (
-            <g key={item.category_name}>
-              <circle
-                cx={pointFor(index, item.candidate_score).x}
-                cy={pointFor(index, item.candidate_score).y}
-                r="3.5"
-                className="matching-radar-dot"
-              />
-              <text
-                x={labelPoint.x}
-                y={labelPoint.y}
-                className="matching-radar-label"
-                textAnchor={
-                  labelPoint.x < center - 10
-                    ? 'end'
-                    : labelPoint.x > center + 10
-                      ? 'start'
-                      : 'middle'
-                }
-                dominantBaseline="middle"
-              >
-                {item.category_name}
-              </text>
-            </g>
-          )
-        })}
-      </svg>
-
-      <div className="matching-radar-legend">
-        <span>
-          <i className="matching-legend-candidate" />
-          Kỹ năng ứng viên
-        </span>
-        <span>
-          <i className="matching-legend-requirement" />
-          Yêu cầu công việc
-        </span>
-      </div>
-    </div>
-  )
-}
-
-function SkillList({ title, skills, type, emptyText }) {
-  return (
-    <div className={`matching-skill-card matching-skill-${type}`}>
-      <h4>{title}</h4>
-
-      {skills?.length ? (
-        <div className="matching-skill-tags">
-          {skills.map((skill, index) => (
-            <span key={`${skill}-${index}`}>{skill}</span>
-          ))}
-        </div>
-      ) : (
-        <p className="matching-empty">{emptyText}</p>
+    <svg
+      className="radar"
+      viewBox="0 0 340 290"
+      role="img"
+      aria-label={tr(
+        "Biểu đồ radar năng lực; số liệu chi tiết ở bảng bên dưới",
       )}
-    </div>
-  )
+    >
+      <title>{tr("Năng lực hiện tại và yêu cầu công việc")}</title>
+      {[25, 50, 75, 100].map((v) => (
+        <polygon
+          key={v}
+          points={data.map((_, i) => point(i, v).join(",")).join(" ")}
+          fill="none"
+          stroke="var(--ux-line)"
+        />
+      ))}
+      {data.map((d, i) => (
+        <g key={d.category_name}>
+          <line
+            x1="170"
+            y1="145"
+            x2={point(i, 100)[0]}
+            y2={point(i, 100)[1]}
+            stroke="var(--ux-line)"
+          />
+          <text
+            x={point(i, 100, 123)[0]}
+            y={point(i, 100, 123)[1]}
+            textAnchor="middle"
+            fontSize="10"
+            fill="var(--ux-ink-2)"
+          >
+            {tr(d.category_name)}
+          </text>
+        </g>
+      ))}
+      <polygon
+        className="radar-required"
+        points={data
+          .map((d, i) => point(i, d.job_requirement_score).join(","))
+          .join(" ")}
+        fill="none"
+        stroke="var(--ux-ink-2)"
+        strokeDasharray="5 4"
+      />
+      <polygon
+        className="radar-current"
+        points={data
+          .map((d, i) => point(i, d.candidate_score).join(","))
+          .join(" ")}
+        fill="var(--ux-accent-soft)"
+        stroke="var(--ux-accent)"
+        strokeWidth="2"
+      />
+    </svg>
+  );
 }
-
 export default function MatchingTab({ cvData }) {
-  const [jobTitle, setJobTitle] = useState('Junior Data Analyst')
-  const [jobDescription, setJobDescription] = useState('')
-  const [skillsText, setSkillsText] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [result, setResult] = useState(null)
-
-  // Tự động lấy kỹ năng từ CV khi CV được tải lên hoặc phân tích lại.
+  useUiLanguage();
+  const [jobTitle, setTitle] = useState(""),
+    [jobDescription, setDescription] = useState(""),
+    [skills, setSkills] = useState(""),
+    [result, setResult] = useState(null),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
   useEffect(() => {
-    const names = getSkillNames(cvData?.skills)
-
-    if (names.length) {
-      setSkillsText(names.join(', '))
+    if (cvData) {
+      setSkills((cvData.skills || []).map((s) => s.name).join(", "));
+      setResult(null);
     }
-  }, [cvData])
-
-  const candidateSkills = useMemo(
-    () =>
-      [...new Set(
-        skillsText
-          .split(/[,;\n]+/)
-          .map((skill) => skill.trim())
-          .filter(Boolean)
-      )],
-    [skillsText]
-  )
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-
-    if (!jobTitle.trim()) {
-      setError('Vui lòng nhập vị trí ứng tuyển.')
-      return
+  }, [cvData]);
+  async function submit(e) {
+    e.preventDefault();
+    if (busy) return;
+    if (!jobTitle.trim() || !skillList(skills).length) {
+      setError("Hãy nhập vị trí mục tiêu và ít nhất một kỹ năng.");
+      return;
     }
-
-    if (!candidateSkills.length) {
-      setError('Vui lòng nhập ít nhất một kỹ năng hoặc tải CV trước.')
-      return
-    }
-
-    setLoading(true)
-    setError('')
-    setResult(null)
-
+    setBusy(true);
+    setError("");
+    setResult(null);
     try {
-      const data = await careerApi.matchSkills({
-        jobTitle: jobTitle.trim(),
-        jobDescription: jobDescription.trim(),
-        candidateSkills,
-      })
-
-      setResult(data)
-    } catch (err) {
-      setError(
-        err.response?.data?.detail ||
-        'Không thể phân tích mức độ phù hợp. Vui lòng thử lại.'
-      )
+      setResult(
+        await careerApi.matchSkills({
+          jobTitle: jobTitle.trim(),
+          jobDescription,
+          candidateSkills: skillList(skills),
+        }),
+      );
+    } catch (e) {
+      setError(errorText(e));
     } finally {
-      setLoading(false)
+      setBusy(false);
     }
   }
-
-  const score = Number(result?.overall_match_percentage ?? 0)
-
-  const scoreLabel =
-    score >= 80
-      ? 'Rất phù hợp'
-      : score >= 60
-        ? 'Khá phù hợp'
-        : score >= 40
-          ? 'Cần bổ sung kỹ năng'
-          : 'Cần cải thiện nhiều'
-
-  const explanations = useMemo(
-    () =>
-      new Map(
-        (result?.course_explanations || []).map((item) => [
-          item.course_code,
-          item.explanation,
-        ])
-      ),
-    [result]
-  )
-
   return (
-    <section className="matching-page">
-      <div className="matching-heading">
-        <h2>2. So khớp kỹ năng & Lộ trình môn học NEU</h2>
-        <p>
-          Đối chiếu kỹ năng hiện tại với yêu cầu tuyển dụng,
-          xác định khoảng cách kỹ năng và tìm các học phần NEU phù hợp.
-        </p>
-      </div>
-
-      <form className="matching-form" onSubmit={handleSubmit}>
-        <h3>Thông tin vị trí ứng tuyển</h3>
-
-        <div className="matching-form-group">
-          <label htmlFor="matching-job-title">
-            Vị trí ứng tuyển
-          </label>
-          <input
-            id="matching-job-title"
-            type="text"
-            value={jobTitle}
-            onChange={(event) => setJobTitle(event.target.value)}
-            placeholder="Ví dụ: Junior Data Analyst"
-            required
-          />
-        </div>
-
-        <div className="matching-form-group">
-          <label htmlFor="matching-job-description">
-            Mô tả công việc (JD) – không bắt buộc
-          </label>
-          <textarea
-            id="matching-job-description"
-            rows="5"
-            value={jobDescription}
-            onChange={(event) => setJobDescription(event.target.value)}
-            placeholder="Dán mô tả công việc hoặc các yêu cầu kỹ năng tại đây..."
-          />
-          <small>
-            Nếu bỏ trống, hệ thống sẽ sử dụng bộ kỹ năng mặc định theo vị trí.
-          </small>
-        </div>
-
-        <div className="matching-form-group">
-          <label htmlFor="matching-skills">
-            Kỹ năng hiện tại
-          </label>
-          <textarea
-            id="matching-skills"
-            rows="4"
-            value={skillsText}
-            onChange={(event) => setSkillsText(event.target.value)}
-            placeholder="Python, SQL, Excel, Power BI..."
-          />
-          <small>
-            Có thể nhập nhiều kỹ năng, phân cách bằng dấu phẩy hoặc xuống dòng.
-            {cvData?.skills?.length
-              ? ' Kỹ năng đã được lấy từ CV; bạn có thể chỉnh sửa.'
-              : ' Bạn có thể tải CV ở mục Phân tích CV để tự động điền.'}
-          </small>
-          <div className="matching-skill-count">
-            {candidateSkills.length} kỹ năng sẽ được gửi đi
-          </div>
-        </div>
-
-        {error && (
-          <div className="matching-error" role="alert">
-            {error}
-          </div>
+    <>
+      <PageHead
+        visual="matching"
+        eyebrow={tr("BIẾT ĐÍCH ĐẾN · RÕ LỘ TRÌNH")}
+        title={tr("Bạn cách công việc mơ ước bao xa?")}
+      >
+        {tr(
+          "So sánh kỹ năng với vị trí mục tiêu và tìm học phần giúp bạn tiến gần hơn.",
         )}
-
-        <button
-          className="matching-submit"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? 'Đang phân tích kỹ năng...' : 'Phân tích mức độ phù hợp'}
-        </button>
-      </form>
-
-      {result && (
-        <div className="matching-results">
-          <div className="matching-section-heading">
-            <h3>Kết quả phân tích</h3>
-            <p>
-              Nguồn yêu cầu:{' '}
-              {result.requirements_source === 'job_description'
-                ? 'Mô tả công việc bạn cung cấp'
-                : 'Bộ yêu cầu mặc định theo vị trí'}
-            </p>
+      </PageHead>
+      <div className="content-grid">
+        <form className="panel" onSubmit={submit}>
+          <div className="panel-heading">
+            <h2>{tr("Vị trí mục tiêu")}</h2>
+            <Icon name="target" />
           </div>
-
-          <div className="matching-score-card">
-            <div>
-              <span className="matching-score-caption">
-                Mức độ phù hợp tổng thể
-              </span>
-              <div className="matching-score-value">
-                {score.toFixed(1)}%
-              </div>
-              <strong>{scoreLabel}</strong>
-            </div>
-
-            <div className="matching-score-track">
-              <div
-                className="matching-score-fill"
-                style={{ width: `${Math.max(0, Math.min(100, score))}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="matching-section">
-            <h3>Phân tích theo nhóm kỹ năng</h3>
-            <RadarChart data={result.radar_chart_data} />
-          </div>
-
-          <div className="matching-section">
-            <h3>Đối chiếu kỹ năng</h3>
-            <div className="matching-skill-grid">
-              <SkillList
-                title={`Kỹ năng đã đáp ứng (${result.matched_skills?.length || 0})`}
-                skills={result.matched_skills}
-                type="matched"
-                emptyText="Chưa có kỹ năng phù hợp."
-              />
-
-              <SkillList
-                title={`Kỹ năng còn thiếu (${result.missing_skills?.length || 0})`}
-                skills={result.missing_skills}
-                type="missing"
-                emptyText="Không còn kỹ năng thiếu theo yêu cầu."
-              />
-
-              <SkillList
-                title={`Kỹ năng chưa nhận diện (${result.unrecognized_skills?.length || 0})`}
-                skills={result.unrecognized_skills}
-                type="unrecognized"
-                emptyText="Tất cả kỹ năng đã được nhận diện."
-              />
-            </div>
-          </div>
-
-          <div className="matching-section">
-            <h3>Môn học NEU được đề xuất</h3>
-
-            {result.recommended_neu_courses?.length ? (
-              <div className="matching-course-list">
-                {result.recommended_neu_courses.map((course) => (
-                  <article
-                    className="matching-course-card"
-                    key={course.course_code}
-                  >
-                    <div className="matching-course-header">
-                      <div>
-                        <span className="matching-course-code">
-                          {course.course_code}
-                        </span>
-                        <h4>{course.course_name}</h4>
-                      </div>
-                      <span className="matching-course-credits">
-                        {course.credits} tín chỉ
-                      </span>
-                    </div>
-
-                    <p className="matching-course-department">
-                      Khoa/bộ môn: {course.department}
-                    </p>
-
-                    {course.skills_covered?.length > 0 && (
-                      <div className="matching-course-skills">
-                        <strong>Kỹ năng có thể bổ sung:</strong>
-                        <div className="matching-skill-tags">
-                          {course.skills_covered.map((skill) => (
-                            <span key={skill}>{skill}</span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {course.reason && (
-                      <p className="matching-course-reason">
-                        {course.reason}
-                      </p>
-                    )}
-
-                    {explanations.get(course.course_code) && (
-                      <p className="matching-course-explanation">
-                        <strong>Phân tích AI:</strong>{' '}
-                        {explanations.get(course.course_code)}
-                      </p>
-                    )}
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p className="matching-empty">
-                Chưa có môn học NEU phù hợp được đề xuất.
-              </p>
+          <label>
+            {tr("Vị trí bạn muốn ứng tuyển")}
+            <input
+              required
+              value={jobTitle}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={tr("Ví dụ: Junior Data Analyst")}
+            />
+          </label>
+          <label>
+            {tr("Mô tả công việc ")}
+            <span className="optional">{tr("· Không bắt buộc")}</span>
+            <textarea
+              rows="5"
+              value={jobDescription}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={tr("Dán mô tả và yêu cầu của công việc tại đây…")}
+            />
+          </label>
+          <label>
+            {tr("Kỹ năng hiện có")}
+            <textarea
+              required
+              rows="3"
+              value={skills}
+              onChange={(e) => setSkills(e.target.value)}
+              placeholder={tr("SQL, Excel, Python, giao tiếp…")}
+            />
+          </label>
+          <p className="helper">
+            {tr(
+              "Ngăn cách bằng dấu phẩy hoặc xuống dòng. Kỹ năng từ CV được điền tự động và có thể chỉnh sửa.",
             )}
-          </div>
-
-          {result.general_advice && (
-            <div className="matching-section matching-advice">
-              <h3>Lời khuyên tổng quan</h3>
-              <p>{result.general_advice}</p>
-            </div>
+          </p>
+          <ErrorNotice message={error} />
+          <button className="button primary full" disabled={busy}>
+            {tr(busy ? "Đang so khớp…" : "Khám phá độ phù hợp")}
+            <Icon name="arrow" size={18} />
+          </button>
+        </form>
+        <section className="panel" aria-live="polite">
+          <h2>{tr("Mức độ phù hợp")}</h2>
+          {!result ? (
+            <Empty icon="target" title={tr("Mỗi mục tiêu có một lộ trình")}>
+              {tr(
+                "Nhập vị trí và kỹ năng để xem điểm phù hợp. Kết quả là thông tin tham khảo để bạn chuẩn bị tốt hơn.",
+              )}
+            </Empty>
+          ) : (
+            <>
+              <div className="match-score">
+                <strong>
+                  {tr(Math.round(result.overall_match_percentage))}
+                  <span>{tr("%")}</span>
+                </strong>
+                <p>{tr("độ phù hợp kỹ năng")}</p>
+              </div>
+              <p className="helper">
+                {tr("Theo")}
+                {tr(" ")}
+                {tr(
+                  result.requirements_source === "job_description"
+                    ? "mô tả công việc bạn cung cấp"
+                    : "bộ yêu cầu có sẵn của vị trí",
+                )}
+                {tr(".")}
+              </p>
+              <Radar data={result.radar_chart_data || []} />
+              <div className="chart-legend">
+                <span className="legend-current">
+                  <i aria-hidden="true" />
+                  {tr("Kỹ năng hiện tại")}
+                </span>
+                <span className="legend-required">
+                  <i aria-hidden="true" />
+                  {tr("Yêu cầu công việc")}
+                </span>
+              </div>
+              <div className="table-wrap">
+                <table>
+                  <caption className="sr-only">
+                    {tr("Chi tiết năng lực theo nhóm")}
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>{tr("Nhóm năng lực")}</th>
+                      <th>{tr("Hiện tại")}</th>
+                      <th>{tr("Yêu cầu")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tr(
+                      result.radar_chart_data?.map((d) => (
+                        <tr key={d.category_name}>
+                          <td>{tr(d.category_name)}</td>
+                          <td>
+                            {tr(d.candidate_score)}
+                            {tr("%")}
+                          </td>
+                          <td>
+                            {tr(d.job_requirement_score)}
+                            {tr("%")}
+                          </td>
+                        </tr>
+                      )),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
-
-          {result.skill_gap_analysis && (
-            <div className="matching-section matching-advice">
-              <h3>Phân tích khoảng cách kỹ năng</h3>
-              <p>{result.skill_gap_analysis}</p>
+        </section>
+      </div>
+      {tr(
+        result && (
+          <>
+            <div className="result-columns panels-row">
+              <section className="panel">
+                <h2>{tr("Kỹ năng đã phù hợp")}</h2>
+                <Tags items={result.matched_skills} tone="green" />
+                {tr(
+                  !result.matched_skills.length && (
+                    <p>{tr("Chưa có kỹ năng trùng khớp.")}</p>
+                  ),
+                )}
+                <h3>{tr("Kỹ năng cần bổ sung")}</h3>
+                <Tags items={result.missing_skills} tone="amber" />
+                {tr(
+                  !result.missing_skills.length && (
+                    <p>{tr("Bạn đã đáp ứng các kỹ năng được nhận diện.")}</p>
+                  ),
+                )}
+                {tr(
+                  result.unrecognized_skills?.length > 0 && (
+                    <div className="notice">
+                      {tr("Chưa tính điểm cho: ")}
+                      {tr(result.unrecognized_skills.join(", "))}
+                      {tr(".")}
+                    </div>
+                  ),
+                )}
+              </section>
+              <section className="panel advice">
+                <Icon name="spark" />
+                <h2>{tr("Gợi ý cho bước tiếp theo")}</h2>
+                <p>{tr(result.general_advice)}</p>
+                <a href="#interview" className="text-link">
+                  {tr("Thử sức với phỏng vấn STAR ")}
+                  <Icon name="arrow" size={17} />
+                </a>
+              </section>
             </div>
-          )}
-
-          {result.learning_roadmap?.length > 0 && (
-            <div className="matching-section">
-              <h3>Lộ trình học tập đề xuất</h3>
-              <ol className="matching-roadmap">
-                {result.learning_roadmap.map((step, index) => (
-                  <li key={`${index}-${step}`}>{step}</li>
-                ))}
-              </ol>
-            </div>
-          )}
-        </div>
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>{tr("Học phần gợi ý cho bạn")}</h2>
+                <a href="#courses" className="text-link">
+                  {tr("Xem danh mục")}
+                </a>
+              </div>
+              {result.recommended_neu_courses?.length ? (
+                <div className="course-grid">
+                  {result.recommended_neu_courses.map((c) => (
+                    <article className="course-card" key={c.course_code}>
+                      <span className="eyebrow">
+                        {tr(c.course_code)}
+                        {tr(" · ")}
+                        {tr(c.credits)}
+                        {tr(" TÍN CHỈ")}
+                      </span>
+                      <h3>{tr(c.course_name)}</h3>
+                      <p>{tr(c.reason)}</p>
+                      <Tags items={c.skills_covered} />
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p>{tr("Chưa có học phần gợi ý cho nhóm kỹ năng này.")}</p>
+              )}
+            </section>
+          </>
+        ),
       )}
-    </section>
-  )
+    </>
+  );
 }

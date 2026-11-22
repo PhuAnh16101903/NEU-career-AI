@@ -1,20 +1,46 @@
 import axios from 'axios'
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api'
+const TOKEN_STORAGE_KEY = 'neu-career-access-token'
 
 export const apiClient = axios.create({
   baseURL: API_BASE,
 })
 
 /**
- * Gắn (hoặc xóa) Bearer Token vào header mặc định sau khi người dùng Đăng nhập / Đăng ký.
+ * Lưu hoặc xóa Bearer Token, đồng thời cập nhật Axios header.
  */
 export function setAuthToken(token) {
   if (token) {
     apiClient.defaults.headers.common.Authorization = `Bearer ${token}`
+
+    try {
+      sessionStorage.setItem(TOKEN_STORAGE_KEY, token)
+    } catch (error) {
+      console.warn('Không thể lưu phiên đăng nhập:', error)
+    }
   } else {
     delete apiClient.defaults.headers.common.Authorization
+
+    try {
+      sessionStorage.removeItem(TOKEN_STORAGE_KEY)
+    } catch (error) {
+      console.warn('Không thể xóa phiên đăng nhập:', error)
+    }
   }
+}
+
+/**
+ * Khôi phục token khi tải lại trang.
+ */
+try {
+  const savedToken = sessionStorage.getItem(TOKEN_STORAGE_KEY)
+
+  if (savedToken) {
+    setAuthToken(savedToken)
+  }
+} catch (error) {
+  console.warn('Không thể khôi phục phiên đăng nhập:', error)
 }
 
 /**
@@ -158,6 +184,27 @@ export const careerApi = {
         ...(status ? { status } : {}),
       },
     })
+    return data
+  },
+
+  getAdminJobs: async () => {
+    const { data } = await apiClient.get('/admin/jobs')
+    return data
+  },
+
+  updateUserStatus: async (id, isActive) => {
+    const { data } = await apiClient.patch(
+      `/admin/users/${encodeURIComponent(id)}/status`,
+      { is_active: isActive },
+    )
+    return data
+  },
+
+  moderateJob: async (id, status) => {
+    const { data } = await apiClient.patch(
+      `/admin/jobs/${encodeURIComponent(id)}/status`,
+      { status },
+    )
     return data
   },
 }

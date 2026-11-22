@@ -93,6 +93,11 @@ class GeminiService:
             # JSON phải được parse thành công trước khi ghi nhận success.
             if json_mode:
                 result = json.loads(response.text)
+
+                if not isinstance(result, dict):
+                    raise LLMError(
+                        "Gemini trả về JSON không đúng định dạng object"
+                    )
             else:
                 result = response.text
 

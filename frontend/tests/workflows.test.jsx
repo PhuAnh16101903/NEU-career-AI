@@ -19,6 +19,7 @@ vi.mock("../src/services/api", () => ({
     matchSkills: vi.fn(),
     getCurriculum: vi.fn(),
     startInterview: vi.fn(),
+    getInterviewSession: vi.fn(),
     sendInterviewAnswer: vi.fn(),
     login: vi.fn(),
     register: vi.fn(),
@@ -35,8 +36,116 @@ afterEach(cleanup);
 beforeEach(() => {
   vi.resetAllMocks();
   resetCurriculumCache();
+  localStorage.removeItem("neu-career-interview-session");
 });
 describe("Career workflows", () => {
+  it("restores an unfinished interview session after reload", async () => {
+    localStorage.setItem("neu-career-interview-session", "s1");
+
+    careerApi.getInterviewSession.mockResolvedValue({
+      session_id: "s1",
+      candidate_name: "An",
+      target_role: "Data Analyst",
+      turn_index: 2,
+      is_finished: false,
+      history: [
+        {
+          role: "assistant",
+          content: "Hãy giới thiệu bản thân.",
+          is_mock: true,
+        },
+        {
+          role: "user",
+          content: "Em đã làm dự án phân tích dữ liệu.",
+        },
+        {
+          role: "assistant",
+          content: "Bạn đã xử lý dữ liệu như thế nào?",
+          is_mock: true,
+        },
+      ],
+      evaluations: [
+        {
+          situation_score: 7,
+          task_score: 8,
+          action_score: 9,
+          result_score: 6,
+          feedback: "Hãy nêu kết quả cụ thể.",
+        },
+      ],
+      created_at: "2026-11-22T00:00:00",
+    });
+
+    render(<InterviewTab />);
+
+    expect(
+      await screen.findByText("Bạn đã xử lý dữ liệu như thế nào?"),
+    ).toBeTruthy();
+
+    expect(screen.getByText("Em đã làm dự án phân tích dữ liệu.")).toBeTruthy();
+    expect(screen.getByLabelText("Điểm Hành động").value).toBe(9);
+    expect(localStorage.getItem("neu-career-interview-session")).toBe("s1");
+
+    expect(careerApi.getInterviewSession).toHaveBeenCalledWith("s1");
+  });
+  it("restores a completed interview and its STAR summary", async () => {
+    localStorage.setItem("neu-career-interview-session", "s2");
+
+    careerApi.getInterviewSession.mockResolvedValue({
+      session_id: "s2",
+      candidate_name: "An",
+      target_role: "Data Analyst",
+      turn_index: 4,
+      is_finished: true,
+      history: [
+        {
+          role: "assistant",
+          content: "Câu hỏi cuối cùng.",
+          is_mock: true,
+        },
+        {
+          role: "user",
+          content: "Đây là câu trả lời cuối cùng.",
+        },
+      ],
+      evaluations: [
+        {
+          situation_score: 7,
+          task_score: 8,
+          action_score: 9,
+          result_score: 6,
+          feedback: "Hãy nêu kết quả cụ thể.",
+        },
+      ],
+      created_at: "2026-11-22T00:00:00",
+    });
+
+    render(<InterviewTab />);
+
+    expect(
+      await screen.findByText("Bạn đã hoàn thành buổi luyện tập"),
+    ).toBeTruthy();
+
+    expect(
+      screen.getByText(
+        "Điểm STAR trung bình qua 1 câu trả lời: 7.5/10.",
+      ),
+    ).toBeTruthy();
+
+    expect(
+      screen.queryByLabelText("Câu trả lời của bạn"),
+    ).toBeNull();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Luyện tập buổi mới" }),
+    );
+
+    expect(
+      localStorage.getItem("neu-career-interview-session"),
+    ).toBeNull();
+
+    expect(screen.getByLabelText("Tên của bạn")).toBeTruthy();
+  });
   it("rejects invalid CV files without making a request", () => {
     render(<CVTab onCvParsed={vi.fn()} />);
     fireEvent.change(screen.getByLabelText("Chọn file CV"), {

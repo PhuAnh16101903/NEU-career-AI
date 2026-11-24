@@ -17,8 +17,13 @@ import CoursesTab from "./components/CoursesTab";
 import CVTab from "./components/CVTab";
 import InterviewTab from "./components/InterviewTab";
 import MatchingTab from "./components/MatchingTab";
+import CareerAdvisorTab from "./components/CareerAdvisorTab";
+import AdminDashboard from "./components/AdminDashboard";
 import { Icon } from "./components/UI";
-import { setAuthToken } from "./services/api";
+import {
+  careerApi,
+  setAuthToken,
+} from "./services/api";
 import HomePage, { Brand } from "./components/HomePage";
 import GuidePage from "./components/GuidePage";
 import AuthPage from "./components/AuthPage";
@@ -49,15 +54,70 @@ export default function App() {
   const [railWide, setRailWide] = useState(false);
   const [requestedTab, setActiveTab] = useState(getTab),
     [cvData, setCvData] = useState(null),
-    [currentUser, setCurrentUser] = useState(null);
+    [currentUser, setCurrentUser] = useState(null),
+    [authLoading, setAuthLoading] = useState(true);
+
   const activeTab = workspaceDestination(requestedTab, currentUser);
   const tabs = tabsFor(currentUser);
+
   useEffect(() => {
+    let cancelled = false;
+
+    const restoreUser = async () => {
+      let token = null;
+
+      try {
+        token = sessionStorage.getItem("neu-career-access-token");
+      } catch (error) {
+        console.warn("Không thể đọc phiên đăng nhập:", error);
+      }
+
+      if (!token) {
+        setAuthLoading(false);
+        return;
+      }
+
+      try {
+        const response = await careerApi.getMe();
+        const user = response?.user ?? response;
+
+        if (
+          !user ||
+          !["student", "enterprise", "admin"].includes(user.role)
+        ) {
+          throw new Error("Invalid authentication response");
+        }
+
+        if (!cancelled) {
+          setCurrentUser(user);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setAuthToken(null);
+          setCurrentUser(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setAuthLoading(false);
+        }
+      }
+    };
+
+    restoreUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+
     if (requestedTab !== activeTab) {
       location.replace(`#${activeTab}`);
       setActiveTab(activeTab);
     }
-  }, [requestedTab, activeTab]);
+  }, [requestedTab, activeTab, authLoading]);
   useEffect(() => {
     const sync = () => setActiveTab(getTab());
     window.addEventListener("hashchange", sync);
@@ -177,7 +237,7 @@ export default function App() {
       {["about", "tools", "getting-started"].includes(activeTab) && (
         <GuidePage currentUser={currentUser} activeSection={activeTab} />
       )}
-      {tr(
+      {!authLoading &&
         (activeTab === "login" ||
           activeTab === "register" ||
           (activeTab === "auth" && !currentUser)) && (
@@ -186,8 +246,7 @@ export default function App() {
             onAuthSuccess={authSuccess}
             onNavigate={navigate}
           />
-        ),
-      )}
+        )}
       <div
         className={`app-shell u040 ${railWide ? "is-wide" : ""}`}
         hidden={publicRoute}
@@ -241,11 +300,19 @@ export default function App() {
               <MatchingTab key={currentUser?.id || "guest"} cvData={cvData} />
             </div>
             <div hidden={activeTab !== "interview"}>
-              <InterviewTab key={currentUser?.id || "guest"} />
+              {!authLoading && currentUser && (
+                <InterviewTab key={currentUser.id} />
+              )}
             </div>
             {tr(activeTab === "courses" && <CoursesTab />)}
+            {activeTab === "career" && currentUser?.role === "student" && (
+              <CareerAdvisorTab cvData={cvData} />
+            )}
             {activeTab === "settings" && currentUser && (
               <AccountSettings user={currentUser} />
+            )}
+            {activeTab === "ai-usage" && currentUser?.role === "admin" && (
+              <AdminDashboard />
             )}
             {[
               "opportunities",

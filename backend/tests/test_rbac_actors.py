@@ -62,6 +62,8 @@ def test_rbac_blocks_unauthorized_and_wrong_roles(client):
     # 1. Chưa đăng nhập gọi API cần quyền -> 401
     unauth = client.get("/api/admin/stats")
     assert unauth.status_code == 401
+    unauth_jobs = client.get("/api/admin/jobs")
+    assert unauth_jobs.status_code == 401
 
     # 2. Sinh viên cố gọi API đăng tin của Doanh nghiệp -> 403 Forbidden
     sv_post_job = client.post(
@@ -77,6 +79,17 @@ def test_rbac_blocks_unauthorized_and_wrong_roles(client):
     # 3. Sinh viên & Doanh nghiệp cố gọi API quản trị của Admin -> 403 Forbidden
     assert client.get("/api/admin/stats", headers=_auth_header(student_token)).status_code == 403
     assert client.get("/api/admin/users", headers=_auth_header(enterprise_token)).status_code == 403
+
+    # API xem toàn bộ tin tuyển dụng cũng chỉ dành cho Admin
+    assert client.get(
+        "/api/admin/jobs",
+        headers=_auth_header(student_token),
+    ).status_code == 403
+
+    assert client.get(
+        "/api/admin/jobs",
+        headers=_auth_header(enterprise_token),
+    ).status_code == 403
 
 
 def test_full_three_actor_workflow_enterprise_student_admin(client):
@@ -151,6 +164,13 @@ def test_full_three_actor_workflow_enterprise_student_admin(client):
     assert stats["total_enterprises"] >= 1
     assert stats["total_admins"] >= 1
     assert stats["total_applications"] >= 1
+    # Admin xem được toàn bộ tin tuyển dụng
+    all_jobs_res = client.get(
+        "/api/admin/jobs",
+        headers=_auth_header(admin_token),
+    )
+    assert all_jobs_res.status_code == 200, all_jobs_res.text
+    assert any(job["id"] == job_id for job in all_jobs_res.json())
 
     mod_res = client.patch(
         f"/api/admin/jobs/{job_id}/status",
@@ -159,6 +179,16 @@ def test_full_three_actor_workflow_enterprise_student_admin(client):
     )
     assert mod_res.status_code == 200
     assert mod_res.json()["status"] == "rejected"
+    # Tin đã bị từ chối vẫn xuất hiện trong danh sách toàn bộ của Admin
+    all_jobs_after_moderation = client.get(
+        "/api/admin/jobs",
+        headers=_auth_header(admin_token),
+    )
+    assert all_jobs_after_moderation.status_code == 200
+    assert any(
+        job["id"] == job_id and job["status"] == "rejected"
+        for job in all_jobs_after_moderation.json()
+    )
 
 
 def test_search_filter_and_session_detail_endpoints(client):

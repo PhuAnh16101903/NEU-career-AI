@@ -8,7 +8,7 @@ export default function ChristmasMusicPlayer() {
   useLocale();
   const audioRef = useRef(null);
   // Music is enabled by default. The browser may still require a user gesture.
-  const wantsPlaybackRef = useRef(true);
+  const wantsPlaybackRef = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(INITIAL_VOLUME);
   const [muted, setMuted] = useState(false);
@@ -21,65 +21,11 @@ export default function ChristmasMusicPlayer() {
     }
   }, [muted, volume]);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return undefined;
-    let disposed = false;
-
-    const startMusic = () => {
-      if (!wantsPlaybackRef.current || !audio.paused) return;
-      try {
-        const result = audio.play();
-        if (result && typeof result.then === "function") {
-          result.then(() => {
-            if (!disposed) {
-              setAwaitingInteraction(false);
-              setPlaybackError(false);
-            }
-          }).catch((error) => {
-            if (disposed || !wantsPlaybackRef.current) return;
-            // Chrome/Safari block unprompted playback with sound. Retry only
-            // after a genuine pointer/keyboard interaction, not on a timer.
-            if (error?.name === "NotAllowedError") {
-              setAwaitingInteraction(true);
-            } else if (error?.name !== "AbortError") {
-              setPlaybackError(true);
-            }
-          });
-        }
-      } catch (error) {
-        if (!disposed) {
-          if (error?.name === "NotAllowedError") setAwaitingInteraction(true);
-          else setPlaybackError(true);
-        }
-      }
-    };
-
-    const onInteraction = (event) => {
-      if (!wantsPlaybackRef.current || !audio.paused) return;
-      // Let the player button handle its own click; otherwise the capture
-      // listener could start the track just before the button pauses it.
-      if (event.target?.closest?.(".christmas-music-player__play")) return;
-      startMusic();
-    };
-
-    document.addEventListener("pointerdown", onInteraction, true);
-    document.addEventListener("keydown", onInteraction, true);
-    startMusic();
-
-    return () => {
-      disposed = true;
-      document.removeEventListener("pointerdown", onInteraction, true);
-      document.removeEventListener("keydown", onInteraction, true);
-      audio.pause();
-    };
-  }, []);
-
   const togglePlayback = async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (!audio.paused) {
+    if (playing) {
       wantsPlaybackRef.current = false;
       audio.pause();
       setPlaying(false);
@@ -91,6 +37,7 @@ export default function ChristmasMusicPlayer() {
     setPlaybackError(false);
     try {
       await audio.play();
+      setPlaying(true);
       setAwaitingInteraction(false);
     } catch (error) {
       setPlaying(false);
@@ -118,7 +65,7 @@ export default function ChristmasMusicPlayer() {
         ref={audioRef}
         src={MUSIC_SOURCE}
         loop
-        preload="auto"
+        preload="none"
         onPause={() => setPlaying(false)}
         onPlay={() => setPlaying(true)}
       />

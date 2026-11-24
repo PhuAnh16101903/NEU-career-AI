@@ -37,20 +37,52 @@ it("shows admin real-value charts and keyboard-accessible controls", async () =>
     { id: "a", status: "approved", created_at: new Date().toISOString() },
     { id: "b", status: "pending", created_at: new Date().toISOString() },
   ];
+
   const user = userEvent.setup();
   render(<AdminAnalytics stats={stats} jobs={jobs} />);
-  expect(screen.getByRole("heading", { name: "Biểu đồ thống kê tương tác" })).toBeTruthy();
-  expect(screen.getByRole("img", { name: /Người dùng theo vai trò/ })).toBeTruthy();
-  await user.click(screen.getByRole("button", { name: /Sinh viên/ }));
-  expect(screen.getByText(/Sinh viên: 10 \(66\.7%\)/)).toBeTruthy();
+
+  expect(
+    screen.getByRole("heading", { name: "Cơ cấu hệ thống" }),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByRole("group", { name: /Biểu đồ tròn:/ }),
+  ).toBeTruthy();
+
+  const studentLegend = screen
+    .getAllByRole("button", { name: /Sinh viên/ })
+    .find((element) => element.tagName === "BUTTON");
+
+  expect(studentLegend).toBeTruthy();
+  await user.click(studentLegend);
+
+  expect(
+    screen.getByRole("button", {
+      name: "Sinh viên: 10 (66.7%)",
+    }),
+  ).toBeTruthy();
+
   await user.click(screen.getByRole("button", { name: "7 ngày" }));
-  expect(screen.getByRole("button", { name: "7 ngày" }).getAttribute("aria-pressed")).toBe("true");
-  const trend = screen.getByRole("group", { name: "Số tin tuyển dụng theo thời gian" });
+
+  expect(
+    screen.getByRole("button", { name: "7 ngày" }).getAttribute("aria-pressed"),
+  ).toBe("true");
+
+  const trend = screen.getByRole("group", {
+    name: "Biểu đồ đường số tin đăng trong 7 ngày",
+  });
+
   expect(within(trend).getAllByRole("button")).toHaveLength(7);
 });
 
 it("renders stats even if timeline API data cannot be fetched", () => {
   render(<AdminAnalytics stats={stats} jobs={null} jobsError="Kết nối lỗi" />);
-  expect(screen.getByRole("heading", { name: "Người dùng theo vai trò" })).toBeTruthy();
-  expect(screen.getByText(/Chưa tải được dữ liệu tin tuyển dụng/)).toBeTruthy();
+
+  expect(
+    screen.getByRole("heading", { name: "Cơ cấu hệ thống" }),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(/Không tải được dữ liệu tin tuyển dụng.*Kết nối lỗi/),
+  ).toBeTruthy();
 });

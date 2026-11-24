@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="winter-world" viewBox="-720 -724 3600 2400" fill="none" preserveAspectRatio="none" aria-hidden="true">
       <title>Festive Christmas garden — decorated firs, presents, red bows and warm lights by day and night</title>
       <defs>
-        
+
         <pattern id="garden-day-panorama" x="-720" y="-724" width="7200" height="2400" patternUnits="userSpaceOnUse" viewBox="0 0 3072 1024">
           <image width="1536" height="1024" href="christmas-festive-garden-day-v1-2x.jpg" />
           <image width="1536" height="1024" href="christmas-festive-garden-day-v1-2x.jpg" transform="translate(3072 0) scale(-1 1)" />

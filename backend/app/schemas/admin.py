@@ -23,3 +23,56 @@ class SystemStatsResponse(BaseModel):
     pending_jobs: int
     total_applications: int
     total_interviews: int
+
+
+
+from typing import List, Optional
+
+from pydantic import BaseModel
+
+
+class AIUsageStatsResponse(BaseModel):
+    total_requests: int
+    successful_requests: int
+    failed_requests: int
+    success_rate: float
+
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
+
+    average_latency_ms: Optional[float] = None
+    estimated_cost_usd: Optional[float] = None
+
+
+class AIUsageFeatureStats(BaseModel):
+    feature: str
+    total_requests: int
+    successful_requests: int
+    failed_requests: int
+    total_tokens: int
+    average_latency_ms: Optional[float] = None
+
+
+class AIUsageLogResponse(BaseModel):
+    id: str
+    provider: str
+    model: str
+    feature: str
+    status: str
+
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
+
+    latency_ms: Optional[float] = None
+    cost_usd: Optional[float] = None
+    error_type: Optional[str] = None
+    created_at: str
+
+
+class AIUsageLogListResponse(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    items: List[AIUsageLogResponse]

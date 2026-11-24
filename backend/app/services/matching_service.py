@@ -1,6 +1,11 @@
-from typing import List
+import logging
+from typing import Any, Dict, List
 
-from app.core.errors import ServiceError
+from pydantic import ValidationError
+
+from app.core.errors import LLMError, ServiceError
+from app.core.llm import gemini_service
+from app.core.prompts import render_prompt
 from app.data.skill_taxonomy import (
     category_of,
     extract_skills,
@@ -8,6 +13,7 @@ from app.data.skill_taxonomy import (
     role_requirements,
 )
 from app.schemas.analysis import (
+    CourseExplanation,
     RadarSkillCategory,
     RecommendedCourse,
     SkillGapRequest,
@@ -15,8 +21,61 @@ from app.schemas.analysis import (
 )
 from app.services.curriculum_service import curriculum_service
 
+CATEGORY_WEIGHTS = {
+    "Kỹ năng chuyên môn": 3,
+    "Nghiệp vụ": 3,
+    "Công cụ": 2,
+    "Kỹ năng mềm": 1,
+    "Ngoại ngữ": 1,
+}
+
+# Kỹ năng tương thích một chiều khi đánh giá yêu cầu công việc.
+# PostgreSQL có thể đáp ứng yêu cầu SQL, nhưng không thay đổi canonical skill.
+SKILL_COMPATIBILITY = {
+    "SQL": {"PostgreSQL"},
+}
+
 
 class MatchingService:
+    @staticmethod
+    def _has_required_skill(
+        required_skill: str,
+        candidate_skills: set,
+    ) -> bool:
+        """Kiểm tra ứng viên có kỹ năng đáp ứng yêu cầu công việc không."""
+
+        if required_skill in candidate_skills:
+            return True
+
+        compatible_skills = SKILL_COMPATIBILITY.get(
+            required_skill,
+            set(),
+        )
+
+        return bool(compatible_skills & candidate_skills)
+
+    @staticmethod
+    def _calculate_weighted_match(
+        required: List[str],
+        matched: List[str],
+    ) -> float:
+        """Tính tỷ lệ Matching có xét trọng số từng nhóm kỹ năng."""
+
+        total_weight = sum(
+            CATEGORY_WEIGHTS.get(category_of(skill), 1)
+            for skill in required
+        )
+
+        matched_weight = sum(
+            CATEGORY_WEIGHTS.get(category_of(skill), 1)
+            for skill in matched
+        )
+
+        if total_weight == 0:
+            return 0.0
+
+        return round(matched_weight / total_weight * 100, 1)
+
     @staticmethod
     def _resolve_requirements(request: SkillGapRequest):
         """Yêu cầu lấy từ JD nếu có và nhận diện được kỹ năng, nếu không thì theo bộ mặc định của vị trí."""
@@ -32,6 +91,94 @@ class MatchingService:
             "Không xác định được kỹ năng yêu cầu: JD không chứa kỹ năng nào trong Skill Taxonomy "
             "và vị trí chưa có bộ yêu cầu mặc định. Hãy bổ sung nội dung JD.",
         )
+
+    @staticmethod
+    async def _generate_ai_advice(
+        request: SkillGapRequest,
+        required: List[str],
+        matched: List[str],
+        missing: List[str],
+        unrecognized: List[str],
+        match_percentage: float,
+        source: str,
+        recommended: List[RecommendedCourse],
+    ) -> Dict[str, Any]:
+        """Gọi Gemini để tạo tư vấn dựa trên kết quả Matching đã tính."""
+
+        recommended_data = [
+            {
+                "course_code": course.course_code,
+                "course_name": course.course_name,
+                "department": course.department,
+                "credits": course.credits,
+                "skills_covered": course.skills_covered,
+            }
+            for course in recommended
+        ]
+
+        prompt = render_prompt(
+            "skill_gap_analysis",
+            job_title=request.job_title,
+            requirements_source=source,
+            required_skills=required,
+            matched_skills=matched,
+            missing_skills=missing,
+            unrecognized_skills=unrecognized,
+            match_percentage=match_percentage,
+            recommended_courses=recommended_data,
+            job_description=request.target_job_description or "Không cung cấp JD.",
+        )
+
+        result = await gemini_service.generate_json(
+            prompt,
+            feature="matching",
+        )
+
+        if not isinstance(result, dict):
+            raise LLMError("Gemini không trả về JSON object hợp lệ.")
+
+        try:
+            skill_gap_analysis = result.get("skill_gap_analysis", "")
+            learning_roadmap = result.get("learning_roadmap", [])
+            general_advice = result.get("general_advice", "")
+            raw_courses = result.get("course_explanations", [])
+
+            if not isinstance(skill_gap_analysis, str):
+                raise ValueError("skill_gap_analysis phải là chuỗi")
+
+            if not isinstance(learning_roadmap, list) or not all(
+                isinstance(item, str) for item in learning_roadmap
+            ):
+                raise ValueError("learning_roadmap phải là danh sách chuỗi")
+
+            if not isinstance(general_advice, str):
+                raise ValueError("general_advice phải là chuỗi")
+
+            if not isinstance(raw_courses, list):
+                raise ValueError("course_explanations phải là danh sách")
+
+            course_explanations = [
+                CourseExplanation.model_validate(item)
+                for item in raw_courses
+            ]
+
+            allowed_codes = {course.course_code for course in recommended}
+            course_explanations = [
+                item for item in course_explanations
+                if item.course_code in allowed_codes
+            ]
+
+            return {
+                "skill_gap_analysis": skill_gap_analysis,
+                "learning_roadmap": learning_roadmap,
+                "course_explanations": course_explanations,
+                "general_advice": general_advice,
+            }
+
+        except (ValidationError, TypeError, ValueError) as exc:
+            raise LLMError(
+                f"Dữ liệu tư vấn Matching từ Gemini không hợp lệ: {exc}"
+            ) from exc
 
     @staticmethod
     async def analyze_skill_gap(request: SkillGapRequest) -> SkillGapResponse:
@@ -51,15 +198,29 @@ class MatchingService:
                 else:
                     unrecognized.append(raw.strip())
 
-        matched = [s for s in required if s in candidate]
-        missing = [s for s in required if s not in candidate]
-        match_percentage = round(len(matched) / len(required) * 100, 1)
+        matched = [
+            s for s in required
+            if MatchingService._has_required_skill(s, candidate)
+        ]
+
+        missing = [
+            s for s in required
+            if not MatchingService._has_required_skill(s, candidate)
+        ]
+
+        match_percentage = MatchingService._calculate_weighted_match(
+            required=required,
+            matched=matched,
+        )
 
         # Radar: mỗi nhóm kỹ năng có trong yêu cầu là một trục.
         radar = []
         for category in dict.fromkeys(category_of(s) for s in required):
             in_category = [s for s in required if category_of(s) == category]
-            got = sum(1 for s in in_category if s in candidate)
+            got = sum(
+                1 for s in in_category
+                if MatchingService._has_required_skill(s, candidate)
+            )
             radar.append(
                 RadarSkillCategory(
                     category_name=category,
@@ -92,6 +253,36 @@ class MatchingService:
         else:
             advice = f"Bạn đáp ứng đủ các kỹ năng yêu cầu của vị trí {request.job_title}."
 
+        # Gemini chỉ bổ sung phần tư vấn, không can thiệp kết quả Matching.
+        ai_advice = {
+            "skill_gap_analysis": "",
+            "learning_roadmap": [],
+            "course_explanations": [],
+            "general_advice": advice,
+        }
+
+        try:
+            ai_advice = await MatchingService._generate_ai_advice(
+                request=request,
+                required=required,
+                matched=matched,
+                missing=missing,
+                unrecognized=unrecognized,
+                match_percentage=match_percentage,
+                source=source,
+                recommended=recommended,
+            )
+            if not ai_advice["general_advice"]:
+                ai_advice["general_advice"] = advice
+
+        except LLMError as exc:
+            # Gemini lỗi hoặc chưa cấu hình: giữ tư vấn dự phòng.
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "Matching Gemini thất bại, sử dụng tư vấn dự phòng: %s",
+                exc,
+            )
+
         return SkillGapResponse(
             overall_match_percentage=match_percentage,
             requirements_source=source,
@@ -101,7 +292,10 @@ class MatchingService:
             unrecognized_skills=unrecognized,
             radar_chart_data=radar,
             recommended_neu_courses=recommended,
-            general_advice=advice,
+            general_advice=ai_advice["general_advice"],
+            skill_gap_analysis=ai_advice["skill_gap_analysis"],
+            learning_roadmap=ai_advice["learning_roadmap"],
+            course_explanations=ai_advice["course_explanations"],
         )
 
 

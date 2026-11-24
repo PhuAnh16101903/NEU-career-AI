@@ -45,12 +45,22 @@ it.each([
       "So khớp kỹ năng",
       "Phỏng vấn STAR",
       "Học phần NEU",
+      "Định hướng nghề nghiệp",
       "Cơ hội việc làm",
     ],
     "cv",
   ],
   ["enterprise", ["Đăng tuyển", "Tìm ứng viên"], "recruitment"],
-  ["admin", ["Tổng quan", "Quản lý người dùng", "Kiểm duyệt tin"], "overview"],
+  [
+    "admin",
+    [
+      "Tổng quan",
+      "Quản lý người dùng",
+      "Kiểm duyệt tin",
+      "Theo dõi AI",
+    ],
+    "overview"
+  ],
 ])(
   "gives %s a separate menu, settings above avatar and functional logout below",
   async (role, labels, route) => {

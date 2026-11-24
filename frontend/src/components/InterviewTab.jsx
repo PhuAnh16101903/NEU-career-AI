@@ -2,6 +2,70 @@ import { t as tr, useLocale as useUiLanguage } from "../i18n";
 import { useEffect, useRef, useState } from "react";
 import { careerApi } from "../services/api";
 import { Empty, ErrorNotice, Icon, PageHead, errorText } from "./UI";
+const INTERVIEW_STORAGE_KEY = "neu-career-interview-session";
+
+function buildRestoredSession(data) {
+  const history = Array.isArray(data.history) ? data.history : [];
+  const evaluations = Array.isArray(data.evaluations)
+    ? data.evaluations
+    : [];
+
+  const messages = history
+    .map((item) => ({
+      who:
+        item.role === "assistant" || item.role === "ai"
+          ? "ai"
+          : "you",
+      text: item.content ?? item.text ?? "",
+      pending: false,
+    }))
+    .filter((item) => item.text);
+
+  const isMock = history.some(
+    (item) =>
+      (item.role === "assistant" || item.role === "ai") &&
+      item.is_mock === true,
+  );
+
+  let overallSummary = null;
+
+  if (data.is_finished && evaluations.length > 0) {
+    const scoreKeys = [
+      "situation_score",
+      "task_score",
+      "action_score",
+      "result_score",
+    ];
+
+    const total = evaluations.reduce(
+      (sum, item) =>
+        sum +
+        scoreKeys.reduce(
+          (score, key) => score + (Number(item[key]) || 0),
+          0,
+        ),
+      0,
+    );
+
+    const average = (
+      total /
+      (evaluations.length * scoreKeys.length)
+    ).toFixed(1);
+
+    overallSummary =
+      `Điểm STAR trung bình qua ${evaluations.length} câu trả lời: ${average}/10.`;
+  }
+
+  return {
+    session_id: data.session_id,
+    candidate_name: data.candidate_name,
+    target_role: data.target_role,
+    turn_index: data.turn_index,
+    is_finished: data.is_finished,
+    is_mock: isMock,
+    overall_summary: overallSummary,
+  };
+}
 export default function InterviewTab() {
   useUiLanguage();
   const [name, setName] = useState(""),
@@ -18,6 +82,64 @@ export default function InterviewTab() {
   useEffect(() => {
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [messages, busy]);
+  useEffect(() => {
+    const savedSessionId = localStorage.getItem(INTERVIEW_STORAGE_KEY);
+    if (!savedSessionId) return;
+
+    let active = true;
+
+    async function restoreSession() {
+      setBusy(true);
+      setError("");
+
+      try {
+        const data = await careerApi.getInterviewSession(savedSessionId);
+
+        if (!active) return;
+
+        const restoredSession = buildRestoredSession(data);
+
+        setSession(restoredSession);
+        setName(data.candidate_name ?? "");
+        setRole(data.target_role ?? "");
+        setMessages(
+          (Array.isArray(data.history) ? data.history : [])
+            .map((item) => ({
+              who:
+                item.role === "assistant" || item.role === "ai"
+                  ? "ai"
+                  : "you",
+              text: item.content ?? item.text ?? "",
+              pending: false,
+            }))
+            .filter((item) => item.text),
+        );
+
+        const evaluations = Array.isArray(data.evaluations)
+          ? data.evaluations
+          : [];
+
+        setEvaluation(evaluations.at(-1) ?? null);
+      } catch (e) {
+        if (!active) return;
+
+        // Chỉ xóa ID nếu backend xác nhận phiên không tồn tại.
+        if (e.response?.status === 404) {
+          localStorage.removeItem(INTERVIEW_STORAGE_KEY);
+        } else {
+          setError(errorText(e));
+        }
+      } finally {
+        if (active) setBusy(false);
+      }
+    }
+
+    restoreSession();
+
+    return () => {
+      active = false;
+    };
+  }, []);
   async function start(e) {
     e.preventDefault();
     if (busy) return;
@@ -26,6 +148,9 @@ export default function InterviewTab() {
     setError("");
     try {
       const d = await careerApi.startInterview(name.trim(), role.trim());
+      if (d.session_id) {
+        localStorage.setItem(INTERVIEW_STORAGE_KEY, d.session_id);
+      }
       setSession(d);
       setMessages([
         {
@@ -180,9 +305,11 @@ export default function InterviewTab() {
                   <button
                     className="button secondary"
                     onClick={() => {
+                      localStorage.removeItem(INTERVIEW_STORAGE_KEY);
                       setSession(null);
                       setEvaluation(null);
                       setMessages([]);
+                      setAnswer("");
                       setError("");
                     }}
                   >

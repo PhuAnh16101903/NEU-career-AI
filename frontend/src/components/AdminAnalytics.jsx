@@ -52,7 +52,7 @@ function StatCards({ stats }) {
     { key: "interviews", label: "Buổi phỏng vấn", value: stats.total_interviews, color: "evergreen" },
   ];
   return (
-    <div className="pbi-kpis" aria-label={tr("Các chỉ số tổng quan")}> 
+    <div className="pbi-kpis" aria-label={tr("Các chỉ số tổng quan")}>
       {metrics.map((metric) => (
         <article className={`pbi-kpi pbi-kpi-${metric.color}`} key={metric.key}>
           <span>{tr(metric.label)}</span>
@@ -146,7 +146,7 @@ function DonutChart({ users, jobs }) {
             <text x="150" y="184" textAnchor="middle" className="pbi-donut-percentage">{active ? percent(active.value, total) : tr("Toàn hệ thống")}</text>
           </svg>
         </div>
-        <div className="pbi-donut-legend" aria-label={tr("Chú giải tương tác")}> 
+        <div className="pbi-donut-legend" aria-label={tr("Chú giải tương tác")}>
           {items.map((item) => (
             <button
               key={item.key}
@@ -209,7 +209,7 @@ function ColumnChart({ items }) {
         aside={<span className="pbi-data-tag">{tr("Dữ liệu tổng từ API")}</span>}
       />
       <div className="pbi-plot-scroll">
-        <svg viewBox={`0 0 ${W} ${H}`} className="pbi-plot-svg" role="group" aria-label={tr("Biểu đồ cột trạng thái tin tuyển dụng")}> 
+        <svg viewBox={`0 0 ${W} ${H}`} className="pbi-plot-svg" role="group" aria-label={tr("Biểu đồ cột trạng thái tin tuyển dụng")}>
           {Array.from({ length: 5 }, (_, i) => {
             const value = i * step;
             const y = bottom - (value / ceiling) * plotHeight;
@@ -325,7 +325,7 @@ function LineChart({ jobs, jobsError }) {
       ) : (
         <>
           <div className="pbi-plot-scroll">
-            <svg viewBox={`0 0 ${W} ${H}`} className="pbi-plot-svg" role="group" aria-label={`${tr("Biểu đồ đường số tin đăng trong")} ${period} ${tr("ngày")}`}> 
+            <svg viewBox={`0 0 ${W} ${H}`} className="pbi-plot-svg" role="group" aria-label={`${tr("Biểu đồ đường số tin đăng trong")} ${period} ${tr("ngày")}`}>
               <defs>
                 <linearGradient id={`pbi-area-${chartId}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--admin-evergreen)" stopOpacity=".28" />
@@ -423,7 +423,7 @@ export default function AdminAnalytics({ stats, jobs, jobsError = "" }) {
   const series = useMemo(() => overviewSeries(stats), [stats]);
   if (!series) return null;
   return (
-    <section className="admin-analytics pbi-dashboard" aria-label={tr("Báo cáo quản trị tương tác")}> 
+    <section className="admin-analytics pbi-dashboard" aria-label={tr("Báo cáo quản trị tương tác")}>
       <div className="pbi-dashboard-title">
         <div>
           <h2>{tr("Báo cáo tổng quan")}</h2>

@@ -28,6 +28,11 @@ class RecommendedCourse(BaseModel):
     reason: str
 
 
+class CourseExplanation(BaseModel):
+    course_code: str
+    explanation: str
+
+
 class SkillGapResponse(BaseModel):
     overall_match_percentage: float = Field(..., ge=0, le=100, examples=[72.5])
     requirements_source: Literal["job_description", "role_preset"]
@@ -41,3 +46,6 @@ class SkillGapResponse(BaseModel):
     radar_chart_data: List[RadarSkillCategory] = []
     recommended_neu_courses: List[RecommendedCourse] = []
     general_advice: str
+    skill_gap_analysis: str = ""
+    learning_roadmap: List[str] = Field(default_factory=list)
+    course_explanations: List[CourseExplanation] = Field(default_factory=list)

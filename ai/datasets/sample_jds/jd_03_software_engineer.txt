@@ -1,0 +1,10 @@
+SOFTWARE ENGINEER (JUNIOR) — XƯỞNG PHẦN MỀM CẦU GIẤY (MÔ PHỎNG)
+
+Mục tiêu: Tham gia phát triển, kiểm thử và duy trì tính năng cho sản phẩm web nội bộ.
+
+Trách nhiệm:
+- Viết mã ứng dụng bằng JavaScript hoặc Python, quản lý thay đổi bằng Git.
+- Thiết kế Database Design, làm việc với SQL và PostgreSQL.
+- Phối hợp nhóm, điều tra lỗi và đề xuất giải pháp dễ bảo trì.
+
+Yêu cầu: JavaScript, Python, Git, Database Design, SQL, PostgreSQL, Giải quyết vấn đề và Làm việc nhóm. Có thể đọc tài liệu Tiếng Anh.

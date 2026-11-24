@@ -1,0 +1,10 @@
+BUSINESS ANALYST (INTERN) — NỀN TẢNG MUA SẮM AN NHIÊN (MÔ PHỎNG)
+
+Mục tiêu: Hỗ trợ nhóm sản phẩm chuyển nhu cầu người dùng thành yêu cầu rõ ràng và quy trình có thể triển khai.
+
+Trách nhiệm:
+- Thu thập, phân tích yêu cầu và làm rõ phạm vi với các bên liên quan.
+- Mô hình hóa quy trình bằng BPMN; soạn tài liệu BRD và tiêu chí nghiệm thu.
+- Dùng SQL kiểm tra dữ liệu nghiệp vụ, phối hợp nhóm phát triển và trình bày phương án.
+
+Yêu cầu: Business Analysis, BPMN, Phân tích yêu cầu, Viết tài liệu BRD, SQL, Giao tiếp, Làm việc nhóm và Tiếng Anh.

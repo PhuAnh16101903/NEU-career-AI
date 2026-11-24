@@ -1,0 +1,10 @@
+CHUYÊN VIÊN PHÂN TÍCH TÀI CHÍNH — CÔNG TY ĐẦU TƯ PHƯƠNG NAM (MÔ PHỎNG)
+
+Mục tiêu: Hỗ trợ phân tích dữ liệu tài chính và chuẩn bị báo cáo phục vụ đánh giá hoạt động kinh doanh.
+
+Trách nhiệm:
+- Tổng hợp, đối chiếu dữ liệu bằng Excel và SQL; kiểm tra giả định và sai lệch.
+- Thực hiện phân tích định lượng, thống kê cơ bản; tự động hóa một số bước bằng Python.
+- Theo dõi xu hướng sản phẩm Fintech, phối hợp nhóm và trình bày kết quả bằng Tiếng Anh khi cần.
+
+Yêu cầu: Excel, SQL, Python, Quantitative Analysis, Thống kê, Fintech, Tư duy logic, Giao tiếp và Tiếng Anh.

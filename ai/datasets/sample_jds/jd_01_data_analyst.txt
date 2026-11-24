@@ -1,0 +1,10 @@
+DATA ANALYST (JUNIOR) — CÔNG TY DỮ LIỆU MINH AN (MÔ PHỎNG)
+
+Mục tiêu: Phân tích dữ liệu kinh doanh, xây dựng báo cáo định kỳ và hỗ trợ nhóm vận hành ra quyết định dựa trên số liệu.
+
+Trách nhiệm:
+- Làm sạch, tổng hợp và truy vấn dữ liệu bằng SQL và Python.
+- Dùng Excel và Power BI xây báo cáo, dashboard; kiểm tra chất lượng và diễn giải xu hướng.
+- Áp dụng thống kê cơ bản, tư duy logic và phối hợp nhóm để trả lời câu hỏi nghiệp vụ.
+
+Yêu cầu: SQL, Python, Excel, Power BI, Thống kê, Tư duy logic, Làm việc nhóm và Tiếng Anh đọc hiểu. Ưu tiên sinh viên năm cuối hoặc mới tốt nghiệp.

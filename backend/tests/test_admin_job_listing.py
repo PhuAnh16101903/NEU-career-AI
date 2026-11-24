@@ -1,4 +1,4 @@
-﻿def _auth_header(token):
+def _auth_header(token):
     return {"Authorization": f"Bearer {token}"}
 
 

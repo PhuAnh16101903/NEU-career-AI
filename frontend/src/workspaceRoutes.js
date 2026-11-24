@@ -1,4 +1,4 @@
-﻿export const studentTabs = [
+export const studentTabs = [
   { id: "cv", label: "Phân tích CV", icon: "file" },
   { id: "matching", label: "So khớp kỹ năng", icon: "target" },
   { id: "interview", label: "Phỏng vấn STAR", icon: "chat" },

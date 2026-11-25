@@ -1,0 +1,37 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: neu_career_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - PROJECT_NAME=NEU Career AI API
+      - DATABASE_URL=sqlite:////app/data/neu_career.db
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      - MAX_UPLOAD_MB=5
+      - PROMPTS_DIR=/ai/prompts
+    volumes:
+      - neu_career_db:/app/data
+      - ./ai/prompts:/ai/prompts:ro
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        - VITE_API_URL=/api
+    container_name: neu_career_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  neu_career_db:
+    name: neu_career_db_data
